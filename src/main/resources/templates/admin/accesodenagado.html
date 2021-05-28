@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+ <!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera"> 
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- MENU PLANTILLA -->
+   
+   
+     <!-- CONTENIDO PLANTILLA -->
+      <div id="content" >
+            
+
+            <!-- CONTENIDO EDITABLE INICIO-->
+            <form id="salirForm" th:action="@{/logout}" method="post">
+
+			<div class="rows text-center">
+				<div class="card">
+					<div class="card-body">
+						<h5 class="card-title">NO TIENE PERMISOS</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Acceso Denegado</h6>
+						<p class="card-text">
+							<button onclick="document.getElementById('salirForm').submit();"
+								type="submit" class="btn btn-outline-primary">
+								<i class="fas fa-door-closed"></i> SALIR</button>
+						</p>
+					</div>
+				</div>
+			</div>
+ 
+
+		</form>
+            
+            <!-- CONTENIDO EDITABLE FIN-->
+        
+      </div>
+   
+</div>
+ 
+ <div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

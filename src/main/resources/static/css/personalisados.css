@@ -1,0 +1,151 @@
+@charset "ISO-8859-1";
+
+.letras_titulo_menu{ 
+	color: white; 
+	font-size: 14px;
+}
+.letras_titulo_principal{  
+	font-family: 'Roboto', sans-serif;
+	 font-weight: bold;
+	 font-size: 16px;
+	 margin-left: 8px;
+}
+
+.letras_subtitulo_cajas_texto{  
+	font-family: 'Roboto', sans-serif;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.letras_subtitulo_cajas_texto_respuesta{  
+	font-family: 'Roboto', sans-serif; 
+	font-size: 14px;
+}
+
+.letras_select_texto{  
+	font-family: 'Roboto', sans-serif;
+	font-weight: bold;
+	font-size: 11px; 
+}
+
+.letras_menu_tercer_nivel{
+	font-family: 'Roboto', sans-serif; 
+	font-size: 14px;
+	font-style: oblique;
+	padding-left: 20px;  
+}
+
+.navbar-custom {
+	background-color: #045298; 
+}
+/* Modify brand and text color */
+.navbar-custom .navbar-brand, .navbar-custom .navbar-text {
+	color: white; 
+}
+
+  
+footer {
+  background-color: #045298;
+ 
+  color: white;
+  /*
+   height: 20px;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 50px; */
+}
+
+.piepagina_adm {
+  background-color: #045298;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  color: white;
+  text-align: center;
+}
+ 
+  
+.letras_fecha_publicacion_card{  
+	font-family: 'Roboto', sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+	color: #045298;
+}
+.letras_titulo_card{  
+	font-family: 'Roboto', sans-serif;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.letras_descripcion_card{  
+	font-family: 'Roboto', sans-serif; 
+	font-size: 16px; 
+}
+
+.letras_titulo_palabras_claves_card{  
+	font-family: 'Roboto', sans-serif; 
+	font-size: 12px; 
+	font-weight: bold;
+	color: red;
+	
+}
+.letras_palabras_claves_card{  
+	font-family: 'Roboto', sans-serif; 
+	font-size: 12px; 
+	font-weight: bold;
+	color: #045298; 
+}
+
+.letras_palabras_codigo{  
+	font-family: 'Roboto', sans-serif; 
+	font-size: 15px; 
+	font-weight: bold;
+	color: black;
+}
+
+.hipervinculo_menu_titulo{
+	font-family: 'Roboto', sans-serif; 
+	font-size: 18px; 
+	font-weight: bold;
+	color: white;
+}
+
+.letras_contador{
+	font-family: 'Roboto', sans-serif; 
+	font-size: 14px;  
+	color: #045298;
+	padding-top: 100px;
+    padding-right: 0px;
+    padding-bottom: 150px;
+    padding-left: 80px;
+}
+
+.letras_numero{
+	color: #045298;
+	font-weight: bold;
+}
+.letras_tipo_publicacion{
+	color: black;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.letras_cantidad_visitas{
+	color: black;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.numero_cantidad_visitas{
+	color: black;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+
+
+
+ 
+
+

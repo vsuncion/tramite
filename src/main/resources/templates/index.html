@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">BUSQUEDA EXPEDIENTE</h5>
+							<hr>
+							<form>
+								<div class="form-group row">
+									<label for="anio" class="col-sm-2 col-form-label">AÑO</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" id="anio" placeholder="INGRESE EL AÑO DE EXPEDIENTE">
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="tipoDocumento" class="col-sm-2 col-form-label">TIPO</label>
+									<div class="col-sm-10">
+										<select class="form-control" id="tipoDocumento">
+										  <option>-- SELECCIONE --</option>
+										  <option>EXPEDIENTE</option>
+										  <option>EXPEDIENTE SIMPLE</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="numeroExpediente" class="col-sm-2 col-form-label">NUMERO</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="numeroExpediente" placeholder="INGRESE EL NUMERO DE EXPEDIENTE">
+									</div>
+								</div>
+								
+								<div class="text-rigth">
+								  <button type="submit" class="btn btn-dark">
+									<i class="fas fa-search"></i> BUSCAR
+								</button>
+								</div>
+								
+								
+							</form>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">INFORMACION DEL ADMINISTRADO</h5>
+							<hr>
+                              <div class="row">                        
+                                 <div class="col-sm-3"><span class="letras_subtitulo_cajas_texto">DOCUMENTO :</span></div>
+                                 <div class="col-sm-9"><span class="letras_subtitulo_cajas_texto_respuesta">EXP.2021-000010</span></div>
+                              </div>
+                              <p>
+                              <div class="row">                        
+                                 <div class="col-sm-3"><span class="letras_subtitulo_cajas_texto">FECHA Y HORA :</span></div>
+                                 <div class="col-sm-9"><span class="letras_subtitulo_cajas_texto_respuesta">03/03/2021 03:50:29</span></div>
+                              </div>
+                              <p>
+                              <div class="row">                        
+                                 <div class="col-sm-3"><span class="letras_subtitulo_cajas_texto">ADMINISTRADO :</span></div>
+                                 <div class="col-sm-9"><span class="letras_subtitulo_cajas_texto_respuesta">SUNCION CESPEDES VLADIMIR</span></div>
+                              </div>
+                              <p>
+                              <div class="row">                        
+                                 <div class="col-sm-3"><span class="letras_subtitulo_cajas_texto">DOMICILO :</span></div>
+                                 <div class="col-sm-9"><span class="letras_subtitulo_cajas_texto_respuesta">JR LAS BEGONIAS 548 - JESUS MARIA</span></div>
+                              </div>
+                              <p>
+                              <div class="row">                        
+                                 <div class="col-sm-3"><span class="letras_subtitulo_cajas_texto">ASUNTO :</span></div>
+                                 <div class="col-sm-9"><span class="letras_subtitulo_cajas_texto_respuesta">CONSTANCIA DE POSESIÓN PARA SERVICIOS BÁSICOS SEGÚN ORDENANZA MUNICIPAL NRO 257-2020-MDP/C - HM</span></div>
+                              </div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p>
+			<div class="card">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-sm-6">
+							<h5 class="card-title">HOJA DE RUTA DEL EXPEDIENTE</h5>
+						</div>
+						
+						<div class="col-sm-6 text-right">
+							<button type="button" class="btn btn-dark" title="Exportal Excel"
+								name="btnexportar" id="btnexportar">
+								<i class="fas fa-file-excel"></i> Exportar Excel
+							</button>
+						</div>
+					</div>
+
+
+				</div>
+
+
+				<div class="card-body">
+
+					<table class="table table-hover">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">TIPO DOCUMENTO</th>
+								<th scope="col">FECHA Y HORA</th>
+								<th scope="col">ESTADO</th>
+								<th scope="col">AREA ORIGEN</th>
+								<th scope="col">AREA DESTINO</th>
+								<th scope="col">NUMERO</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">1</th>
+								<td>CARTA</td>
+								<td>04/05/2021 14:20</td>
+								<td>RECIBIDO</td>
+								<td>SUB.GER.ADM.DOC.ARC.</td>
+								<td>SUB.GER.PLA.URB.CAT.</td>
+								<td>30</td>
+							</tr>
+							<tr>
+								<th scope="row">2</th>
+								<td>CARTA</td>
+								<td>04/05/2021 14:20</td>
+								<td>RECIBIDO</td>
+								<td>SUB.GER.ADM.DOC.ARC.</td>
+								<td>SUB.GER.PLA.URB.CAT.</td>
+								<td>30</td>
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>CARTA</td>
+								<td>04/05/2021 14:20</td>
+								<td>RECIBIDO</td>
+								<td>SUB.GER.ADM.DOC.ARC.</td>
+								<td>SUB.GER.PLA.URB.CAT.</td>
+								<td>30</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<!-- CONTENIDO EDITABLE FIN-->
+
+		</div>
+
+	</div>
+
+ 
+ <div th:replace="loyout/plantilla :: html_scrip"></div>
+</body>
+</html>

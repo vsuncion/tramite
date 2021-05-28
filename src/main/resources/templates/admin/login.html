@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>SISTEMA DE TRAMITE</title>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"  th:href="@{/css/login.css}" />
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+</head>
+<body>
+
+
+
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+
+    <!-- Icon -->
+    <div class="fadeIn first" style="background-color: #004B79;">
+       <img  th:src="@{/imagenes/logo.png}" width="60%"  />
+       
+    </div>
+      <p>
+    <!-- Login Form -->
+    <form  role="form" th:action="@{/login}" method="post">
+      <input type="text" id="username" class="fadeIn second" name="username" autofocus required placeholder="USUARIO">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="CLAVE"> 
+      <input type="submit" class="fadeIn fourth" value="INGRESAR">
+    </form>
+
+    
+
+  </div>
+</div>
+
+</body>
+</html>

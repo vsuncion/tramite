@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form id="persona" name="persona" th:object="${prePersona}"
+					th:action="@{/guardarPrepersonaJuridica}" method="post">
+					<div class="p-3 mb-2 bg-danger text-white">RECUERDE: SE
+						ENVIARA UN CORREO DE CONFIRMACION DEL REGISTRO, AL CORREO
+						INGRESADO. PARA CONTINUAR CON SUS TRAMITES</div>
+					<div class="card">
+						<div class="card-header">REGISTRO PERSONA JURIDICA</div>
+						<div class="card-body">
+
+							<div class="form-row">
+
+								<div class="form-group col-md-4">
+									<label for="VRUC">RUC</label> <input type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VRUC" name="VRUC" th:field="*{VRUC}"
+										placeholder="Ingrese RUC" required>
+								</div>
+
+								<div class="form-group col-md-8">
+									<label for="VRAZON_SOCIAL">RAZON SOCIAL</label> <input
+										type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VRAZON_SOCIAL" name="VRAZON_SOCIAL"
+										th:field="*{VRAZON_SOCIAL}" placeholder="Ingrese Razon Social"
+										required>
+								</div>
+
+							</div>
+
+							<div class="form-row">
+								<div class="form-group col-md-4">
+									<label for="VNOMBRE">NOMBRE</label> <input type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VNOMBRE" name="VNOMBRE"
+										th:field="*{VNOMBRE}" placeholder="Ingrese Nombre" required>
+
+
+								</div>
+
+
+								<div class="form-group col-md-4">
+									<label for="VAPEPATERNO">APELLIDO PATERNO</label> <input
+										type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VAPEPATERNO" name="VAPEPATERNO"
+										th:field="*{VAPEPATERNO}"
+										placeholder="Ingrese Apellido Paterno" required>
+
+								</div>
+
+
+								<div class="form-group col-md-4">
+									<label for="VAPEMATERNO">APELLIDO MATERNO</label> <input
+										type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VAPEMATERNO" name="VAPEMATERNO"
+										th:field="*{VAPEMATERNO}"
+										placeholder="Ingrese Apellido Materno" required>
+
+								</div>
+							</div>
+
+
+							<div class="form-row">
+								<div class="form-group col-md-4">
+									<label for="NTIPODOCFK">TIPO DOCUMENTO</label> <select
+										id="NTIPODOCFK" name="NTIPODOCFK" th:field="*{NTIPODOCFK}"
+										class="form-control" required>
+										<option th:each="i : ${cbTipoDocumentoRegistro}"
+											th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+									</select>
+								</div>
+								<div class="form-group col-md-4">
+									<label for="VNUMERODOC">INGRESE NUMERO</label> <input
+										type="number" class="form-control" id="VNUMERODOC"
+										name="VNUMERODOC" th:field="*{VNUMERODOC}"
+										placeholder="Ingrese Numero" required>
+
+
+								</div>
+
+
+								<div class="form-group col-md-4">
+									<label for="VCORREO">CORREO ELECTRONICO</label> <input
+										type="email" class="form-control" id="VCORREO" name="VCORREO"
+										th:field="*{VCORREO}" placeholder="Ingrese Correo" required>
+
+								</div>
+							</div>
+
+
+							<div class="form-row">
+
+								<div class="form-group col-md-4">
+									<label for="VTELEFONO">TELEFONO</label> <input type="number"
+										class="form-control" id="VTELEFONO" name="VTELEFONO"
+										th:field="*{VTELEFONO}"
+										placeholder="Ingrese Numero Telefonico">
+								</div>
+
+								<div class="form-group col-md-8">
+									<label for="VDIRECCION">DIRECCION</label> <input type="text"
+										onkeyup="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" id="VDIRECCION" name="VDIRECCION"
+										th:field="*{VDIRECCION}" placeholder="Ingrese Direccion">
+								</div>
+
+							</div>
+
+
+
+
+							<div class="row">
+
+								<div class="col-sm-8 text-right">
+									<button type="submit" id="btnGrabarTipoTramite"
+										name="btnGrabarTipoTramite" class="btn btn-outline-primary">
+										<i class="far fa-save"></i> GRABAR
+									</button>
+									<button type="reset" class="btn btn-outline-primary">
+										<i class="fas fa-broom"></i> LIMPIAR
+									</button>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+
+				</form>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			verificarMantenimiento(/*[[${mostrarmensaje}]]*/);
+		});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+</body>
+</html>

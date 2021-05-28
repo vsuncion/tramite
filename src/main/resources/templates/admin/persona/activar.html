@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form action="#" th:object="${prePersona}">
+
+
+					<div class="card border-primary mb-3" >
+						<div class="card-header">SISTEMA DE TRAMITE DOCUMENTARIO</div>
+						<div class="card-body text-primary">
+							<h5 class="card-title">CODIGO ACTIVADO</h5>
+							<p class="card-text">Su codigo fue activado con exito.</p>
+							<input type="text" name="VCODIGOACTIVACION"
+								id="VCODIGOACTIVACION" th:field=*{VCODIGOACTIVACION} readonly>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

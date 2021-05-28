@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-title">ACTUALIZAR TIPO DOCUMENTO</h5>
+
+						<div class="card text-left">
+							<div class="card-body">
+
+								<form id="tipoDocumentos" name="tipoDocumentos" class="form"
+									th:object="${tipoDocumentos}"
+									th:action="@{/admin/mantenimiento/actualizarTipoDocumento}"
+									method="post">
+									
+									<input type="hidden" name="NIDTIPODOCUMENTOPK" id="NIDTIPODOCUMENTOPK" th:field="*{NIDTIPODOCUMENTOPK}">
+
+									<div class="form-group">
+										<label for="VNOMBRE">NOMBRE TIPO DOCUMENTO</label> <input  type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();"
+											class="form-control" id="VNOMBRE" name="VNOMBRE"
+											th:field="*{VNOMBRE}" placeholder="INGRESE NOMBRE OFICINA" required>
+											
+											<p class="alert alert-danger"
+											style="font-size: 12px; font-weight: bold;"
+											th:if="${#fields.hasErrors('VNOMBRE')}" th:errors="*{VNOMBRE}" />
+
+									</div>
+									<div class="form-group">
+										<label for="VSIGLA">ALIAS</label> <input  type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();"
+											class="form-control" id="VALIAS" name="VALIAS"
+											th:field="*{VALIAS}" placeholder="INGRESA VALIAS">
+									</div>
+									
+									<div class="form-group">
+									   <label for="IDPADRE">ESTADO REGISTRO</label>
+									     <select class="form-control" id="NESTADO" name="NESTADO" th:field="*{NESTADO}">
+									      <option th:each="i : ${cbEstados}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+									    </select> 
+									</div>
+
+									<div class="form-group">
+										<label for="VDESCRIPCION">DESCRIPCION</label>
+										<textarea class="form-control" id="VDESCRIPCION"
+											name="VDESCRIPCION" rows="3" th:field="*{VDESCRIPCION}" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+									</div>
+		
+									
+									<div class="row">
+									  <div class="col-sm-4">
+									     <a th:href="@{/admin/mantenimiento/listartipodocumento}" class="btn btn-outline-danger"
+												role="button" aria-pressed="true"> <i class="fas fa-angle-double-left"></i>  REGRESAR
+											</a>
+									  </div>
+									   <div class="col-sm-8 text-right">
+									    <button type="submit" id="btnGrabarTipoDocumento" name="btnGrabarTipoDocumento" class="btn btn-outline-primary"><i class="far fa-save"></i> GRABAR</button>
+									  <!--     <button type="reset" class="btn btn-outline-primary"><i class="fas fa-broom"></i> LIMPIAR</button> -->
+									  </div>
+									</div>
+ 
+
+								</form>
+
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</div>
+
+			<!-- CONTENIDO EDITABLE FIN-->
+
+		</div>
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			verificarMantenimiento(/*[[${mostrarmensaje}]]*/);  
+		});
+	</script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+	
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<div class="card">
+					<h5 class="card-title  text-center">INFO MUNICIPALIDAD</h5>
+					<div class="card-body  text-left">
+
+						<form class="form" th:object="${info}" th:action="@{/admin/mantenimiento/actualizarInfo}" method="post">
+
+							<div class="row">
+								<div class="form-group col">
+									<label for="RAZONSOCIAL">RAZON SOCIAL</label> <input
+										class="form-control" type="text" placeholder="RAZON SOCIAL"
+										id="RAZONSOCIAL" name="RAZONSOCIAL" th:field="*{RAZONSOCIAL}" required  onkeyup="javascript:this.value=this.value.toUpperCase();">
+								</div>
+
+								<div class="form-group col">
+									<label for="RUC">RUC</label> <input class="form-control"
+										type="number" placeholder="RUC" id="RUC" name="RUC" th:field="*{RUC}">
+								</div>
+							</div>
+
+
+							<div class="row">
+								<div class="form-group col">
+									<label for="TITULOALTERNO">TITULO ALTERNO</label> <input
+										class="form-control" type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();" placeholder="TITULOALTERNO"
+										id="TITULOALTERNO"  name="TITULOALTERNO" th:field="*{TITULOALTERNO}">
+								</div>
+
+
+								<div class="form-group col">
+									<label for="SIGLAS">SIGLAS</label> <input class="form-control"
+										type="text"   onkeyup="javascript:this.value=this.value.toUpperCase();" placeholder="SIGLAS" id="SIGLAS"  name="SIGLAS" th:field="*{SIGLAS}">
+								</div>
+							</div>
+
+
+							<div class="row">
+								<div class="form-group col">
+									<label for="CORREO">CORREO</label> <input
+										class="form-control" type="email" placeholder="CORREO"
+										id="CORREO"  name="CORREO" th:field="*{CORREO}" >
+								</div>
+
+
+								<div class="form-group col">
+									<label for="TELEFONO">TELEFONO</label> <input
+										class="form-control" type="number" placeholder="TELEFONO"
+										id="TELEFONO"  name="TELEFONO" th:field="*{TELEFONO}">
+								</div>
+							</div>
+
+
+
+							<div class="row">
+								<div class="form-group col">
+									<label for="DIRECCION">DIRECCION</label> <input
+										class="form-control" type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();" placeholder="DIRECCION"
+										id="DIRECCION"  name="DIRECCION" th:field="*{DIRECCION}">
+								</div>
+
+
+								<div class="form-group col">
+									<label for="PAGINAWEB">PAGINA WEB</label> <input
+										class="form-control" type="text" placeholder="PAGINAWEB"
+										id="PAGINAWEB"  name="PAGINAWEB" th:field="*{PAGINAWEB}">
+								</div>
+							</div>
+
+                            <div class="row text-center">
+                              <div class="form-group col">
+                                 <button type="submit" class="btn btn-outline-primary">
+								<i class="fas fa-edit"></i> ACTUALIZAR
+							</button>
+                              </div>
+                            </div>
+							
+
+						</form>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<!-- CONTENIDO EDITABLE FIN-->
+
+	</div>
+
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			verificarMantenimiento(/*[[${mostrarmensaje}]]*/); 
+		});
+	</script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+</body>
+</html>

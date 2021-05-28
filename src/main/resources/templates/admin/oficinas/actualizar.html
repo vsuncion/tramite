@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-title">ACTUALIZAR OFICINA</h5>
+
+						<div class="card text-left">
+							<div class="card-body">
+
+								<form id="oficinas" name="oficinas" class="form"
+									th:object="${oficinas}"
+									th:action="@{/admin/mantenimiento/actualizarOficina}"
+									method="post">
+									
+									<input type="hidden" name="NIDOFICINAPK" id="NIDOFICINAPK" th:field="*{NIDOFICINAPK}">
+
+									<div class="form-group">
+										<label for="VNOMBRE">NOMBRE OFICINA</label> <input type="text"     onkeyup="javascript:this.value=this.value.toUpperCase();"
+											class="form-control" id="VNOMBRE" name="VNOMBRE"
+											th:field="*{VNOMBRE}" placeholder="INGRESE NOMBRE OFICINA" required>
+											
+											<p class="alert alert-danger"
+											style="font-size: 12px; font-weight: bold;"
+											th:if="${#fields.hasErrors('VNOMBRE')}" th:errors="*{VNOMBRE}" />
+
+									</div>
+									<div class="form-group">
+										<label for="VSIGLA">SIGLA</label> <input type="text"     onkeyup="javascript:this.value=this.value.toUpperCase();"
+											class="form-control" id="SIGLA" name="VSIGLA"
+											th:field="*{VSIGLA}" placeholder="INGRESA SIGLA">
+									</div>
+
+									<div class="form-group">
+										<label for="VSIGLADOCUMENTO">SIGLA DEL DOCUMENTO</label> <input
+											type="text"     onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" id="VSIGLADOCUMENTO"
+											name="VSIGLADOCUMENTO" th:field="*{VSIGLADOCUMENTO}"
+											placeholder="INGRESA SIGLA DEL DOCUMENTO" required>
+											
+											<p class="alert alert-danger"
+												style="font-size: 12px; font-weight: bold;"
+												th:if="${#fields.hasErrors('VSIGLADOCUMENTO')}" th:errors="*{VSIGLADOCUMENTO}" />
+
+									</div>
+									<div class="form-group">
+									   <label for="IDPADRE">ESTADO REGISTRO</label>
+									     <select class="form-control" id="NESTADO" name="NESTADO" th:field="*{NESTADO}">
+									      <option th:each="i : ${cbEstados}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+									    </select> 
+									</div>
+									<div class="form-group">
+										<label for="VDESCRIPCION">DESCRIPCION</label>
+										<textarea class="form-control" id="VDESCRIPCION"
+											name="VDESCRIPCION" rows="3" th:field="*{VDESCRIPCION}" onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
+									</div>
+									<div class="form-group">
+										<label for="IDPADRE">OFICINA PADRE</label> 
+										<select class="form-control"  id="NIDPADRE" name="NIDPADRE" th:field="*{NIDPADRE}">
+											<option   value="0">[SELECCIONE]</option>
+											<option th:each="i : ${cbOficinas}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option> 
+										</select>
+									</div>
+									
+									<div class="row">
+									  <div class="col-sm-4">
+									     <a th:href="@{/admin/mantenimiento/listar_oficina}" class="btn btn-outline-danger"
+												role="button" aria-pressed="true"> <i class="fas fa-angle-double-left"></i>  REGRESAR
+											</a>
+									  </div>
+									   
+									   <div class="col-sm-8 text-right">
+									    <button type="submit" id="btnGrabarOficina" name="btnGrabarOficina" class="btn btn-outline-primary"><i class="far fa-save"></i> GRABAR</button>
+									     <!-- <button type="reset" class="btn btn-outline-primary"><i class="fas fa-broom"></i> LIMPIAR</button>-->
+									  </div>
+									  
+									</div>
+ 
+
+								</form>
+
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</div>
+
+			<!-- CONTENIDO EDITABLE FIN-->
+
+		</div>
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			verificarMantenimiento(/*[[${mostrarmensaje}]]*/);  
+		});
+	</script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+
+</body>
+</html>

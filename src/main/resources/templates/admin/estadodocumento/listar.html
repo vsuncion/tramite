@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-title">ESTADO DOCUMENTO</h5>
+						 
+						 <div class="card text-left">
+							<div class="card-body">
+								<form id="formEstadoDocumento" name="formEstadoDocumento" class="form" th:object="${formEstadoDocumento}" th:action="@{/admin/mantenimiento/buscarEstadoDocumento}" method="post">
+
+									<div class="row">
+
+										<div class="col-sm-4">
+											<div class="form-group">
+												<label for="buscarInput">INGRESE EL NOMBRE :</label> <input
+													type="text" class="form-control" id="CAJABUSQUEDA" th:field="*{CAJABUSQUEDA}"
+													placeholder="Ingrese Nombre a Buscar">
+											</div>
+										</div>
+										<div class="col-sm-4" style="padding-top: 30px;">
+											<button type="submit" class="btn btn-outline-primary">
+												<i class="fas fa-search"></i> BUSCAR
+											</button>
+											&nbsp;&nbsp;
+											<!--  <button type="reset" class="btn btn-outline-primary">
+												<i class="fas fa-broom"></i> LIMPIAR
+											</button>-->
+										</div>
+										 
+									</div>
+
+								</form>
+							</div>
+						</div>
+						 
+						 
+					</div>
+				</div>
+
+
+				<div class="card">
+					<h5 class="card-header">LISTA DE ESTADOS DE DOCUMENTO</h5>
+					<div class="card-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th scope="col">CODIGO</th>
+									<th scope="col">NOMBRE</th> 
+									<th scope="col">DESCRIPCION</th> 
+									<th scope="col">ESTADO</th>
+									<th scope="col">FECHA REGISTRO</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="i: ${listarEstadoDocumento}">
+									 <th scope="row"><span th:text="${i.IDESTADOCUMENTOPK}"></span></th>
+									 <td><span  th:text="${i.VNOMBRE}"></span></td>
+									 <td><span  th:text="${i.VDESCRIPCION}"></span></td>
+									 <td><span   th:if="${i.NESTADO} !=1" th:text="INACTIVO"></span> <span th:if="${i.NESTADO}==1" th:text="ACTIVO"></span></td>
+									 <td><span  th:text="${i.DFECREGISTRO}"></span></td>
+									 
+								</tr>
+								 
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+
+			<!-- CONTENIDO EDITABLE FIN-->
+
+		</div>
+
+	</div>
+
+
+
+
+
+	<!-- Modal -->
+	<div id="nuevotrabajador" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<!--  <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+					<h4 class="modal-title">REGISTRO DE OFICINA</h4>
+				</div>
+				<div class="modal-body">
+
+
+
+					<form>
+					
+						<div class="form-group">
+							<label for="VNOMBRE">NOMBRE OFICINA</label> <input
+								type="text" class="form-control" id="VNOMBRE" name="VNOMBRE"
+								  placeholder="INGRESE NOMBRE OFICINA">
+							 
+						</div>
+						<div class="form-group">
+							<label for="SIGLA">SIGLA</label> <input
+								type="text" class="form-control" id="SIGLA" name="SIGLA"
+								placeholder="INGRESA SIGLA">
+						</div>
+						
+						<div class="form-group">
+							<label for="SIGLADOCUMENTO">SIGLA DEL DOCUMENTO</label> <input
+								type="text" class="form-control" id="SIGLADOCUMENTO" name="SIGLADOCUMENTO"
+								  placeholder="INGRESA SIGLA DEL DOCUMENTO">
+							 
+						</div>
+						<div class="form-group">
+							<label for="VDESCRIPCION">DESCRIPCION</label>
+    						<textarea class="form-control" id="VDESCRIPCION" name="VDESCRIPCION" rows="3"></textarea>
+						</div>
+						
+						<div class="form-group">
+							<label for="exampleInputEmail1">NOMBRE OFICINA</label> <input
+								type="text" class="form-control" id="exampleInputEmail1"
+								  placeholder="INGRESA NOMBRE OFICINA">
+							 
+						</div>
+						<div class="form-group">
+							<label for="IDPADRE">OFICINA PADRE</label>  
+							 <select class="form-control" id="IDPADRE" name="IDPADRE">
+							  <option>1</option>
+      							<option>2</option>
+							 </select>
+						</div>
+						 
+						
+					</form>
+
+
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">GRABAR</button>
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">CERRAR</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- ----- -->
+
+
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

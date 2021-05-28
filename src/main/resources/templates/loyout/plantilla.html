@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="html_cabecera">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>EXPEDIENTE</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet"  th:href="@{/css/bootstrap.min.css}" />
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet"  th:href="@{/css/style.css}" />
+    <link rel="stylesheet"  th:href="@{/css/personalisados.css}" />
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+ <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,300&display=swap"
+	rel="stylesheet">
+	
+<script src="https://kit.fontawesome.com/57c4d82caf.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+    
+        <!-- MENU  -->
+        <nav id="sidebar" th:fragment="html_menu">
+            <div class="sidebar-header">
+                <img  th:src="@{/imagenes/logo.png}" width="100%"  />
+            </div>
+
+            <span class="letras_titulo_principal">TRAMITE DOCUMENTARIO</span> 
+            <ul class="list-unstyled components">
+          
+                <li>
+                    <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_ADMINISTRADOR')">MANTENIMIENTOS</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu1">
+                        <li>
+                            <a class="nav-link" th:href="@{/admin/mantenimiento/infomunicipalidad}">INFORMACION</a>
+                        </li>
+                        
+                        
+                        <li>
+                            <a href="#pageSubmenu_oficinas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">OFICINAS</a>
+                            <!-- 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_oficinas">
+                                  <li>
+		                             <a class="nav-link" th:href="@{/admin/mantenimiento/listar_oficina}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+		                          </li>
+		                          <li>
+		                             <a class="nav-link" th:href="@{/admin/mantenimiento/nueva_oficina}"><span class="letras_menu_tercer_nivel"><i class="far fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+		                          </li>
+                               </ul>
+                            <!----------->
+                        </li>
+                        
+                        
+                         <li>
+                            <a href="#pageSubmenu_tipoDocumento" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">TIPO DE DOCUMENTO</a>
+                             <!-- 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_tipoDocumento">
+                                   <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/listartipodocumento}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                   </li>
+                                   <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/nuevo_tipodocumento}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+                                   </li>
+                               </ul>
+                             <!----------->
+                             
+                        </li>
+                        
+                        
+                        <li>
+                           <a href="#pageSubmenu_tipoTramite" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">TIPO DE TRAMITE</a>
+                              <!------ 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_tipoTramite">
+                                  
+                                  <li> 
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/listartipotramite}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                  </li>
+                                  <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/nuevo_tipotramite}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+                                   </li>
+                                   
+                               </ul>
+                              <!----------------->
+                        </li>
+                        
+                        <li>
+                           <a href="#pageSubmenu_profesion" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">PROFESIONES</a>
+                            <!------ 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_profesion">
+                                 <li>
+                                    <a class="nav-link" th:href="@{/admin/mantenimiento/listarProfesion}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                 </li>
+                                  <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/nuevoProfesion}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+                                   </li>
+                              </ul>  
+                             <!-----------------> 
+                        </li>
+                        
+                        
+                        <li>
+                          <a href="#pageSubmenu_tupac" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">TUPAC</a>
+                           <!------ 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_tupac">
+                                 <li>
+                                    <a class="nav-link" th:href="@{/admin/mantenimiento/listarTupac}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                 </li>
+                                  <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/listarRequisitos}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;REQUERIMIETOS</span></a>
+                                   </li>
+                              </ul>  
+                             <!-----------------> 
+                        </li>
+                        
+                        
+                        <li>
+                            <a href="#pageSubmenu_trabajador" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">TRABAJADORES</a>
+                            
+                            <!------ 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_trabajador">
+                                 <li>
+                                    <a class="nav-link" th:href="@{/admin/mantenimiento/listarTranbajador}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                 </li>
+                                  <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/nuevoTranbajador}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+                                   </li>
+                              </ul>  
+                             <!-----------------> 
+                        </li>
+                        
+                        
+                        <li>
+                           <a href="#pageSubmenu_usuario" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">USUARIOS</a>
+                           
+                           <!------ 3 NIVEL -->
+                               <ul class="collapse list-unstyled" id="pageSubmenu_usuario">
+                                 <li>
+                                    <a class="nav-link" th:href="@{/admin/mantenimiento/listarUsuario}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a>
+                                 </li>
+                                 
+                              </ul>  
+                             <!-----------------> 
+                        </li>
+                        
+                        <li>
+                          
+                            <a href="#homeFeriado" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">FERIADOS</a>
+                            
+	                             <ul class="collapse list-unstyled" id="homeFeriado">
+			   
+			                        <li>
+			                           <a class="nav-link" th:href="@{/admin/mantenimiento/listarFeriado}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a> 
+			                        </li>
+			                        <li>
+			                            <a class="nav-link" th:href="@{/admin/mantenimiento/nuevoFeriado}"><span class="letras_menu_tercer_nivel"><i class="fas fa-file"></i>&nbsp;&nbsp;&nbsp;NUEVO</span></a>
+			                        </li>
+			        
+			                    </ul>
+                            
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                         <li>
+                            <a class="nav-link" th:href="@{/admin/mantenimiento/listarEstadoDocumento}">ESTADO DOCUMENTO</a>
+                        </li>
+                        
+ 
+                        <!--  
+                         <li>
+                            <a class="nav-link" th:href="@{/admin/mantenimiento/remitente}" >CIUDADANOS</a>
+                        </li>
+                        -->
+ 
+                        
+                    </ul>
+                </li>
+                
+                <li> 
+                    <a href="#homeExpedienteCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="isAnonymous()">EXPEDIENTE</a>
+                    
+                    <ul class="collapse list-unstyled" id="homeExpedienteCiudadano">		   
+                        <li>
+                            <a class="nav-link" th:href="@{/}">BUSCAR</a> 
+                        </li>
+                        
+                        <li>
+                            <a class="nav-link" th:href="@{/admin/expediente/registroexps}">TRAMITE TUPAC</a>
+                        </li>
+                        
+                        <li>
+                            <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">TRAMITE SIMPLE</a>
+                        </li>
+                        
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="#registroCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="isAnonymous()">REGISTRO CIUDADANO</a>
+                    <ul class="collapse list-unstyled" id="registroCiudadano">		   
+                        <li>
+                            <a class="nav-link" th:href="@{/nuevaPersonaNatural}">PERSONA NATURAL</a> 
+                        </li>
+                        
+                        <li>
+                            <a class="nav-link" th:href="@{/nuevaPersonaJuridica}">PERSONA JURIDICA</a>
+                        </li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+            
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">TRAMITE DOCUMENTARIO</a>
+                    
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+		   
+                        <li>
+                        <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">INGRESO EXPEDIENTE</a> 
+                        </li>
+                        <li>
+                            <a class="nav-link" th:href="@{/admin/expediente/registroexps}">INGRESO EXPEDIENTE SIMPLE</a>
+                        </li>
+                        
+                        <li>
+                            <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">SEGUIMIENTO EXPEDIENTE</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+               
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_REPORTES')">REPORTES</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">REPORTE 1</a>
+                        </li>
+                        <li>
+                            <a href="#">REPORTE 1</a>
+                        </li>
+                        <li>
+                            <a href="#">REPORTE 1</a>
+                        </li>
+                    </ul>
+                </li>
+                
+                 
+                
+                <li>
+
+
+ 
+                    <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_ATENCION_PUBLICO','ROLE_SEGUIMIENTO_TRAMITE','ROLE_REPORTES')" >CONFIGURACION</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu2">
+                        <li>
+                            <a href="#">CAMBIAR CLAVE</a>
+                        </li>
+                        <li>
+                        
+                       
+                          <form th:action="@{/logout}" method="post">
+                           <a href="#"><button type="submit" class="btn btn-link" style="text-decoration: none;color: white;">SALIR</button> 
+                            <input type="hidden" th:name="_csrf.parameterName" th:value="${_csrf.token}"/></a>
+                           
+                          </form>
+                           
+                        </li>
+                        
+                    </ul>
+                </li>
+            </ul>
+ 
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" >
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="html_submenu">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Mostra/Ocultar Menu</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                    
+                    
+                    <div sec:authentication="name">
+					  The value of the "name" property of the authentication object should appear here.
+					</div>
+                    
+                    
+                    
+                </div>
+            </nav>
+
+        </div>
+        
+        
+    </div>
+
+   
+   <div th:fragment="html_scrip">
+      <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+      </script>
+   
+   </div> 
+    
+   
+    
+      
+    
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-title">OFICINAS</h5>
+
+						<div class="card text-left">
+							<div class="card-body">
+								<form id="oficinas" name="oficinas" class="form" th:object="${oficinas}" th:action="@{/admin/mantenimiento/buscarOficina}" method="post">
+
+									<div class="row">
+
+										<div class="col-sm-4">
+											<div class="form-group">
+												<label for="CAJABUSQUEDA">INGRESE EL NOMBRE :</label> <input
+													type="text"     onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" id="CAJABUSQUEDA" th:field="*{CAJABUSQUEDA}"
+													placeholder="Ingrese Nombre a Buscar">
+											</div>
+										</div>
+										<div class="col-sm-4" style="padding-top: 30px;">
+										  <div class="form-group">
+											<button type="submit" class="btn btn-outline-primary">
+												<i class="fas fa-search"></i> BUSCAR
+											</button>
+											&nbsp;&nbsp;
+											<!--  <button type="reset"  value="Reset"  class="btn btn-outline-primary">
+												<i class="fas fa-broom"></i> LIMPIAR
+											</button>-->
+											</div>
+										</div>
+										 
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="card">
+					<h5 class="card-header">LISTA DE ESTADOS DE OFICINAS</h5>
+					<div class="card-body">
+					
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th scope="col">ITEM</th>
+									<th scope="col">NOMBRE</th>
+									<th scope="col">SIGLA</th>
+									<th scope="col">SIGLA DOCUMENTO</th>
+									<th scope="col">ESTADO</th>
+									<th scope="col">FECHA REGISTRO</th>
+									<th scope="col">ACTUALIZAR</th>
+									<th scope="col">ELIMINAR</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="oficina : ${lista_oficinas}" style="text-align: center;">
+									<th scope="row"><span th:text="${oficina.NITEM}"></span></th>
+									<td><span  th:text="${oficina.VNOMBRE}"></span></td>
+									<td><span th:text="${oficina.VSIGLA}"></span></td>
+									<td><span th:text="${oficina.VSIGLADOCUMENTO}"></span></td> 
+									<td><span th:if="${oficina.NESTADO} !=1" th:text="INACTIVO"></span> <span th:if="${oficina.NESTADO} ==1" th:text="ACTIVO"></span></td>
+									<td><span th:text="${#dates.format(oficina.DFECREGISTRO, 'dd-MMMM-yyyy HH:mm')}"></span></td>
+									<td><a th:href="@{/admin/mantenimiento/editarOficina?id=} + ${oficina.NIDOFICINAPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a></td>
+									<td><a th:href="@{/admin/mantenimiento/eliminarOficina?id=} + ${oficina.NIDOFICINAPK}" class="btn btn-outline-primary" role="button" th:onclick="return funeliminartag(this,[[${oficina.VNOMBRE}]])"><i class="far fa-trash-alt"></i></a></td>
+								</tr>
+								 
+							</tbody>
+						</table>
+						
+						
+					</div>
+				</div>
+
+
+
+			</div>
+
+			<!-- CONTENIDO EDITABLE FIN-->
+
+		</div>
+
+	</div>
+ 
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+</body>
+</html>
