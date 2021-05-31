@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.tramite.app.Datos.PrincipalDao;
+import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
-import com.tramite.app.Entidades.PrePersona;
+import com.tramite.app.Entidades.PrePersona; 
 import com.tramite.app.Servicios.FijaServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.utilitarios.AutoGenerados;
@@ -78,5 +78,17 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		}
 		return mostrarmensaje;
 	}
+
+	@Override
+	public Persona busquedaSolicitante(Expediente expediente) { 
+		return principalDao.busquedaSolicitante(expediente);
+	}
+
+	@Override
+	public boolean guardarExpedienteSimple(Expediente expediente) {
+		return principalDao.guardarExpedienteSimple(expediente);
+	}
+
+	 
 
 }

@@ -55,7 +55,33 @@ public class Persona implements Serializable {
 	private Long   NCBTIPOCRITERIO;
 	private Long NIDTRABAJADORPK;
 	private Long  NITEM;
+	private String VRUC;
+	private String VRAZONSOCIAL;
 	
+
+	public String getVRUC() {
+		return VRUC;
+	}
+
+
+
+	public void setVRUC(String vRUC) {
+		VRUC = vRUC;
+	}
+
+
+
+	public String getVRAZONSOCIAL() {
+		return VRAZONSOCIAL;
+	}
+
+
+
+	public void setVRAZONSOCIAL(String vRAZONSOCIAL) {
+		VRAZONSOCIAL = vRAZONSOCIAL;
+	}
+
+
 
 	public Long getNIDTRABAJADORPK() {
 		return NIDTRABAJADORPK;

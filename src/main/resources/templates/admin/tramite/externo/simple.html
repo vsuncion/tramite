@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			 
+			<form th:object="${formExpediente}" name="formExpediente" id="formExpediente" method="post"  th:action="@{/grabar_tramite_simple}" enctype="multipart/form-data">
+
+
+				<!-- CONTENIDO EDITABLE INICIO-->
+				<div class="rows">
+					<p>
+					<div class="card border-dark mb-3">
+						<div class="card-header  text-center">VERIFICACION DE DATOS</div>
+						<p>
+						<div class="rows">
+							<div class="col-sm-12">
+ 
+								<div class="card border-dark mb-3">
+									<div class="card-header">DATOS SOLICITANTE</div>
+									<div class="card-body text-dark">
+
+										<!-- RJUC -->
+										<div class="form-row" th:if="${formExpediente.NTIPOPERSONA==2}">
+                                           
+											<div class="form-group col-md-4 text-left">
+												<span class="letras_expediente_externo">RUC</span>
+												 <input type="text" class="form-control form-control-sm"
+												  th:field="*{VRUC}" name="VRUC"	id="VRUC" readonly>
+											</div>
+
+											<div class="form-group col-md-8">
+												<span class="letras_expediente_externo" >RAZON SOCIAL</span> <input
+													type="text" class="form-control form-control-sm" th:field="*{VRAZON_SOCIAL}"
+													id="VRAZON_SOCIAL" name="VRAZON_SOCIAL" readonly>
+											</div>
+
+										</div>
+
+										<!-- RJUC -->
+
+										<div class="form-row">
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >NOMBRE </span> <input
+													type="text" class="form-control form-control-sm" th:field="*{VNOMBRE}"
+													id="VNOMBRE" name="VNOMBRE" readonly>
+											</div>
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >APELLIDO PATERNO</span>
+												<input type="text" class="form-control form-control-sm"
+													id="VAPELLIDO_PATERNO" name="VAPELLIDO_PATERNO" th:field="*{VAPELLIDO_PATERNO}" readonly>
+											</div>
+
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >APELLIDO MATERNO</span>
+												<input type="text" class="form-control " th:field="*{VAPELLIDO_MATERNO}"
+													id="VAPELLIDO_MATERNO"  name="VAPELLIDO_MATERNO" readonly>
+											</div>
+
+										</div>
+
+										<div class="form-row">
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >DIRECCION</span> <input
+													type="text" class="form-control form-control-sm" th:field="*{VDIRECCION}"
+													id="VDIRECCION" name="VDIRECCION" readonly>
+											</div>
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >CORREO</span> <input
+													type="text" class="form-control form-control-sm" th:field="*{VCORREO}"
+													id="VCORREO" name="VCORREO" readonly>
+											</div>
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo" >TELEFONO</span> <input
+													type="text" class="form-control form-control-sm" th:field="*{VTELEFONO}"
+													id="VTELEFONO" name="*{VTELEFONO}" readonly>
+											</div>
+
+										</div>
+
+
+									</div>
+								</div>
+
+								<div class="card border-dark mb-3">
+									<div class="card-header">DATOS EXPEDIENTE</div>
+									<div class="card-body text-dark">
+
+										<div class="form-row">
+
+											  
+											<div class="form-group col-md-3">
+												<span class="letras_expediente_externo" >TIPO DOCUMENTO</span>
+												<select
+													class="form-control form-control-sm"
+													id="TIPO_DOCUMENTOFK" name="TIPO_DOCUMENTOFK" th:field="*{TIPO_DOCUMENTOFK}" th:onchange="document.getElementById('VNUMERODOCUMENTO').focus();">
+													<option th:each="i : ${cbTipoDocumento}" th:text="${i.etiqueta}" th:value="${i.codigo}"></option> 
+												</select>
+											</div>
+											 
+
+											<div class="form-group col-md-3 text-center">
+												<span class="letras_expediente_externo" >NUMERO DE DOCUMENTO</span> <input
+													type="text" class="form-control form-control-sm" name="VNUMERODOCUMENTO"
+													id="VNUMERODOCUMENTO" th:field="*{VNUMERODOCUMENTO}" onkeyup="javascript:this.value=this.value.toUpperCase();">
+											</div>
+											
+											<div class="form-group col-md-3 text-center">
+											<span class="letras_expediente_externo" >NUMERO FOLIOS</span> <input
+													type="number" class="form-control form-control-sm" name="VNUMEROFOLIO"
+													id="VNUMEROFOLIO" th:field="*{VNUMEROFOLIO}">
+											</div>
+											
+											<div class="form-group col-md-3 text-center">
+											<span class="letras_expediente_externo" >FECHA DOCUMENTO</span>
+											   <input type="date" id="VFECHADOCUMENTO" class="form-control-sm" name="VFECHADOCUMENTO" th:field="*{VFECHADOCUMENTO}" required>
+											</div>
+
+										</div>
+										
+										<div class="form-row">
+									 
+										  <div class="form-group col-md-12">
+										  <span class="letras_expediente_externo" >ASUNTO</span> 
+   										  <textarea class="form-control" id="VASUNTO" th:field="*{VASUNTO}" rows="2" onkeyup="javascript:this.value=this.value.toUpperCase();" required></textarea>
+										  </div>
+				 
+										</div>
+										
+										<div class="form-row">
+										  <div class="form-group col-md-9 text-left">
+										   <span class="letras_expediente_externo" >SELECCIONE ARCHIVO</span>
+    										<input type="file"  class="form-control-file" id="varchivosubida" name="varchivosubida">
+										  </div>
+										  
+										  <div class="form-group col-md-3 text-right">
+										   <div style="padding-bottom: 15px;"></div>
+										   <button type="submit" class="btn btn-primary">GRABAR</button>
+										  </div>
+										    
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+				<!-- FIN CUERPO EDITABLE  -->
+
+			</form>
+
+		</div>
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

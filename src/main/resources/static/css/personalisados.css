@@ -125,10 +125,10 @@ footer {
 	color: #045298;
 	font-weight: bold;
 }
-.letras_tipo_publicacion{
+.letras_expediente_externo{
 	color: black;
 	font-weight: bold;
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .letras_cantidad_visitas{
@@ -143,9 +143,7 @@ footer {
 	font-size: 18px;
 }
 
-
-
-
+ 
  
 
 

@@ -1574,5 +1574,13 @@ public class MantenimientoController {
 	}
 	
 	// ==================================================================================
+	
+	
+	@GetMapping(value = {"/nuevo_interno_simple"})
+	public ModelAndView nuevoExternoSimple(HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+		pagina.setViewName("admin/tramite/einterno/simple");
+		return pagina;
+	}
 
 }

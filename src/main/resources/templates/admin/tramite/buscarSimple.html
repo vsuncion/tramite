@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			 
+			<form th:object="${formExpediente}" name="formExpediente" id="formExpediente" method="post"  th:action="@{/buscarSolicitante}">
+
+
+				<!-- CONTENIDO EDITABLE INICIO-->
+				<div class="rows">
+					<p>
+					<div class="card border-dark mb-3">
+						<div class="card-header  text-center">VERIFICACION DE DATOS</div>
+						<p>
+						<div class="rows">
+							<div class="col-sm-12">
+
+								<div class="card border-dark mb-3">
+									<div class="card-header text-left">VERIFICACION DATOS</div>
+									<div class="card-body text-dark">
+
+										<div class="form-row">
+
+											<div class="form-group col-md-1 text-right">
+												 <span class="letras_expediente_externo" >TIPO</span>
+											</div>
+
+											<div class="form-group col-md-3 text-left">
+												<select class="form-control form-control-sm" name="TIPODOCUMENTOBUSCAR"
+													id="TIPODOCUMENTOBUSCAR" th:field="*{TIPODOCUMENTOBUSCAR}" th:onchange="document.getElementById('CAJABUSQUEDA').value = '';document.getElementById('CAJABUSQUEDA').focus();">
+													<option th:each="i : ${cbTipoDocumentoPersona}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+													 
+												</select>
+											</div>
+
+											<div class="form-group col-md-3 text-right">
+												 <span class="letras_expediente_externo" th:field="*{CAJABUSQUEDA}" >NUMERO DOCUMENTO</span>
+											</div>
+											<div class="form-group col-md-3 text-left">
+												<input type="number" class="form-control form-control-sm" id="CAJABUSQUEDA" name="CAJABUSQUEDA" th:field="*{CAJABUSQUEDA}" required>
+											</div>
+
+											<div class="form-group col-md-2 text-center">
+												<div>
+													<button type="submit" class="btn btn-primary ">BUSCAR</button>
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+									
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+				<!-- FIN CUERPO EDITABLE  -->
+
+			</form>
+
+		</div>
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

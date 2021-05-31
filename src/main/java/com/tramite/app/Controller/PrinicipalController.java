@@ -15,13 +15,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
+import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.Seleccion;
+import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
+import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
 
 @Controller
@@ -30,6 +35,9 @@ public class PrinicipalController {
 	
 	@Autowired
 	private MantenimientoServicio  mantenimientoServicio;
+	
+	@Autowired
+	private RecursoServicio recursoServicio;
 	
 	@Autowired
 	private PrincipalServicio  principalServicio;
@@ -127,7 +135,7 @@ public class PrinicipalController {
 	
 	
 	@GetMapping(value = {"/confirmacionRegistro"})
-	public ModelAndView confirmacionRegistro(@RequestParam String codigo) {
+	public ModelAndView confirmacionRegistro(HttpServletRequest request,HttpServletResponse res,@RequestParam String codigo) {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -139,5 +147,190 @@ public class PrinicipalController {
 		pagina.addObject("prePersona",prePersona); 
 		return pagina;
 	}
+	
+	
+	@GetMapping(value = {"/nueva_busqueda_simple"})
+	public ModelAndView buscarSolicitante() {
+		ModelAndView pagina = new ModelAndView(); 
+		Expediente  formExpediente = new Expediente();
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+			
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		
+		pagina.setViewName("admin/tramite/buscarSimple");
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		return pagina;
+	}
+	
+	
+	@PostMapping(value = {"/buscarSolicitante"})
+	public ModelAndView buscarCidadano(@ModelAttribute Expediente formExpediente, HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		Persona persona = new Persona();
+		
+		persona = principalServicio.busquedaSolicitante(formExpediente);
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		
+		if(persona !=null) {
+			pagina.setViewName("redirect:/nuevo_tramite_simple?tipopersona="+formExpediente.getTIPODOCUMENTOBUSCAR()+"&numero="+formExpediente.getCAJABUSQUEDA().trim());
+		}else {
+			pagina.setViewName("admin/tramite/buscarSimple");
+		}
+		
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona);
+		return pagina;
+	}
+	
+	
+	
+	@GetMapping(value = {"/nuevo_tramite_simple"})
+	public ModelAndView nuevoExternoSimple(HttpServletRequest request,HttpServletResponse res,@RequestParam int tipopersona,@RequestParam String numero) {
+		Expediente  formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
+		Persona persona = new Persona();
+		
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
+		formExpediente.setTIPODOCUMENTOBUSCAR(tipopersona);
+		formExpediente.setCAJABUSQUEDA(numero);
+		formExpediente.setNTIPOPERSONA(tipopersona);
+		
+		
+		persona = principalServicio.busquedaSolicitante(formExpediente);
+		
+		if(tipopersona == Constantes.tipoPersonaJuridica) {
+			formExpediente.setVRUC(persona.getVRUC());
+			formExpediente.setVRAZON_SOCIAL(persona.getVRAZONSOCIAL());
+		}
+		
+		formExpediente.setVNOMBRE(persona.getVNOMBRE());
+		formExpediente.setVAPELLIDO_PATERNO(persona.getVAPEPATERNO());
+		formExpediente.setVAPELLIDO_MATERNO(persona.getVAPEMATERNO());
+		formExpediente.setVNUMERODOCUMENTO(persona.getVNUMERODOC());
+		formExpediente.setVCORREO(persona.getVCORREO());
+		formExpediente.setVDIRECCION(persona.getVDIRECCION());
+		formExpediente.setVTELEFONO(persona.getVTELEFONO());
+		formExpediente.setVNUMERODOCUMENTO("");
+				
+		pagina.setViewName("admin/tramite/externo/simple");
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		pagina.addObject("cbTipoDocumento",cbTipoDocumento); 
+		return pagina;
+	}
+	
+ 
+	@PostMapping(value = {"/grabar_tramite_simple"})
+	public ModelAndView grabarTramiteSimple(@ModelAttribute Expediente  formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+		boolean respuesta = false;
+		
+		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
+		 
+		pagina.setViewName("admin/tramite/externo/respuesta_simple");
+		return pagina;
+	} 
+	
+	
+	
+	@GetMapping(value = {"/nueva_busqueda_tupa"})
+	public ModelAndView buscarSolicitanteTupa() {
+		ModelAndView pagina = new ModelAndView(); 
+		Expediente  formExpediente = new Expediente();
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+			
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		
+		pagina.setViewName("admin/tramite/buscarTupa");
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		return pagina;
+	}
+	
+	
+	@PostMapping(value = {"/buscarSolicitanteTupa"})
+	public ModelAndView buscarCiudadanoTupa(@ModelAttribute Expediente formExpediente, HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		Persona persona = new Persona();
+		
+		persona = principalServicio.busquedaSolicitante(formExpediente);
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		
+		if(persona !=null) {
+			pagina.setViewName("redirect:/nuevo_tramite_tupa?tipopersona="+formExpediente.getTIPODOCUMENTOBUSCAR()+"&numero="+formExpediente.getCAJABUSQUEDA().trim());
+		}else {
+			pagina.setViewName("admin/tramite/buscarTupa");
+		}
+		
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona);
+		return pagina;
+	}
+	
+	
+	@GetMapping(value = {"/nuevo_tramite_tupa"})
+	public ModelAndView nuevoExternoTupa(HttpServletRequest request,HttpServletResponse res,@RequestParam int tipopersona,@RequestParam String numero) {
+		Expediente  formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
+		List<Seleccion> cbTupa = new ArrayList<Seleccion>();
+		Persona persona = new Persona();
+		
+		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
+		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
+		cbTupa = recursoServicio.cbTupa();
+		formExpediente.setTIPODOCUMENTOBUSCAR(tipopersona);
+		formExpediente.setCAJABUSQUEDA(numero);
+		formExpediente.setNTIPOPERSONA(tipopersona);
+		
+		
+		persona = principalServicio.busquedaSolicitante(formExpediente);
+		
+		if(tipopersona == Constantes.tipoPersonaJuridica) {
+			formExpediente.setVRUC(persona.getVRUC());
+			formExpediente.setVRAZON_SOCIAL(persona.getVRAZONSOCIAL());
+		}
+		
+		
+		formExpediente.setVNOMBRE(persona.getVNOMBRE());
+		formExpediente.setVAPELLIDO_PATERNO(persona.getVAPEPATERNO());
+		formExpediente.setVAPELLIDO_MATERNO(persona.getVAPEMATERNO());
+		formExpediente.setVNUMERODOCUMENTO(persona.getVNUMERODOC());
+		formExpediente.setVCORREO(persona.getVCORREO());
+		formExpediente.setVDIRECCION(persona.getVDIRECCION());
+		formExpediente.setVTELEFONO(persona.getVTELEFONO());
+		formExpediente.setVNUMERODOCUMENTO("");
+				
+		pagina.setViewName("admin/tramite/externo/tupa");
+		pagina.addObject("formExpediente",formExpediente); 
+		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		pagina.addObject("cbTipoDocumento",cbTipoDocumento); 
+		pagina.addObject("cbTupa",cbTupa); 
+		return pagina;
+	}
+	
+	
+	
+	
+	@PostMapping(value = {"/grabar_tramite_tupa"})
+	public ModelAndView grabarTramiteTupa(@ModelAttribute Expediente  formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+		boolean respuesta = false;
+		
+		
+		
+		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
+		 
+		pagina.setViewName("admin/tramite/externo/respuesta_simple");
+		return pagina;
+	} 
+	
 	
 }

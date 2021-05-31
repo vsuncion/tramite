@@ -21,6 +21,8 @@ public class Constantes {
 	public static final String tablaPrePersona="PRE_PERSONA";
 	public static final String tablaPersonaNatural="PERSONA_NATURAL";
 	public static final String tablaPersonaJuridica="PERSONA_JURIDICA";
+	public static final String tablaExpediente="EXPEDIENTE";
+	
 	
 	public static int estadoDesactivado = 0;
 	public static final String estadoDesactivadoLetras = "DESACTIVO";
@@ -48,6 +50,12 @@ public class Constantes {
 	public static final String  TipoDocumentoRegistroDNI ="DNI";
 	public static final String  TipoDocumentoRegistroCarnetExtranjeria="CARNET EXTRANJERIA";
 	
+	
+	public static final int[] listaTipoDocumentoPersona={1,2}; // 1 =DNI , 2=RUC
+	public static final String  TipoDocumentoPersonaDNI ="DNI";
+	public static final String  TipoDocumentoPersonaRUC="RUC";
+	
+	
 	public static final int transaccionCorrecta = 0;
 	public static final int transaccionIncorrecta = 1;
 	public static final int transaccionSinAccion = 2;
@@ -59,5 +67,7 @@ public class Constantes {
 	public static final int tipoPersonaJuridica=2;
 	public static final String tipoPersonaTexto="PERSONA NATURAL";
 	public static final String tipoPersonaJuridicaTexto="PERSONA JURIDICA";
+	
+	public static final Long estadoPendiente= 1L;
 
 }
