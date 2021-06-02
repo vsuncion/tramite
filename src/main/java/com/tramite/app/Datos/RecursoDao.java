@@ -8,4 +8,5 @@ import com.tramite.app.Entidades.TipoDocumentos;
 public interface RecursoDao {
 	
 	List<TipoDocumentos> listarTipoDocuemnto();
+	public String numeroExpediente();
 }

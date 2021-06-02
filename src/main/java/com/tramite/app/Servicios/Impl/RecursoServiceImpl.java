@@ -84,4 +84,9 @@ public class RecursoServiceImpl implements RecursoServicio {
 		return cbListarTipoDocuemnto;
 	}
 
+	@Override
+	public String numeroExpediente() { 
+		return recursoDao.numeroExpediente();
+	}
+
 }

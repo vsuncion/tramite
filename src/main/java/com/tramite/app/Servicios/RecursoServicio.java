@@ -10,4 +10,5 @@ public interface RecursoServicio {
 
 	List<Seleccion> cbTipoDocuemnto();
 	List<Seleccion> cbTupa();
+	public String numeroExpediente();
 }

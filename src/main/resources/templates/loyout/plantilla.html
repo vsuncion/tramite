@@ -233,8 +233,34 @@
                 </li>
                 
                 
-            
                 <li class="active">
+                  <a href="#homeSubmenuBandeja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">BANDEJA</a>
+                   
+                    <ul class="collapse list-unstyled" id="homeSubmenuBandeja">
+                        <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja}">PENDIENTES</a> 
+                        </li>
+                         <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">RECIBIDOS</a> 
+                        </li>
+                        <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">DERIVADOS</a> 
+                        </li>
+                        <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">OBSERVADOS</a> 
+                        </li>
+                         <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">RECHAZADOS</a> 
+                        </li>
+                         <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">FINALIZADOS</a> 
+                        </li>
+                    </ul>
+                </li>
+                
+                
+            
+                <li>
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">TRAMITE DOCUMENTARIO</a>
                     
                     <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -248,6 +274,10 @@
                         
                         <li>
                             <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">SEGUIMIENTO EXPEDIENTE</a>
+                        </li>
+                        
+                         <li>
+                            <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">LISTA</a>
                         </li>
                         
                     </ul>

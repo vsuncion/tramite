@@ -22,6 +22,7 @@ public class Constantes {
 	public static final String tablaPersonaNatural="PERSONA_NATURAL";
 	public static final String tablaPersonaJuridica="PERSONA_JURIDICA";
 	public static final String tablaExpediente="EXPEDIENTE";
+	public static final String tablaMovimiento="MOVIMIENTO";
 	
 	
 	public static int estadoDesactivado = 0;
@@ -69,5 +70,14 @@ public class Constantes {
 	public static final String tipoPersonaJuridicaTexto="PERSONA JURIDICA";
 	
 	public static final Long estadoPendiente= 1L;
+	
+	public static final String C_ARCHIVO_CARGA_CORRECTA ="El archivo se cargo correctamente";
+	public static final String C_ARCHIVO_CARGA_INCORRECTA ="El archivo no cargo correctamente";
+	public static final String C_ARCHIVO_VALIDACION_UBICACION_CORRECTA ="El archivo se encuentra en su ubicacion";
+	public static final String C_ARCHIVO_VALIDACION_UBICACION_INCORRECTA ="El archivo no se encuentra en su ubicacion";
+	
+	public static final Long EstadoDocumentoRegistrado=1L;
+	
+	public static final Long OficinaMesaPartePk=1L;
 
 }

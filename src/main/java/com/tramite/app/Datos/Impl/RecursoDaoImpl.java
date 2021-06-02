@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,9 @@ import com.tramite.app.utilitarios.Constantes;
 
 @Repository
 public class RecursoDaoImpl implements RecursoDao {
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -40,5 +44,51 @@ public class RecursoDaoImpl implements RecursoDao {
 		}
 		return lista;
 	}
+	
+	
+	@Override
+	public String numeroExpediente() {
+		 
+		 String sql;
+		 String letraExpediente="E";
+		 int numeroExpediente=0;
+		 String numeroExpedienteLetra;
+		 String numeroFinalExpediente="0";
+		try {
+			sql="SELECT COUNT(1)+1 FROM "+Constantes.tablaExpediente;
+			numeroExpediente=jdbcTemplate.queryForObject(sql,  Integer.class);
+			numeroExpedienteLetra = String.valueOf(numeroExpediente);
+		
+			switch(numeroExpedienteLetra.length()) {
+			  case 1:
+				  numeroFinalExpediente = letraExpediente+"-00000"+numeroExpedienteLetra;
+			   break;
+			   
+			  case 2:
+				  numeroFinalExpediente = letraExpediente+"-0000"+numeroExpedienteLetra;
+			   break;
+			   
+			  case 3:
+				  numeroFinalExpediente = letraExpediente+"-000"+numeroExpedienteLetra;
+			   break;
+			   
+			  case 4:
+				  numeroFinalExpediente = letraExpediente+"-00"+numeroExpedienteLetra;
+			   break;
+			   
+			  case 5:
+				  numeroFinalExpediente = letraExpediente+"-0"+numeroExpedienteLetra;
+			   break;
+			   
+			  default :
+				  numeroFinalExpediente = letraExpediente+"-"+numeroExpedienteLetra;  
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return numeroFinalExpediente;
+	}
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,14 +35,19 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
 	
 	 @Override
 	protected void configure(HttpSecurity http) throws Exception { 
+		 
 		 http.authorizeRequests().antMatchers("/**","/css/**","/js/**","/imagenes/**").permitAll() 
 		// .antMatchers("/admin/**").hasAnyRole("ADMIN","USER")
+		 
 		 .anyRequest().authenticated()
 		 .and()
 		 	.formLogin().loginPage("/login")
 		 	.loginProcessingUrl("/login")
 		 	.defaultSuccessUrl("/admin/principal", true) 
 		    .permitAll()
+		 .and()
+		    .sessionManagement()
+		    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 		 .and()
 		    .logout().permitAll()
 		 .and()

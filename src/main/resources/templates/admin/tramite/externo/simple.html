@@ -17,7 +17,8 @@
 			 
 			<form th:object="${formExpediente}" name="formExpediente" id="formExpediente" method="post"  th:action="@{/grabar_tramite_simple}" enctype="multipart/form-data">
 
-
+               <input type="hidden" name="NTIPOPERSONA" id="NTIPOPERSONA" th:field="*{NTIPOPERSONA}">
+               <input type="hidden" name="PERSONAFK" id="PERSONAFK" th:field="*{PERSONAFK}">
 				<!-- CONTENIDO EDITABLE INICIO-->
 				<div class="rows">
 					<p>
@@ -125,7 +126,7 @@
 											<div class="form-group col-md-3 text-center">
 											<span class="letras_expediente_externo" >NUMERO FOLIOS</span> <input
 													type="number" class="form-control form-control-sm" name="VNUMEROFOLIO"
-													id="VNUMEROFOLIO" th:field="*{VNUMEROFOLIO}">
+													id="VNUMEROFOLIO" th:field="*{VNUMEROFOLIO}" >
 											</div>
 											
 											<div class="form-group col-md-3 text-center">
@@ -147,7 +148,7 @@
 										<div class="form-row">
 										  <div class="form-group col-md-9 text-left">
 										   <span class="letras_expediente_externo" >SELECCIONE ARCHIVO</span>
-    										<input type="file"  class="form-control-file" id="varchivosubida" name="varchivosubida">
+    										<input type="file"  class="form-control-file" id="varchivosubida" name="varchivosubida" required>
 										  </div>
 										  
 										  <div class="form-group col-md-3 text-right">

@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.tramite.app.Servicios.FijaServicio;
+import com.tramite.app.utilitarios.Constantes;
 
 @Service
 public class FijaServicioImpl implements FijaServicio {
@@ -62,7 +63,8 @@ public class FijaServicioImpl implements FijaServicio {
 		}
 		
 	}
-	
-	
+
+
+	 
 
 }

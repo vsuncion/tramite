@@ -9,12 +9,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.utilitarios.Constantes;
+import com.tramite.app.utilitarios.Fechas;
 
 @Repository
 public class PrincipalDaoImpl implements PrincipalDao {
@@ -280,6 +282,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	}
 
 	@Override
+	@Transactional
 	public boolean guardarExpedienteSimple(Expediente expediente) {
 		String sql ="";
 		Long idExpediente =0L;
@@ -338,7 +341,33 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql.toString(),parametros, keyHolder,new String[] {"NIDEXPEDIENTEPK"} );        
 		idExpediente =  keyHolder.getKey().longValue();  	  
-		logger.info("++"+keyHolder.getKey().longValue()); 
+		logger.info("NIDEXPEDIENTEPK++"+keyHolder.getKey().longValue()); 
+		
+		
+		// PROCEDEMOS A INSERTAR EL MOVIMIENTO
+		 sql="INSERT INTO "+Constantes.tablaMovimiento+" ( \n"+
+			     " NIDEXPEDIENTEFK, \n"+
+			     " NESTADODOCUMENTOFK, \n"+
+			     " OFICINA_ORIGENFK, \n"+ 
+			     " DFECHAOFICINA,\n"+  
+			     " VOBSERVACION  ) \n"+
+		     " VALUES ( \n"+     
+			     " :P_NIDEXPEDIENTEFK,    \n"+   
+			     " :P_NESTADODOCUMENTOFK, \n"+  
+			     " :P_OFICINA_ORIGENFK,   \n"+  
+			     " :P_DFECHAOFICINA,      \n"+    
+			     " :P_VOBSERVACION     )";
+		 
+		       MapSqlParameterSource parametros2 = new MapSqlParameterSource();
+		       parametros2.addValue("P_NIDEXPEDIENTEFK", idExpediente);
+		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.EstadoDocumentoRegistrado);
+		       parametros2.addValue("P_OFICINA_ORIGENFK",Constantes.OficinaMesaPartePk); 
+		       parametros2.addValue("P_DFECHAOFICINA", Fechas.fechaActual()); 
+		       parametros2.addValue("P_VOBSERVACION", expediente.getVASUNTO()); 
+		       KeyHolder keyHolder2= new GeneratedKeyHolder();
+		       namedParameterJdbcTemplate.update(sql, parametros2,keyHolder2, new String[] {"NIDMOVIMIENTOPK"});
+		       logger.info("NIDMOVIMIENTOPK++"+keyHolder2.getKey().longValue());
+		
 		respuesta =true;
 		} catch (Exception e) {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());

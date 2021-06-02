@@ -18,16 +18,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.TipoDocumentos;
+import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
+import com.tramite.app.Servicios.FijaServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
+import com.tramite.app.utilitarios.ConstantesArchivos;
 
 @Controller
 @RequestMapping("/")
@@ -38,9 +42,12 @@ public class PrinicipalController {
 	
 	@Autowired
 	private RecursoServicio recursoServicio;
-	
+ 	
 	@Autowired
 	private PrincipalServicio  principalServicio;
+	
+	@Autowired
+	private ArchivoUtilitarioServicio  archivoUtilitarioServicio;
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -208,6 +215,8 @@ public class PrinicipalController {
 			formExpediente.setVRAZON_SOCIAL(persona.getVRAZONSOCIAL());
 		}
 		
+		formExpediente.setNTIPOPERSONA(tipopersona);
+		formExpediente.setPERSONAFK(persona.getNIDPERSONAPK());
 		formExpediente.setVNOMBRE(persona.getVNOMBRE());
 		formExpediente.setVAPELLIDO_PATERNO(persona.getVAPEPATERNO());
 		formExpediente.setVAPELLIDO_MATERNO(persona.getVAPEMATERNO());
@@ -229,6 +238,25 @@ public class PrinicipalController {
 	public ModelAndView grabarTramiteSimple(@ModelAttribute Expediente  formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		boolean respuesta = false;
+		
+		
+		//SUBIMOS EL DOCUMENTO
+		if (farchvio != null && farchvio.getSize() > 0) {
+			Archivos archivo = new Archivos();
+			
+			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+			
+			if (archivo.isVerificarCarga() == true) {
+				logger.info("ingresi el archivo");
+				formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
+				formExpediente.setVNOMBRE_ARCHIVO(archivo.getNombre());
+				formExpediente.setVEXTENSION(archivo.getExtension());
+			}
+		}
+		
+		//OBTENEOS EL NUMERO DE EXPEDIENTE
+		 String correlativoExpediente = recursoServicio.numeroExpediente();
+		 formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 		
 		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
 		 
@@ -282,6 +310,8 @@ public class PrinicipalController {
 		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
 		List<Seleccion> cbTupa = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
+		String numeroExpediente = "";
+		
 		
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
@@ -299,6 +329,13 @@ public class PrinicipalController {
 		}
 		
 		
+		//SUBIRMOS EL ARCHIVO
+		
+		
+		
+		
+		formExpediente.setNTIPOPERSONA(tipopersona);
+		formExpediente.setPERSONAFK(persona.getNIDPERSONAPK());
 		formExpediente.setVNOMBRE(persona.getVNOMBRE());
 		formExpediente.setVAPELLIDO_PATERNO(persona.getVAPEPATERNO());
 		formExpediente.setVAPELLIDO_MATERNO(persona.getVAPEMATERNO());
@@ -324,9 +361,11 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		boolean respuesta = false;
 		
+		//OBTENEOS EL NUMERO DE EXPEDIENTE
+		 String correlativoExpediente = recursoServicio.numeroExpediente();
+		 formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 		
-		
-		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
+		//respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
 		 
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
 		return pagina;

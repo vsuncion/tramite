@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form action="" th:object="${formBandeja}">
+
+
+					<div class="card text-center">
+						<div class="card-body">
+							<h5 class="card-title">BANDEJA</h5>
+
+							<div class="card text-left">
+								<div class="card-body"></div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="card">
+						<h5 class="card-header">LISTAR EXPEDIENTES</h5>
+						<div class="card-body">
+						<table class="table table-hover">
+							<thead>
+								<tr style="text-align: center;" class="cabecera_letras_grilla">
+									<th scope="col">ITEM</th>
+									<th scope="col">FEC OFICINA</th>
+									<th scope="col">REMITENTE</th>
+									<th scope="col">ASUNTO</th>
+									<th scope="col">OFIC ORIGEN</th>
+									<th scope="col">OFIC DESTINO</th>
+									<th scope="col">ESTADO</th> 
+								</tr>
+							</thead>
+							<tbody>
+							   <tr th:each="i : ${listaBandeja}"  style="text-align: center;" class="cuerpo_letras_grilla">
+							     <th scope="row"><span th:text="${i.NIDMOVIMIENTOPK}"></span></th>
+							     <td><span  th:text="${i.VFECHA_OFICINA}"></span></td>
+							     <td><span  th:text="${i.VREMITENTE}"></span></td>
+							     <td><span  th:text="${i.VASUNTO}"></span></td>
+							     <td><span  th:text="${i.VOFICINA_ORIGEN}"></span></td>
+							     <td><span  th:text="${i.VOFICINA_DESTINO}"></span></td>
+							     <td><span  th:text="${i.VESTADO_DOC}"></span></td>
+							      
+							   </tr>
+							</tbody>
+						</table>
+						
+						
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>
