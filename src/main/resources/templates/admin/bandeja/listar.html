@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <!-- CABECERA  PLANTILLA-->
 <head th:replace="loyout/plantilla :: html_cabecera">
@@ -47,6 +48,12 @@
 									<th scope="col">OFIC ORIGEN</th>
 									<th scope="col">OFIC DESTINO</th>
 									<th scope="col">ESTADO</th> 
+									<th sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">
+									   <span th:if="${flagestadodocumento==1}" >RECEPCIONAR</span>
+									   <span th:if="${flagestadodocumento==2}" >ATENDER</span>
+									</th>
+									 
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -58,7 +65,12 @@
 							     <td><span  th:text="${i.VOFICINA_ORIGEN}"></span></td>
 							     <td><span  th:text="${i.VOFICINA_DESTINO}"></span></td>
 							     <td><span  th:text="${i.VESTADO_DOC}"></span></td>
-							      
+							     <td sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">
+							     
+							      <a th:if="${flagestadodocumento==1}" th:href="@{/admin/expediente/recibirExpediente?idmovimiento=} + ${i.NIDMOVIMIENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
+							      <a th:if="${flagestadodocumento==2}" th:href="@{/admin/expediente/atenderexpediente?idexpediente=} + ${i.NIDEXPEDIENTEFK} + '&idmovimiento='+${i.NIDMOVIMIENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
+							     </td>
+							
 							   </tr>
 							</tbody>
 						</table>

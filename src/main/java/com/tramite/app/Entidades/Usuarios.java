@@ -46,8 +46,12 @@ public class Usuarios implements Serializable {
 	private String username;
 	private String password;
 	private int  enabled;
+	private String vnombre_persona; 
+	private Long nidpersonapk;
+	private String fullname;
 	
-	
+	 
+
 	public String getUsername() {
 		return username;
 	}
@@ -72,6 +76,16 @@ public class Usuarios implements Serializable {
 
 	public void setEnabled(int enabled) {
 		this.enabled = enabled;
+	}
+	
+	
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public Long getNITEM() {
@@ -222,6 +236,22 @@ public class Usuarios implements Serializable {
 
 	public void setNIDUSUAPERFILFK(Long nIDUSUAPERFILFK) {
 		NIDUSUAPERFILFK = nIDUSUAPERFILFK;
+	}
+
+	public String getVnombre_persona() {
+		return vnombre_persona;
+	}
+
+	public void setVnombre_persona(String vnombre_persona) {
+		this.vnombre_persona = vnombre_persona;
+	}
+
+	public Long getNidpersonapk() {
+		return nidpersonapk;
+	}
+
+	public void setNidpersonapk(Long nidpersonapk) {
+		this.nidpersonapk = nidpersonapk;
 	}
 	
 	

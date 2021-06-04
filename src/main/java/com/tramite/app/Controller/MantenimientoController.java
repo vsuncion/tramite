@@ -49,10 +49,7 @@ public class MantenimientoController {
 	private MantenimientoServicio  mantenimientoServicio;
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
-	
-	
+ 
 	// ========================== CRUD TRABAJADOR ===================================
 	
 	@GetMapping(value = { "/listarTranbajador" })

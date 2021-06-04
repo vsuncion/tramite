@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.TipoDocumentos;
+import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.utilitarios.Constantes;
 
 @Repository
@@ -85,9 +87,32 @@ public class RecursoDaoImpl implements RecursoDao {
 			}
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return numeroFinalExpediente;
+	}
+
+
+	@Override
+	public Usuarios infoUsuario(String vcorreo) {
+		StringBuffer sql = new StringBuffer();
+		Usuarios usuarios = new Usuarios();
+		try {
+			sql.append(
+				"  SELECT \n"+
+			    "   NTRABAJADORFK, \n"+
+			    "   NOFICINAFK, \n"+
+			    "   VUSUARIO \n"+
+			    "  FROM "+Constantes.tablaUsuario+" \n"+
+			    " WHERE VUSUARIO= :P_VUSUARIO");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_VUSUARIO", vcorreo);
+			usuarios = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
+				     
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return usuarios;
 	}
 
 

@@ -39,7 +39,57 @@ public class Expediente implements Serializable {
 	
 	private int TIPODOCUMENTOBUSCAR;
 	private String CAJABUSQUEDA;
+	private String  ESTADODOCUMENTO;
+	private String  VREMITENTE;
+	
+	private  String VRUC;
+	private String VRAZON_SOCIAL;
+	private String VNOMBRE;
+	private String VAPELLIDO_PATERNO;
+	private String VAPELLIDO_MATERNO;
+	private String VDIRECCION;
+	private String VCORREO;
+	private String VTELEFONO;
+	private	String VFECHADOCUMENTO;
+	private String VOBSERVACION;
+	private Long OFICINA_DESTINOFK; 
+	private Long NIDMOVIMIENTOFK;
+	private Long  OFICINA_ORIGENFK;
     
+	public Expediente() {
+	}
+
+ 
+	
+    
+	public String getESTADODOCUMENTO() {
+		return ESTADODOCUMENTO;
+	}
+
+
+
+
+	public void setESTADODOCUMENTO(String eSTADODOCUMENTO) {
+		ESTADODOCUMENTO = eSTADODOCUMENTO;
+	}
+
+
+
+
+	public String getVREMITENTE() {
+		return VREMITENTE;
+	}
+
+
+
+
+	public void setVREMITENTE(String vREMITENTE) {
+		VREMITENTE = vREMITENTE;
+	}
+
+
+
+
 	public Long getNIDEXPEDIENTEPK() {
 		return NIDEXPEDIENTEPK;
 	}
@@ -409,22 +459,48 @@ public class Expediente implements Serializable {
 		VFECHADOCUMENTO = vFECHADOCUMENTO;
 	}
 
-
-	private  String VRUC;
-	private String VRAZON_SOCIAL;
-	private String VNOMBRE;
-	private String VAPELLIDO_PATERNO;
-	private String VAPELLIDO_MATERNO;
-	private String VDIRECCION;
-	private String VCORREO;
-	private String VTELEFONO;
-	private	String VFECHADOCUMENTO;
-    
-    
-	public Expediente() {
+ 
+	public Long getOFICINA_DESTINOFK() {
+		return OFICINA_DESTINOFK;
 	}
 
  
- 
+	public void setOFICINA_DESTINOFK(Long oFICINA_DESTINOFK) {
+		OFICINA_DESTINOFK = oFICINA_DESTINOFK;
+	}
 
+ 
+	public String getVOBSERVACION() {
+		return VOBSERVACION;
+	}
+
+ 
+	public void setVOBSERVACION(String vOBSERVACION) {
+		VOBSERVACION = vOBSERVACION;
+	}
+ 
+	public Long getNIDMOVIMIENTOFK() {
+		return NIDMOVIMIENTOFK;
+	}
+
+ 
+	public void setNIDMOVIMIENTOFK(Long nIDMOVIMIENTOFK) {
+		NIDMOVIMIENTOFK = nIDMOVIMIENTOFK;
+	}
+
+
+
+
+	public Long getOFICINA_ORIGENFK() {
+		return OFICINA_ORIGENFK;
+	}
+
+
+
+
+	public void setOFICINA_ORIGENFK(Long oFICINA_ORIGENFK) {
+		OFICINA_ORIGENFK = oFICINA_ORIGENFK;
+	}
+
+ 
 }

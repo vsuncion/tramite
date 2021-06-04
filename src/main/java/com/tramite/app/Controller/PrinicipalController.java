@@ -330,10 +330,7 @@ public class PrinicipalController {
 		
 		
 		//SUBIRMOS EL ARCHIVO
-		
-		
-		
-		
+	 
 		formExpediente.setNTIPOPERSONA(tipopersona);
 		formExpediente.setPERSONAFK(persona.getNIDPERSONAPK());
 		formExpediente.setVNOMBRE(persona.getVNOMBRE());

@@ -79,5 +79,18 @@ public class Constantes {
 	public static final Long EstadoDocumentoRegistrado=1L;
 	
 	public static final Long OficinaMesaPartePk=1L;
+	
+	public static final Long ESTADO_DOCUMENTO_PENDIENTE  = 1L;
+	public static final Long ESTADO_DOCUMENTO_RECIBIDO   = 2L;
+	public static final Long ESTADO_DOCUMENTO_DERIVADO   = 3L;
+	public static final Long ESTADO_DOCUMENTO_OBSERVADO  = 4L;
+	public static final Long ESTADO_DOCUMENTO_RECHAZADO  = 5L;
+	public static final Long ESTADO_DOCUMENTO_FINALIZADO = 6L;
+	public static final Long ESTADO_DOCUMENTO_ARCHIVADO  = 7L;
+	
+	public static final String LETRAS_ESTADO_DOCUMENTO_PENDIENTE  = "PENDIENTE";
+	public static final String LETRAS_ESTADO_DOCUMENTO_RECIBIDO   = "RECIBIR";
+	public static final String LETRAS_ESTADO_DOCUMENTO_ARCHIVADO   = "ARCHIVAR";
+  	
 
 }

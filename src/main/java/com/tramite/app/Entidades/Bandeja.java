@@ -16,7 +16,7 @@ public class Bandeja implements Serializable {
 	private String VOFICINA_ORIGEN;
 	private String VOFICINA_DESTINO;
 	private String VESTADO_DOC;
-	
+	private Long NIDEXPEDIENTEFK;
 	public Bandeja() {
 	}
 
@@ -74,6 +74,14 @@ public class Bandeja implements Serializable {
 
 	public void setVESTADO_DOC(String vESTADO_DOC) {
 		VESTADO_DOC = vESTADO_DOC;
+	}
+
+	public Long getNIDEXPEDIENTEFK() {
+		return NIDEXPEDIENTEFK;
+	}
+
+	public void setNIDEXPEDIENTEFK(Long nIDEXPEDIENTEFK) {
+		NIDEXPEDIENTEFK = nIDEXPEDIENTEFK;
 	}
 	
 	

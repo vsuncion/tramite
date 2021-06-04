@@ -7,11 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.standard.expression.Each;
 
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.EstadoDocumento;
+import com.tramite.app.Entidades.Oficinas;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Tupac;
+import com.tramite.app.Entidades.Usuarios;
+import com.tramite.app.Servicios.FijaServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
@@ -23,6 +28,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	
 	@Autowired
 	private RecursoDao recursoDao;
+	 
 	
 	@Autowired
 	private MantenimientoServicio  mantenimientoServicio;
@@ -87,6 +93,50 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	public String numeroExpediente() { 
 		return recursoDao.numeroExpediente();
+	}
+
+	@Override
+	public Usuarios infoUsuario(String vcorreo) { 
+		return recursoDao.infoUsuario(vcorreo);
+	}
+
+	@Override
+	public List<Seleccion> cbOficinasAtender(Long idoficiActual) {
+		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
+		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
+		
+		listaOfinas =  mantenimientoServicio.listarOficinas();
+		for (Oficinas i : listaOfinas) {
+			if(idoficiActual != i.getNIDOFICINAPK()) {
+				Seleccion item = new Seleccion(); 
+				item.setCodigo(i.getNIDOFICINAPK());
+				item.setEtiqueta(i.getVNOMBRE());
+				listaOfinasFinal.add(item);
+			}
+		}
+		return listaOfinasFinal;
+	}
+
+	@Override
+	public List<Seleccion> cbAccionesAtender() {
+		List<EstadoDocumento> listaEstadoDocumento = new ArrayList<EstadoDocumento>();
+		List<Seleccion> listaEstadoDocumentoFinal = new ArrayList<Seleccion>();
+		
+		listaEstadoDocumento = mantenimientoServicio.listarEstadoDocumento();
+		for (EstadoDocumento i : listaEstadoDocumento) {
+			
+			if(!Constantes.LETRAS_ESTADO_DOCUMENTO_PENDIENTE.equals(i.getVNOMBRE())) {
+				if(!Constantes.LETRAS_ESTADO_DOCUMENTO_RECIBIDO.equals(i.getVNOMBRE())) {
+					Seleccion item = new Seleccion();
+					item.setCodigo(i.getIDESTADOCUMENTOPK());
+					item.setEtiqueta(i.getVNOMBRE());
+					listaEstadoDocumentoFinal.add(item);
+				}
+			}
+			
+		}
+		
+		return listaEstadoDocumentoFinal;
 	}
 
 }

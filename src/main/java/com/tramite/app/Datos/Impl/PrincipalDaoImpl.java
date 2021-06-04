@@ -336,7 +336,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		parametros.addValue("P_PERSONAFK", expediente.getPERSONAFK());
 		//parametros.addValue("P_DFECHATERMINO", expediente.getdf);
 		parametros.addValue("P_NDIASPLAZO", Constantes.estadoDesactivado);
-		parametros.addValue("P_NESTADODOCUMENTOFK", Constantes.estadoPendiente );
+		parametros.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_PENDIENTE );
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql.toString(),parametros, keyHolder,new String[] {"NIDEXPEDIENTEPK"} );        
@@ -349,12 +349,14 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			     " NIDEXPEDIENTEFK, \n"+
 			     " NESTADODOCUMENTOFK, \n"+
 			     " OFICINA_ORIGENFK, \n"+ 
+			     " OFICINA_DESTINOFK, \n"+ 
 			     " DFECHAOFICINA,\n"+  
 			     " VOBSERVACION  ) \n"+
 		     " VALUES ( \n"+     
 			     " :P_NIDEXPEDIENTEFK,    \n"+   
 			     " :P_NESTADODOCUMENTOFK, \n"+  
 			     " :P_OFICINA_ORIGENFK,   \n"+  
+			     " :P_OFICINA_DESTINOFK,   \n"+ 
 			     " :P_DFECHAOFICINA,      \n"+    
 			     " :P_VOBSERVACION     )";
 		 
@@ -362,6 +364,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		       parametros2.addValue("P_NIDEXPEDIENTEFK", idExpediente);
 		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.EstadoDocumentoRegistrado);
 		       parametros2.addValue("P_OFICINA_ORIGENFK",Constantes.OficinaMesaPartePk); 
+		       parametros2.addValue("P_OFICINA_DESTINOFK",Constantes.OficinaMesaPartePk); 
 		       parametros2.addValue("P_DFECHAOFICINA", Fechas.fechaActual()); 
 		       parametros2.addValue("P_VOBSERVACION", expediente.getVASUNTO()); 
 		       KeyHolder keyHolder2= new GeneratedKeyHolder();

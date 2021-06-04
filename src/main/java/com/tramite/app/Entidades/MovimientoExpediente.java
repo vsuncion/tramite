@@ -21,6 +21,10 @@ public class MovimientoExpediente implements Serializable {
 	private String VOBSERVACION;         
 	private int NADJUNTOARCHIVO;      
 	private int NELIMINADO;
+	private String VOFICINA;
+	private String  VESTADO_DOCUMENTO;
+	
+	
 	public MovimientoExpediente() {
 		super();
 	}
@@ -89,6 +93,18 @@ public class MovimientoExpediente implements Serializable {
 	}
 	public void setNELIMINADO(int nELIMINADO) {
 		NELIMINADO = nELIMINADO;
+	}
+	public String getVOFICINA() {
+		return VOFICINA;
+	}
+	public void setVOFICINA(String vOFICINA) {
+		VOFICINA = vOFICINA;
+	}
+	public String getVESTADO_DOCUMENTO() {
+		return VESTADO_DOCUMENTO;
+	}
+	public void setVESTADO_DOCUMENTO(String vESTADO_DOCUMENTO) {
+		VESTADO_DOCUMENTO = vESTADO_DOCUMENTO;
 	} 
 	
 	

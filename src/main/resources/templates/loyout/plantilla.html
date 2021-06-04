@@ -234,26 +234,29 @@
                 
                 
                 <li class="active">
-                  <a href="#homeSubmenuBandeja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">BANDEJA</a>
+                  <a href="#homeSubmenuBandeja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">BANDEJA</a>
                    
                     <ul class="collapse list-unstyled" id="homeSubmenuBandeja">
                         <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja}">PENDIENTES</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=1}">PENDIENTES</a> 
                         </li>
                          <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">RECIBIDOS</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=2}">RECIBIDOS</a> 
                         </li>
                         <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">DERIVADOS</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=3}">DERIVADOS</a> 
                         </li>
                         <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">OBSERVADOS</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=4}">OBSERVADOS</a> 
                         </li>
                          <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">RECHAZADOS</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=5}">RECHAZADOS</a> 
                         </li>
                          <li>
-                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">FINALIZADOS</a> 
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=6}">FINALIZADOS</a> 
+                        </li>
+                        <li>
+                          <a class="nav-link" th:href="@{/admin/expediente/listarBandeja?idestado=7}">ARCHIVADO</a> 
                         </li>
                     </ul>
                 </li>
@@ -340,8 +343,7 @@
                     <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fas fa-align-justify"></i>
                     </button>
-                    
-                    
+      
                     <div sec:authentication="name">
 					  The value of the "name" property of the authentication object should appear here.
 					</div>
