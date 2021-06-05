@@ -23,6 +23,7 @@ public class Constantes {
 	public static final String tablaPersonaJuridica="PERSONA_JURIDICA";
 	public static final String tablaExpediente="EXPEDIENTE";
 	public static final String tablaMovimiento="MOVIMIENTO";
+	public static final String tablaArchivoMovimiento="ARCHIVO_MOVIMIENTO";
 	
 	
 	public static int estadoDesactivado = 0;

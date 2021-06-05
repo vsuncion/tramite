@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.tramite.app.Datos.ExpedienteDao;
+import com.tramite.app.Entidades.ArchivoMovimiento;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
@@ -49,18 +50,24 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 T7.VNOMBRE AS VOFICINA_ORIGEN, \n"+
 			 " 	 T8.VNOMBRE AS VOFICINA_DESTINO, \n"+
 			 " 	 T6.VNOMBRE AS VESTADO_DOC, \n"+
-			 " 	 T1.NIDEXPEDIENTEFK \n"+
+			 " 	 T1.NIDEXPEDIENTEFK, \n"+
+			 " 	 T2.VCODIGO_EXPEDIENTE \n"+
 			 " FROM "+Constantes.tablaMovimiento+" T1 \n"+
 			 " 	 INNER JOIN EXPEDIENTE       T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
 			 " 	 INNER JOIN PERSONA          T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+
 			 " 	 LEFT JOIN PERSONA_NATURAL   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK \n"+
 			 " 	 LEFT JOIN PERSONA_JURIDICA  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK \n"+
-			 " 	 INNER JOIN ESTADO_DOCUMENTO T6 ON T2.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
+			 " 	 INNER JOIN ESTADO_DOCUMENTO T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
 			 " 	 INNER JOIN OFICINA          T7 ON T1.OFICINA_ORIGENFK=T7.NIDOFICINAPK \n"+
-			 " 	 LEFT JOIN OFICINA          T8 ON T1.OFICINA_DESTINOFK=T8.NIDOFICINAPK \n"+
-			 " WHERE T1.OFICINA_DESTINOFK= :P_OFICINA_DESTINOFK AND T1.NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK \n"+
-			 "   AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO AND T1.NELIMINADO= :P_NELIMINADO \n"+
-			 " ORDER BY T1.NIDMOVIMIENTOPK DESC"); 
+			 " 	 LEFT JOIN OFICINA           T8 ON T1.OFICINA_DESTINOFK=T8.NIDOFICINAPK \n");
+ 			
+			if(estadodocumento==1 || estadodocumento==2) {
+				sql.append(" WHERE T1.OFICINA_DESTINOFK= :P_OFICINA_DESTINOFK  AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO AND T1.NELIMINADO= :P_NELIMINADO \n");
+			}else {
+				sql.append(" WHERE T1.OFICINA_ORIGENFK= :P_OFICINA_DESTINOFK  AND T1.NESTADOREGISTRO= :P_NELIMINADO AND T1.NELIMINADO= :P_NELIMINADO \n");
+			}
+			
+			sql.append(" AND T1.NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK  ORDER BY T1.NIDMOVIMIENTOPK DESC");
 			
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_OFICINA_DESTINOFK",oficina);
@@ -138,10 +145,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMERODOCUMENTO, \n"+
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
-				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+
-				"    T1.VNUMERODOCUMENTO, \n"+
+				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
+				"    T1.VNOMBRE_ARCHIVO,    \n"+
 				"    T1.VUBICACION_ARCHIVO, \n"+
 				"    T1.VEXTENSION \n"+
 				" FROM        "+Constantes.tablaExpediente+"       T1  \n"+
@@ -168,13 +176,21 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			sql.append(
 			" SELECT  \n"+
 			"   T1.NIDMOVIMIENTOPK, \n"+
+			"   T1.NIDEXPEDIENTEFK, \n"+
 			"   T2.VNOMBRE AS VOFICINA, \n"+
 			"   T3.VNOMBRE AS VESTADO_DOCUMENTO, \n"+
-			"   T1.VOBSERVACION \n"+
+			"   T1.VOBSERVACION, \n"+
+			"   T1.OFICINA_ORIGENFK, \n"+ 
+			"   CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			"   T1.NESTADODOCUMENTOFK, \n"+
+			"   T4.VNOMBRE_ARCHIVO, \n"+
+			"   T4.VUBICACION_ARCHIVO, \n"+
+			"   T4.VEXTENSION \n"+
 			" FROM "+Constantes.tablaMovimiento+" T1 \n"+
 			"  INNER JOIN "+Constantes.tablaOficinas+" T2 ON T1.OFICINA_ORIGENFK=T2.NIDOFICINAPK  \n"+
 			"  INNER JOIN "+Constantes.tablaEstadoDocumento+" T3 ON T1.NESTADODOCUMENTOFK=T3.IDESTADOCUMENTOPK \n"+
-			" WHERE T1.NIDEXPEDIENTEFK= :P_NIDEXPEDIENTEFK AND NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO");
+			"  LEFT JOIN  "+Constantes.tablaArchivoMovimiento+" T4   ON T4.NEXPEDIENTEFK=T1.NIDEXPEDIENTEFK  AND T4.NOFICINAFK=T1.OFICINA_ORIGENFK \n"+
+			" WHERE T1.NIDEXPEDIENTEFK= :P_NIDEXPEDIENTEFK AND T1.NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NIDEXPEDIENTEFK", idexpediente);
 			parametros.addValue("P_NIDMOVIMIENTOPK", idmovimiento);
@@ -191,41 +207,10 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sql2 = new StringBuffer();
 		StringBuffer sql3 = new StringBuffer();
+		StringBuffer sql4 = new StringBuffer();
 		boolean respuesta = false;
 		
 		try {
-			
-			//INSERTAMOS EL NUEVO MANTENIMIENTO 
-			sql.append(
-				"INSERT INTO "+Constantes.tablaMovimiento+" ( \n"+
-			    "	NIDEXPEDIENTEFK, \n"+
-			    "	NESTADODOCUMENTOFK, \n"+
-			    "	OFICINA_ORIGENFK, \n"+
-			    "	OFICINA_DESTINOFK, \n"+
-			    "	DFECHAOFICINA, \n"+
-			    "	DFECHARECEPCION, \n"+
-			    "	VOBSERVACION ) \n"+
-			    "SELECT  \n"+
-			    "	:P_NIDEXPEDIENTEFK, \n"+
-			    "	:P_NESTADODOCUMENTOFK, \n"+
-			    "	:P_OFICINA_ORIGENFK, \n"+
-			    "	:P_OFICINA_DESTINOFK, \n"+
-			    "	DFECHAOFICINA, \n"+
-			    "	:P_DFECHARECEPCION, \n"+
-			    "	:P_VOBSERVACION \n"+
-			    " FROM "+Constantes.tablaMovimiento+" \n"+
-			    " WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
-			MapSqlParameterSource parametros = new MapSqlParameterSource();
-			parametros.addValue("P_NIDEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK());
-			parametros.addValue("P_NESTADODOCUMENTOFK",(formexpediente.getNESTADODOCUMENTOFK()==Constantes.ESTADO_DOCUMENTO_DERIVADO)? Constantes.ESTADO_DOCUMENTO_PENDIENTE : formexpediente.getNESTADODOCUMENTOFK());
-			parametros.addValue("P_OFICINA_ORIGENFK",formexpediente.getOFICINA_ORIGENFK());
-			parametros.addValue("P_OFICINA_DESTINOFK",formexpediente.getOFICINA_DESTINOFK());
-			parametros.addValue("P_DFECHARECEPCION", Fechas.fechaActual());
-			parametros.addValue("P_VOBSERVACION", formexpediente.getVOBSERVACION());
-			parametros.addValue("P_NIDMOVIMIENTOPK", formexpediente.getNIDMOVIMIENTOFK());
-			KeyHolder keyHolder = new GeneratedKeyHolder();
-			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder, new String[] {"NIDMOVIMIENTOPK"});	
-			logger.info("++"+keyHolder.getKey().longValue()); 
 			
 			//INSERTAMOS UNA COPIA EN LA MISMA OFICINA
 			sql2.append(
@@ -235,22 +220,27 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			    "	OFICINA_ORIGENFK, \n"+
 			    "	OFICINA_DESTINOFK, \n"+
 			    "	DFECHAOFICINA, \n"+
-			    "	DFECHARECEPCION, \n"+
+			    "	DFECHAENVIO, \n"+
+			    "	NESTADOREGISTRO, \n"+
 			    "	VOBSERVACION ) \n"+
 			    "SELECT  \n"+
 			    "	NIDEXPEDIENTEFK, \n"+
 			    "	:P_NESTADODOCUMENTOFK, \n"+
-			    "	OFICINA_ORIGENFK, \n"+
+			    "	:P_OFICINA_ORIGENFK, \n"+
 			    "	:P_OFICINA_DESTINOFK, \n"+
-			    "	DFECHAOFICINA, \n"+
-			    "	:P_DFECHARECEPCION, \n"+
+			    "	:P_DFECHAOFICINA, \n"+
+			    "	:P_DFECHAENVIO, \n"+
+			    "	:P_NESTADOREGISTRO, \n"+
 			    "	:P_VOBSERVACION \n"+
 			    " FROM "+Constantes.tablaMovimiento+" \n"+
 			    " WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
 			MapSqlParameterSource parametros2 = new MapSqlParameterSource();
 			parametros2.addValue("P_NESTADODOCUMENTOFK", formexpediente.getNESTADODOCUMENTOFK());
 			parametros2.addValue("P_OFICINA_DESTINOFK",formexpediente.getOFICINA_DESTINOFK());
-			parametros2.addValue("P_DFECHARECEPCION", Fechas.fechaActual());
+			parametros2.addValue("P_OFICINA_ORIGENFK",formexpediente.getOFICINA_ORIGENFK());
+			parametros2.addValue("P_DFECHAOFICINA", Fechas.fechaActual());
+			parametros2.addValue("P_DFECHAENVIO", Fechas.fechaActual());
+			parametros2.addValue("P_NESTADOREGISTRO", Constantes.estadoDesactivado);
 			parametros2.addValue("P_VOBSERVACION", formexpediente.getVOBSERVACION());
 			parametros2.addValue("P_NIDMOVIMIENTOPK", formexpediente.getNIDMOVIMIENTOFK());
 			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);	 
@@ -268,14 +258,159 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros3.addValue("P_NIDMOVIMIENTOPK", formexpediente.getNIDMOVIMIENTOFK());
 			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
 			
+			//INSERTAMOS EL NUEVO MANTENIMIENTO 
+			sql.append(
+				"INSERT INTO "+Constantes.tablaMovimiento+" ( \n"+
+			    "	NIDEXPEDIENTEFK, \n"+
+			    "	NESTADODOCUMENTOFK, \n"+
+			    "	OFICINA_ORIGENFK, \n"+
+			    "	OFICINA_DESTINOFK, \n"+
+			    "	DFECHAOFICINA, \n"+
+			    "	DFECHAENVIO, \n"+
+			    "	VOBSERVACION ) \n"+
+			    "SELECT  \n"+
+			    "	:P_NIDEXPEDIENTEFK, \n"+
+			    "	:P_NESTADODOCUMENTOFK, \n"+
+			    "	:P_OFICINA_ORIGENFK, \n"+
+			    "	:P_OFICINA_DESTINOFK, \n"+
+			    "	:P_DFECHAOFICINA, \n"+
+			    "	:P_DFECHAENVIO, \n"+
+			    "	:P_VOBSERVACION \n"+
+			    " FROM "+Constantes.tablaMovimiento+" \n"+
+			    " WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NIDEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK());
+			parametros.addValue("P_NESTADODOCUMENTOFK",(formexpediente.getNESTADODOCUMENTOFK()==Constantes.ESTADO_DOCUMENTO_DERIVADO)? Constantes.ESTADO_DOCUMENTO_PENDIENTE : formexpediente.getNESTADODOCUMENTOFK());
+			parametros.addValue("P_OFICINA_ORIGENFK",formexpediente.getOFICINA_ORIGENFK());
+			parametros.addValue("P_OFICINA_DESTINOFK",formexpediente.getOFICINA_DESTINOFK());
+			parametros.addValue("P_DFECHAOFICINA", Fechas.fechaActual());
+			parametros.addValue("P_DFECHAENVIO", Fechas.fechaActual());
+			parametros.addValue("P_VOBSERVACION", formexpediente.getVOBSERVACION());
+			parametros.addValue("P_NIDMOVIMIENTOPK", formexpediente.getNIDMOVIMIENTOFK());
+			KeyHolder keyHolder = new GeneratedKeyHolder();
+			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder, new String[] {"NIDMOVIMIENTOPK"});	
+			logger.info("++"+keyHolder.getKey().longValue()); 
+	       Long idMovimientoNuevo = keyHolder.getKey().longValue();
 			// PROCEDEMOS A SUBIR EL ARCHIVO
-			
+			sql4.append(
+			  " INSERT INTO "+Constantes.tablaArchivoMovimiento+" ( \n"+
+			  "   NEXPEDIENTEFK,      \n"+
+			  "   NMOVIMIENTOFK,      \n"+
+			  "   NOFICINAFK,         \n"+
+			  "   DFECHAREGISTRO,     \n"+
+			  "   VNOMBRE_ARCHIVO,    \n"+		 
+			  "   VUBICACION_ARCHIVO, \n"+  
+			  "   VEXTENSION )        \n"+
+			  " VALUES (            \n"+
+			  "   :P_NEXPEDIENTEFK,      \n"+
+			  "   :P_NMOVIMIENTOFK,      \n"+
+			  "   :P_NOFICINAFK,         \n"+
+			  "   :P_DFECHAREGISTRO,     \n"+
+			  "   :P_VNOMBRE_ARCHIVO,    \n"+		 
+			  "   :P_VUBICACION_ARCHIVO, \n"+  
+			  "   :P_VEXTENSION )        ");
+			MapSqlParameterSource parametros4 = new MapSqlParameterSource();
+			parametros4.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK());
+			parametros4.addValue("P_NMOVIMIENTOFK", idMovimientoNuevo);
+			parametros4.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
+			parametros4.addValue("P_DFECHAREGISTRO", Fechas.fechaActual());
+			parametros4.addValue("P_VNOMBRE_ARCHIVO", formexpediente.getVNOMBRE_ARCHIVO());
+			parametros4.addValue("P_VUBICACION_ARCHIVO", formexpediente.getVUBICACION_ARCHIVO());
+			parametros4.addValue("P_VEXTENSION", formexpediente.getVEXTENSION());
+			namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
+	}
+
+	@Override
+	public boolean responderExpedienteArchivadoOfinalizado(Expediente formExpediente) {
+		StringBuffer sql = new StringBuffer();
+		StringBuffer sql2 = new StringBuffer();
+		boolean respuesta = false;
+		
+		try {
+			
+			//INSERTAMOS EL NUEVO MANTENIMIENTO 
+			sql.append(
+				"INSERT INTO "+Constantes.tablaMovimiento+" ( \n"+
+			    "	NIDEXPEDIENTEFK, \n"+
+			    "	NESTADODOCUMENTOFK, \n"+
+			    "	OFICINA_ORIGENFK, \n"+
+			    "	OFICINA_DESTINOFK, \n"+
+			    "	DFECHAOFICINA, \n"+ 
+			    "	DFECHAENVIO, \n"+
+			    "	NESTADOREGISTRO, \n"+
+			    "	VOBSERVACION ) \n"+
+			    "SELECT  \n"+
+			    "	NIDEXPEDIENTEFK, \n"+
+			    "	:P_NESTADODOCUMENTOFK, \n"+
+			    "	:P_OFICINA_ORIGENFK, \n"+
+			    "	:P_OFICINA_DESTINOFK, \n"+
+			    "	:P_DFECHAOFICINA, \n"+
+			    "	:P_DFECHAENVIO, \n"+
+			    "	:P_NESTADOREGISTRO, \n"+
+			    "	:P_VOBSERVACION \n"+
+			    " FROM "+Constantes.tablaMovimiento+" \n"+
+			    " WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NESTADODOCUMENTOFK", formExpediente.getNESTADODOCUMENTOFK());
+			parametros.addValue("P_OFICINA_ORIGENFK", formExpediente.getOFICINA_ORIGENFK());
+			parametros.addValue("P_OFICINA_DESTINOFK", formExpediente.getOFICINA_ORIGENFK());
+			parametros.addValue("P_DFECHAOFICINA", Fechas.fechaActual());
+			parametros.addValue("P_DFECHAENVIO", Fechas.fechaActual());
+			parametros.addValue("P_NESTADOREGISTRO",  Constantes.estadoDesactivado);
+			parametros.addValue("P_VOBSERVACION",  formExpediente.getVOBSERVACION());
+			parametros.addValue("P_NIDMOVIMIENTOPK", formExpediente.getNIDMOVIMIENTOFK());
+			namedParameterJdbcTemplate.update(sql.toString(), parametros);	 
+			
+			//APAGAMOS EL QUE ESTA EN ESTADO PENDIENTE
+			sql2.append(
+				"UPDATE "+Constantes.tablaMovimiento+"  \n"+
+			    " SET  NESTADOREGISTRO = :P_NESTADOREGISTRO \n"+
+				"WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
+			MapSqlParameterSource parametros2 = new MapSqlParameterSource();
+			parametros2.addValue("P_NESTADOREGISTRO",  Constantes.estadoDesactivado);
+			parametros2.addValue("P_NIDMOVIMIENTOPK", formExpediente.getNIDMOVIMIENTOFK());
+			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);
+			respuesta = true;
+		} catch (Exception e) {
+			respuesta = false;
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return respuesta;
+	}
+
+	@Override
+	public ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina,String nombrearchivo) {
+		StringBuffer sql = new StringBuffer();
+		ArchivoMovimiento archivoMovimiento = new ArchivoMovimiento();
+		try {
+			sql.append(
+			  " SELECT \n"+
+			  "	   NIDARCHIVOMOVIMIENTO, \n"+
+			  "	   NEXPEDIENTEFK, \n"+
+			  "	   NOFICINAFK, \n"+
+			  "	   DFECHAREGISTRO, \n"+
+			  "	   VNOMBRE_ARCHIVO, \n"+
+			  "	   VUBICACION_ARCHIVO, \n"+
+			  "	   VEXTENSION \n"+
+			  "  FROM "+Constantes.tablaArchivoMovimiento+" \n"+
+			  " WHERE NEXPEDIENTEFK= :P_NEXPEDIENTEFK AND NOFICINAFK = :P_NOFICINAFK  AND VNOMBRE_ARCHIVO= :P_VNOMBRE_ARCHIVO");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NEXPEDIENTEFK", idexpediente);
+			parametros.addValue("P_NOFICINAFK", idoficina);
+			parametros.addValue("P_VNOMBRE_ARCHIVO", nombrearchivo);
+			archivoMovimiento = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(ArchivoMovimiento.class));
+			
+			 
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return archivoMovimiento;
 	}
 
 	 

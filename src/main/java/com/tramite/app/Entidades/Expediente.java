@@ -55,6 +55,7 @@ public class Expediente implements Serializable {
 	private Long OFICINA_DESTINOFK; 
 	private Long NIDMOVIMIENTOFK;
 	private Long  OFICINA_ORIGENFK;
+	private String  VDFECREGISTRO;
     
 	public Expediente() {
 	}
@@ -187,6 +188,11 @@ public class Expediente implements Serializable {
 
 	public void setVEXTENSION(String vEXTENSION) {
 		VEXTENSION = vEXTENSION;
+	}
+	
+	public String obtenerRutaAbsoluArchivo() {
+		 
+		return this.getVUBICACION_ARCHIVO() + this.getVNOMBRE_ARCHIVO() + "." + this.getVEXTENSION();
 	}
 
 
@@ -482,25 +488,27 @@ public class Expediente implements Serializable {
 	public Long getNIDMOVIMIENTOFK() {
 		return NIDMOVIMIENTOFK;
 	}
-
  
 	public void setNIDMOVIMIENTOFK(Long nIDMOVIMIENTOFK) {
 		NIDMOVIMIENTOFK = nIDMOVIMIENTOFK;
 	}
-
-
-
-
+ 
 	public Long getOFICINA_ORIGENFK() {
 		return OFICINA_ORIGENFK;
 	}
-
-
-
-
+ 
 	public void setOFICINA_ORIGENFK(Long oFICINA_ORIGENFK) {
 		OFICINA_ORIGENFK = oFICINA_ORIGENFK;
 	}
-
  
+	public String getVDFECREGISTRO() {
+		return VDFECREGISTRO;
+	}
+ 
+	public void setVDFECREGISTRO(String vDFECREGISTRO) {
+		VDFECREGISTRO = vDFECREGISTRO;
+	}
+
+	
+
 }

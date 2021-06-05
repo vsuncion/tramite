@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tramite.app.Datos.ExpedienteDao;
+import com.tramite.app.Entidades.ArchivoMovimiento;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
@@ -26,6 +28,7 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	}
 
 	@Override
+	@Transactional
 	public MensajeRespuesta recibirExpediente(Long idMovimiento) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -55,10 +58,21 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	}
 
 	@Override
+	@Transactional
 	public MensajeRespuesta responderExpediente(Expediente formExpediente) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		respuesta = expedienteDao.responderExpediente(formExpediente);
+		
+		if(Constantes.ESTADO_DOCUMENTO_FINALIZADO==formExpediente.getNESTADODOCUMENTOFK() 
+				|| Constantes.ESTADO_DOCUMENTO_ARCHIVADO==formExpediente.getNESTADODOCUMENTOFK() ) {
+			
+			respuesta = expedienteDao.responderExpedienteArchivadoOfinalizado(formExpediente);
+			
+		}else {
+			respuesta = expedienteDao.responderExpediente(formExpediente);
+		}
+		
+		
 		if (respuesta == true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
 			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
@@ -70,6 +84,14 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 		return mostrarmensaje;
 	}
+
+	@Override
+	public ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina,
+			String nombrearchivo) { 
+		return expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+	}
+
+ 
 
 	 
 

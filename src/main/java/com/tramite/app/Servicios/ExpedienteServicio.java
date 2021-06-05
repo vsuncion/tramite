@@ -2,6 +2,7 @@ package com.tramite.app.Servicios;
 
 import java.util.List;
 
+import com.tramite.app.Entidades.ArchivoMovimiento;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
@@ -14,4 +15,6 @@ public interface ExpedienteServicio {
 	Expediente infoExpediente(Long idexpediente);
 	MovimientoExpediente infoMovimiento(Long idexpediente,Long idmovimiento);
 	MensajeRespuesta responderExpediente(Expediente formExpediente);
+	ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente,Long idoficina,String nombrearchivo);
+	 
 }

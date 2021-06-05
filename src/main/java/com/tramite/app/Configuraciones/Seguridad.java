@@ -2,7 +2,8 @@ package com.tramite.app.Configuraciones;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.tramite.app.Servicios.Impl.DetallesUsuario;
 
@@ -34,22 +36,22 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
 	private DetallesUsuario detallesUsuario;
 	
 	 @Override
-	protected void configure(HttpSecurity http) throws Exception { 
-		 
+	protected void configure(HttpSecurity http) throws Exception {  
 		 http.authorizeRequests().antMatchers("/**","/css/**","/js/**","/imagenes/**").permitAll() 
 		// .antMatchers("/admin/**").hasAnyRole("ADMIN","USER")
 		 
 		 .anyRequest().authenticated()
 		 .and()
+		    .sessionManagement()
+		    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+		 .and()
 		 	.formLogin().loginPage("/login")
 		 	.loginProcessingUrl("/login")
 		 	.defaultSuccessUrl("/admin/principal", true) 
 		    .permitAll()
+		 
 		 .and()
-		    .sessionManagement()
-		    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-		 .and()
-		    .logout().permitAll()
+		    .logout()
 		 .and()
 		    .exceptionHandling()
 		    .accessDeniedPage("/accesodenagado"); 
@@ -82,6 +84,11 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
 		.withUser(usuario.username("admin").password("123456").roles("ADMINISTRADOR"))
 		.withUser(usuario.username("vladimir").password("123").roles("ATENCION_PUBLICO"));*/
 		
+	}
+	
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+	    return new HttpSessionEventPublisher();
 	}
 	
 	

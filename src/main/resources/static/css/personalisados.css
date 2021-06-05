@@ -122,8 +122,12 @@ footer {
 }
 
 .letras_numero{
-	color: #045298;
+	color: black;
 	font-weight: bold;
+}
+
+.letras_numero{
+	color: black; 
 }
 .letras_expediente_externo{
 	color: black;

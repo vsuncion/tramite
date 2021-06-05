@@ -23,7 +23,13 @@ public class MovimientoExpediente implements Serializable {
 	private int NELIMINADO;
 	private String VOFICINA;
 	private String  VESTADO_DOCUMENTO;
+	private String  VFECHARECEPCION;
+	private String  VFECHAENVIO;
+	private String  VFECHAOFICINA;
 	
+	private String  VNOMBRE_ARCHIVO;
+	private String  VUBICACION_ARCHIVO;
+	private String  VEXTENSION;
 	
 	public MovimientoExpediente() {
 		super();
@@ -105,7 +111,46 @@ public class MovimientoExpediente implements Serializable {
 	}
 	public void setVESTADO_DOCUMENTO(String vESTADO_DOCUMENTO) {
 		VESTADO_DOCUMENTO = vESTADO_DOCUMENTO;
+	}
+	public String getVFECHARECEPCION() {
+		return VFECHARECEPCION;
+	}
+	public void setVFECHARECEPCION(String vFECHARECEPCION) {
+		VFECHARECEPCION = vFECHARECEPCION;
+	}
+	public String getVFECHAENVIO() {
+		return VFECHAENVIO;
+	}
+	public void setVFECHAENVIO(String vFECHAENVIO) {
+		VFECHAENVIO = vFECHAENVIO;
+	}
+	public String getVFECHAOFICINA() {
+		return VFECHAOFICINA;
+	}
+	public void setVFECHAOFICINA(String vFECHAOFICINA) {
+		VFECHAOFICINA = vFECHAOFICINA;
+	}
+	public String getVNOMBRE_ARCHIVO() {
+		return VNOMBRE_ARCHIVO;
+	}
+	public void setVNOMBRE_ARCHIVO(String vNOMBRE_ARCHIVO) {
+		VNOMBRE_ARCHIVO = vNOMBRE_ARCHIVO;
+	}
+	public String getVUBICACION_ARCHIVO() {
+		return VUBICACION_ARCHIVO;
+	}
+	public void setVUBICACION_ARCHIVO(String vUBICACION_ARCHIVO) {
+		VUBICACION_ARCHIVO = vUBICACION_ARCHIVO;
+	}
+	public String getVEXTENSION() {
+		return VEXTENSION;
+	}
+	public void setVEXTENSION(String vEXTENSION) {
+		VEXTENSION = vEXTENSION;
 	} 
 	
-	
+	public String obtenerRutaAbsoluArchivo() {
+		 
+		return this.getVUBICACION_ARCHIVO() + this.getVNOMBRE_ARCHIVO() + "." + this.getVEXTENSION();
+	}
 }

@@ -2,6 +2,7 @@ package com.tramite.app.Servicios;
 
 import java.util.List;
 
+import com.tramite.app.Entidades.Oficinas;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.Usuarios; 
 
@@ -15,4 +16,5 @@ public interface RecursoServicio {
 	 Usuarios infoUsuario(String vcorreo);
 	 List<Seleccion> cbOficinasAtender(Long idoficiActual);
 	 List<Seleccion> cbAccionesAtender();
+	 Oficinas infoOficina (Long idoficina);
 }

@@ -17,41 +17,80 @@
 
 			<form th:object="${formExpediente}" name="formExpediente"
 				id="formExpediente" method="post"
-				th:action="@{/admin/expediente/grabarAtenderTramiteSimple}" enctype="multipart/form-data">
+				th:action="@{/admin/expediente/grabarAtenderTramiteSimple}"
+				enctype="multipart/form-data">
 
 				<!-- INICIO CUERPO EDITABLE  -->
-                <input type="hidden" id="NIDEXPEDIENTEPK" name="NIDEXPEDIENTEPK" th:field=*{NIDEXPEDIENTEPK}>
-                <input type="hidden" id="NIDMOVIMIENTOFK" name="NIDMOVIMIENTOFK" th:field=*{NIDMOVIMIENTOFK}>
-                <input type="hidden" id="OFICINA_ORIGENFK" name="OFICINA_ORIGENFK" th:field=*{OFICINA_ORIGENFK}>
+				<input type="hidden" id="NIDEXPEDIENTEPK" name="NIDEXPEDIENTEPK"
+					th:field=*{NIDEXPEDIENTEPK}> <input type="hidden"
+					id="NIDMOVIMIENTOFK" name="NIDMOVIMIENTOFK"
+					th:field=*{NIDMOVIMIENTOFK}> <input type="hidden"
+					id="OFICINA_ORIGENFK" name="OFICINA_ORIGENFK"
+					th:field=*{OFICINA_ORIGENFK}>
+					
+				
+				<div class="rows"><div class="col-sm-12 text-center"><span th:text="${infoficina.VNOMBRE}"></span></div></div>
 				<div class="card">
 					<div class="card-header">INFORMACION EXPEDIENTE</div>
 					<div class="card-body">
 
 						<div class="form-row">
 							<div class="form-group col-md-4">
-								<label for="nexpediente">NUMERO EXPEDIENTE</label> <span
-									id="nexpediente" th:text="*{VCODIGO_EXPEDIENTE}">ssdsdsds</span>
+								<label for="nexpediente" class="letras_numero">NUMERO
+									EXPEDIENTE :</label> <span id="nexpediente"
+									th:text="*{VCODIGO_EXPEDIENTE}"></span>
 							</div>
+
 							<div class="form-group col-md-4">
-								<label for="nexpediente">FECHA RECEPCION</label> <span
-									id="nexpediente">ssdsdsds</span>
+								<label for="nexpediente" class="letras_numero">NUMERO
+									DOCUMENTO :</label> <span th:text="*{VNUMERODOCUMENTO}"></span>
 							</div>
+
 							<div class="form-group col-md-4">
-								<label for="nexpediente">DOCUMENTO PRNCIPAL</label>
-								<button type="button" class="btn btn-outline-primary">Primary</button>
+								<label for="nexpediente" class="letras_numero">FECHA
+									REGISTRO :</label> <span id="nexpediente" th:text="*{VDFECREGISTRO}"></span>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group col-md-8">
-								<label for="nexpediente">REMITENTEL</label> <span
-									id="nexpediente" th:text="*{VREMITENTE}">ssdsdsds</span>
+								<label for="nexpediente" class="letras_numero">REMITENTE
+									:</label> <span id="nexpediente" th:text="*{VREMITENTE}"></span>
 							</div>
 
 							<div class="form-group col-md-4">
-								<label for="nexpediente">NUMERO DOCUMENTO</label> <span
-									id="nexpediente">ssdsdsds</span>
+								<label for="nexpediente" class="letras_numero">NUMERO
+									DOCUMENTO :</label> <span id="nexpediente" th:text="*{VASUNTO}"></span>
 							</div>
+						</div>
+
+						<div class="form-row">
+
+							<div class="form-group col-md-8">
+								<label for="nexpediente" class="letras_numero">TIPO
+									TRAMITE :</label> <span id="nexpediente" th:if="*{TUPACFK==null}">SIMPLE</span>
+								<span id="nexpediente" th:if="*{TUPACFK!=null}">TUPAC</span>
+							</div>
+
+							<div class="form-group col-md-4">
+								<a class="btn btn-outline-primary" target="_blank"
+									th:href="@{/admin/expediente/descargarprincipal?idexpediente=} + *{NIDEXPEDIENTEPK}"
+									role="button">DESCARGAR DOCUMENTO PRINCIPAL</a>
+							</div>
+
+						</div>
+
+						<div class="form-row">
+
+							<div class="form-group col-md-8">
+								<label for="nexpediente" class="letras_numero">ASUNTO:</label> <span
+									id="nexpediente" th:text="*{VASUNTO}"></span>
+							</div>
+							<div class="form-group col-md-4">
+								<span id="nexpediente" th:if="*{TUPACFK==null}">DESCARGAR
+									DOCUMENTOS ANEXOS</span>
+							</div>
+
 						</div>
 
 					</div>
@@ -64,23 +103,29 @@
 
 						<div class="form-row">
 							<div class="form-group col-md-4">
-								<label for="nexpediente">NOMBRE OFICINA</label> <span
-									id="nexpediente" th:text="${infoMovimiento.VOFICINA}"></span>
+								<label for="nexpediente" class="letras_numero">NOMBRE
+									OFICINA</label> <span id="nexpediente"
+									th:text="${infoMovimiento.VOFICINA}"></span>
 							</div>
 							<div class="form-group col-md-4">
-								<label for="nexpediente">FECHA DERIVACION</label> <span
-									id="nexpediente">ssdsdsds</span>
+								<label for="nexpediente" class="letras_numero">FECHA EN
+									OFICINA</label> <span id="nexpediente"
+									th:text="${infoMovimiento.VFECHAOFICINA}"></span>
 							</div>
 							<div class="form-group col-md-4">
-								<label for="nexpediente">DOCUMENTO ADJUNTO</label> <span
-									id="nexpediente">ssdsdsds</span>
+								<span th:if="${infoMovimiento.VNOMBRE_ARCHIVO!=null}"> <a
+									class="btn btn-outline-primary" target="_blank"
+									th:href="@{/admin/expediente/descargaradjuntorespuesta?idexpediente=} + ${infoMovimiento.NIDEXPEDIENTEFK}+'&idoficina='+ ${infoMovimiento.OFICINA_ORIGENFK}+'&nombrearchivo='+${infoMovimiento.VNOMBRE_ARCHIVO}"
+									role="button">DESCARGAR DOCUMENTO ADJUNTO</a>
+								</span>
+
 							</div>
 						</div>
 
 						<div class="form-row">
-							<span class="letras_expediente_externo">OBSERVACION</span>
-							<textarea class="form-control" id="VASUNTO" rows="1"
-								readonly="readonly" th:text="${infoMovimiento.VOBSERVACION}"></textarea>
+							<label for="nexpediente" class="letras_numero">OBSERVACION
+								: </label> <span id="nexpediente"
+								th:text="${infoMovimiento.VOBSERVACION}"></span>
 						</div>
 
 					</div>
@@ -98,7 +143,8 @@
 								<span class="letras_expediente_externo">TIPO ACCION</span> <select
 									class="form-control form-control-sm" id="NESTADODOCUMENTOFK"
 									name="NESTADODOCUMENTOFK" th:field="*{NESTADODOCUMENTOFK}">
-									<option th:each="i : ${listaEstadoDocumentos}" th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
+									<option th:each="i : ${listaEstadoDocumentos}"
+										th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 								</select>
 							</div>
 
@@ -106,7 +152,8 @@
 								<span class="letras_expediente_externo">OFICINA DESTINO</span> <select
 									class="form-control form-control-sm" id="OFICINA_DESTINOFK"
 									name="OFICINA_DESTINOFK" th:field=*{OFICINA_DESTINOFK}>
-									<option th:each="i : ${listaOfinas}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+									<option th:each="i : ${listaOfinas}" th:value="${i.codigo}"
+										th:text="${i.etiqueta}"></option>
 								</select>
 							</div>
 
@@ -120,15 +167,16 @@
 
 						<div class="form-row">
 							<span class="letras_expediente_externo">OBSERVACION</span>
-							<textarea class="form-control" id="VOBSERVACION" name="VOBSERVACION" th:field="*{VOBSERVACION}" rows="2"
-								onkeyup="javascript:this.value=this.value.toUpperCase();"
-								 ></textarea>
+							<textarea class="form-control" id="VOBSERVACION"
+								name="VOBSERVACION" th:field="*{VOBSERVACION}" rows="2"
+								onkeyup="javascript:this.value=this.value.toUpperCase();"></textarea>
 						</div>
 						<br>
 						<div class="row">
-							 
+
 							<div class="col-sm-12 text-right">
-							<a th:href="@{/admin/mantenimiento/listartipodocumento}"
+								<a
+									th:href="@{/admin/expediente/listarBandeja?idestado=}+${infoMovimiento.NESTADODOCUMENTOFK}"
 									class="btn btn-outline-danger" role="button"
 									aria-pressed="true"> <i class="fas fa-angle-double-left"></i>
 									REGRESAR
@@ -154,17 +202,17 @@
 	</div>
 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
-	
+
 	<script th:inline="javascript">
-	 $('#NESTADODOCUMENTOFK').on('change', function() {
-		 var name = $('#NESTADODOCUMENTOFK option:selected').text();
-		 
-		  if('ARCHIVAR'==name){
-			  $('#OFICINA_DESTINOFK').attr("disabled", true);   
-		  }else{
-			  $('#OFICINA_DESTINOFK').attr("disabled", false);  
-		  }
-		  
+		$('#NESTADODOCUMENTOFK').on('change', function() {
+			var name = $('#NESTADODOCUMENTOFK option:selected').text();
+
+			if ('ARCHIVAR' == name) {
+				$('#OFICINA_DESTINOFK').attr("disabled", true);
+			} else {
+				$('#OFICINA_DESTINOFK').attr("disabled", false);
+			}
+
 		});
 	</script>
 

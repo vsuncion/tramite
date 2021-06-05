@@ -45,8 +45,8 @@
             <span class="letras_titulo_principal">TRAMITE DOCUMENTARIO</span> 
             <ul class="list-unstyled components">
           
-                <li>
-                    <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_ADMINISTRADOR')">MANTENIMIENTOS</a>
+                <li sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                    <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >MANTENIMIENTOS</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu1">
                         <li>
                             <a class="nav-link" th:href="@{/admin/mantenimiento/infomunicipalidad}">INFORMACION</a>
@@ -196,8 +196,8 @@
                     </ul>
                 </li>
                 
-                <li> 
-                    <a href="#homeExpedienteCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="isAnonymous()">EXPEDIENTE</a>
+                <li sec:authorize="isAnonymous()"> 
+                    <a href="#homeExpedienteCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >EXPEDIENTE</a>
                     
                     <ul class="collapse list-unstyled" id="homeExpedienteCiudadano">		   
                         <li>
@@ -216,8 +216,8 @@
                     </ul>
                 </li>
                 
-                <li>
-                    <a href="#registroCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="isAnonymous()">REGISTRO CIUDADANO</a>
+                <li sec:authorize="isAnonymous()">
+                    <a href="#registroCiudadano" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >REGISTRO CIUDADANO</a>
                     <ul class="collapse list-unstyled" id="registroCiudadano">		   
                         <li>
                             <a class="nav-link" th:href="@{/nuevaPersonaNatural}">PERSONA NATURAL</a> 
@@ -233,8 +233,8 @@
                 </li>
                 
                 
-                <li class="active">
-                  <a href="#homeSubmenuBandeja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">BANDEJA</a>
+                <li sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">
+                  <a href="#homeSubmenuBandeja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >BANDEJA</a>
                    
                     <ul class="collapse list-unstyled" id="homeSubmenuBandeja">
                         <li>
@@ -263,8 +263,8 @@
                 
                 
             
-                <li>
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">TRAMITE DOCUMENTARIO</a>
+                <li sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >TRAMITE DOCUMENTARIO</a>
                     
                     <ul class="collapse list-unstyled" id="homeSubmenu">
 		   
@@ -287,8 +287,8 @@
                     
                 </li>
                
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasRole('ROLE_REPORTES')">REPORTES</a>
+                <li sec:authorize="hasRole('ROLE_REPORTES')">
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >REPORTES</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <li>
                             <a href="#">REPORTE 1</a>
@@ -304,11 +304,11 @@
                 
                  
                 
-                <li>
+                <li sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_ATENCION_PUBLICO','ROLE_SEGUIMIENTO_TRAMITE','ROLE_REPORTES')">
 
 
  
-                    <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_ATENCION_PUBLICO','ROLE_SEGUIMIENTO_TRAMITE','ROLE_REPORTES')" >CONFIGURACION</a>
+                    <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"  >CONFIGURACION</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu2">
                         <li>
                             <a href="#">CAMBIAR CLAVE</a>
@@ -316,11 +316,13 @@
                         <li>
                         
                        
+                      
                           <form th:action="@{/logout}" method="post">
                            <a href="#"><button type="submit" class="btn btn-link" style="text-decoration: none;color: white;">SALIR</button> 
                             <input type="hidden" th:name="_csrf.parameterName" th:value="${_csrf.token}"/></a>
                            
                           </form>
+                    
                            
                         </li>
                         

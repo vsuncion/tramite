@@ -139,4 +139,9 @@ public class RecursoServiceImpl implements RecursoServicio {
 		return listaEstadoDocumentoFinal;
 	}
 
+	@Override
+	public Oficinas infoOficina(Long idoficina) { 
+		return mantenimientoServicio.buscarOficina(idoficina);
+	}
+
 }

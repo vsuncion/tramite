@@ -36,185 +36,181 @@ import com.tramite.app.utilitarios.ConstantesArchivos;
 @Controller
 @RequestMapping("/")
 public class PrinicipalController {
-	
+
 	@Autowired
-	private MantenimientoServicio  mantenimientoServicio;
-	
+	private MantenimientoServicio mantenimientoServicio;
+
 	@Autowired
 	private RecursoServicio recursoServicio;
- 	
+
 	@Autowired
-	private PrincipalServicio  principalServicio;
-	
+	private PrincipalServicio principalServicio;
+
 	@Autowired
-	private ArchivoUtilitarioServicio  archivoUtilitarioServicio;
-	
+	private ArchivoUtilitarioServicio archivoUtilitarioServicio;
+
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	@GetMapping(value = {"/","index"})
-	public String hola() {
- 
-	        logger.info("======================= INFO ================");
-		return "index";
+	@GetMapping(value = { "/", "index" })
+	public ModelAndView hola() {
+		logger.info("======================= INFO ================");
+		ModelAndView pagina = new ModelAndView();
+		pagina.setViewName("index");
+		return pagina;
 	}
-	
-	
-	 
-	
-	@GetMapping(value = {"/admin/principal"})
-	public ModelAndView paginaPrincipal(HttpServletRequest request,HttpServletResponse res) {
+
+	@GetMapping(value = { "/admin/principal" })
+	public ModelAndView paginaPrincipal(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		pagina.setViewName("admin/principal");
 		return pagina;
 	}
-	
-	@GetMapping(value = {"/nuevaPersonaNatural"})
+
+	@GetMapping(value = { "/nuevaPersonaNatural" })
 	public ModelAndView nuevaPersonaNatural() {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		
+
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
-		
+
 		pagina.setViewName("admin/persona/natural/nuevo");
-		pagina.addObject("prePersona",prePersona);
+		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
-	
-	@GetMapping(value = {"/nuevaPersonaJuridica"})
+
+	@GetMapping(value = { "/nuevaPersonaJuridica" })
 	public ModelAndView nuevaPersonaJuridica() {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		
+
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
-		
+
 		pagina.setViewName("admin/persona/juridica/nuevo");
-		pagina.addObject("prePersona",prePersona);
+		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
-	
-	
-	@PostMapping(value = {"/guardarPrepersonaNatural"})
-	public ModelAndView guardarPrepersonaNatural(@ModelAttribute PrePersona prePersona ,HttpServletRequest request,HttpServletResponse res) {
+
+	@PostMapping(value = { "/guardarPrepersonaNatural" })
+	public ModelAndView guardarPrepersonaNatural(@ModelAttribute PrePersona prePersona, HttpServletRequest request,
+			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
-		
+
 		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaNatural);
 		mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
-		
+
 		pagina.setViewName("admin/persona/natural/nuevo");
-		pagina.addObject("prePersona",prePersona);
+		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
-	
-	
-	@PostMapping(value = {"/guardarPrepersonaJuridica"})
-	public ModelAndView guardarPrepersonaJuridica(@ModelAttribute PrePersona prePersona ,HttpServletRequest request,HttpServletResponse res) {
+
+	@PostMapping(value = { "/guardarPrepersonaJuridica" })
+	public ModelAndView guardarPrepersonaJuridica(@ModelAttribute PrePersona prePersona, HttpServletRequest request,
+			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
-		
+
 		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaJuridica);
 		mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
-		
+
 		pagina.setViewName("admin/persona/juridica/nuevo");
-		pagina.addObject("prePersona",prePersona);
+		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
-	
-	
-	@GetMapping(value = {"/confirmacionRegistro"})
-	public ModelAndView confirmacionRegistro(HttpServletRequest request,HttpServletResponse res,@RequestParam String codigo) {
+
+	@GetMapping(value = { "/confirmacionRegistro" })
+	public ModelAndView confirmacionRegistro(HttpServletRequest request, HttpServletResponse res,
+			@RequestParam String codigo) {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		
+
 		prePersona.setVCODIGOACTIVACION(codigo);
 		mostrarmensaje = principalServicio.confirmacionCodigoActivacion(prePersona.getVCODIGOACTIVACION());
-		
+
 		pagina.setViewName("admin/persona/activar");
-		pagina.addObject("prePersona",prePersona); 
+		pagina.addObject("prePersona", prePersona);
 		return pagina;
 	}
-	
-	
-	@GetMapping(value = {"/nueva_busqueda_simple"})
+
+	@GetMapping(value = { "/nueva_busqueda_simple" })
 	public ModelAndView buscarSolicitante() {
-		ModelAndView pagina = new ModelAndView(); 
-		Expediente  formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView();
+		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
-			
+
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
-		
+
 		pagina.setViewName("admin/tramite/buscarSimple");
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
 	}
-	
-	
-	@PostMapping(value = {"/buscarSolicitante"})
-	public ModelAndView buscarCidadano(@ModelAttribute Expediente formExpediente, HttpServletRequest request,HttpServletResponse res) {
-		ModelAndView pagina = new ModelAndView(); 
+
+	@PostMapping(value = { "/buscarSolicitante" })
+	public ModelAndView buscarCidadano(@ModelAttribute Expediente formExpediente, HttpServletRequest request,
+			HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
-		
+
 		persona = principalServicio.busquedaSolicitante(formExpediente);
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
-		
-		if(persona !=null) {
-			pagina.setViewName("redirect:/nuevo_tramite_simple?tipopersona="+formExpediente.getTIPODOCUMENTOBUSCAR()+"&numero="+formExpediente.getCAJABUSQUEDA().trim());
-		}else {
+
+		if (persona != null) {
+			pagina.setViewName("redirect:/nuevo_tramite_simple?tipopersona=" + formExpediente.getTIPODOCUMENTOBUSCAR()
+					+ "&numero=" + formExpediente.getCAJABUSQUEDA().trim());
+		} else {
 			pagina.setViewName("admin/tramite/buscarSimple");
 		}
-		
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona);
+
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
 	}
-	
-	
-	
-	@GetMapping(value = {"/nuevo_tramite_simple"})
-	public ModelAndView nuevoExternoSimple(HttpServletRequest request,HttpServletResponse res,@RequestParam int tipopersona,@RequestParam String numero) {
-		Expediente  formExpediente = new Expediente();
-		ModelAndView pagina = new ModelAndView(); 
+
+	@GetMapping(value = { "/nuevo_tramite_simple" })
+	public ModelAndView nuevoExternoSimple(HttpServletRequest request, HttpServletResponse res,
+			@RequestParam int tipopersona, @RequestParam String numero) {
+		Expediente formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
-		
+
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
 		formExpediente.setTIPODOCUMENTOBUSCAR(tipopersona);
 		formExpediente.setCAJABUSQUEDA(numero);
 		formExpediente.setNTIPOPERSONA(tipopersona);
-		
-		
+
 		persona = principalServicio.busquedaSolicitante(formExpediente);
-		
-		if(tipopersona == Constantes.tipoPersonaJuridica) {
+
+		if (tipopersona == Constantes.tipoPersonaJuridica) {
 			formExpediente.setVRUC(persona.getVRUC());
 			formExpediente.setVRAZON_SOCIAL(persona.getVRAZONSOCIAL());
 		}
-		
+
 		formExpediente.setNTIPOPERSONA(tipopersona);
 		formExpediente.setPERSONAFK(persona.getNIDPERSONAPK());
 		formExpediente.setVNOMBRE(persona.getVNOMBRE());
@@ -225,27 +221,27 @@ public class PrinicipalController {
 		formExpediente.setVDIRECCION(persona.getVDIRECCION());
 		formExpediente.setVTELEFONO(persona.getVTELEFONO());
 		formExpediente.setVNUMERODOCUMENTO("");
-				
+
 		pagina.setViewName("admin/tramite/externo/simple");
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
-		pagina.addObject("cbTipoDocumento",cbTipoDocumento); 
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
+		pagina.addObject("cbTipoDocumento", cbTipoDocumento);
 		return pagina;
 	}
-	
- 
-	@PostMapping(value = {"/grabar_tramite_simple"})
-	public ModelAndView grabarTramiteSimple(@ModelAttribute Expediente  formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,HttpServletResponse res) {
+
+	@PostMapping(value = { "/grabar_tramite_simple" })
+	public ModelAndView grabarTramiteSimple(@ModelAttribute Expediente formExpediente,
+			@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,
+			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		boolean respuesta = false;
-		
-		
-		//SUBIMOS EL DOCUMENTO
+
+		// SUBIMOS EL DOCUMENTO
 		if (farchvio != null && farchvio.getSize() > 0) {
 			Archivos archivo = new Archivos();
-			
+
 			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
-			
+
 			if (archivo.isVerificarCarga() == true) {
 				logger.info("ingresi el archivo");
 				formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
@@ -253,84 +249,80 @@ public class PrinicipalController {
 				formExpediente.setVEXTENSION(archivo.getExtension());
 			}
 		}
-		
-		//OBTENEOS EL NUMERO DE EXPEDIENTE
-		 String correlativoExpediente = recursoServicio.numeroExpediente();
-		 formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
-		
+
+		// OBTENEOS EL NUMERO DE EXPEDIENTE
+		String correlativoExpediente = recursoServicio.numeroExpediente();
+		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
+
 		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
-		 
+
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
 		return pagina;
-	} 
-	
-	
-	
-	@GetMapping(value = {"/nueva_busqueda_tupa"})
+	}
+
+	@GetMapping(value = { "/nueva_busqueda_tupa" })
 	public ModelAndView buscarSolicitanteTupa() {
-		ModelAndView pagina = new ModelAndView(); 
-		Expediente  formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView();
+		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
-			
+
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
-		
+
 		pagina.setViewName("admin/tramite/buscarTupa");
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
 	}
-	
-	
-	@PostMapping(value = {"/buscarSolicitanteTupa"})
-	public ModelAndView buscarCiudadanoTupa(@ModelAttribute Expediente formExpediente, HttpServletRequest request,HttpServletResponse res) {
-		ModelAndView pagina = new ModelAndView(); 
+
+	@PostMapping(value = { "/buscarSolicitanteTupa" })
+	public ModelAndView buscarCiudadanoTupa(@ModelAttribute Expediente formExpediente, HttpServletRequest request,
+			HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
-		
+
 		persona = principalServicio.busquedaSolicitante(formExpediente);
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
-		
-		if(persona !=null) {
-			pagina.setViewName("redirect:/nuevo_tramite_tupa?tipopersona="+formExpediente.getTIPODOCUMENTOBUSCAR()+"&numero="+formExpediente.getCAJABUSQUEDA().trim());
-		}else {
+
+		if (persona != null) {
+			pagina.setViewName("redirect:/nuevo_tramite_tupa?tipopersona=" + formExpediente.getTIPODOCUMENTOBUSCAR()
+					+ "&numero=" + formExpediente.getCAJABUSQUEDA().trim());
+		} else {
 			pagina.setViewName("admin/tramite/buscarTupa");
 		}
-		
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona);
+
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
 	}
-	
-	
-	@GetMapping(value = {"/nuevo_tramite_tupa"})
-	public ModelAndView nuevoExternoTupa(HttpServletRequest request,HttpServletResponse res,@RequestParam int tipopersona,@RequestParam String numero) {
-		Expediente  formExpediente = new Expediente();
-		ModelAndView pagina = new ModelAndView(); 
+
+	@GetMapping(value = { "/nuevo_tramite_tupa" })
+	public ModelAndView nuevoExternoTupa(HttpServletRequest request, HttpServletResponse res,
+			@RequestParam int tipopersona, @RequestParam String numero) {
+		Expediente formExpediente = new Expediente();
+		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
 		List<Seleccion> cbTupa = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
 		String numeroExpediente = "";
-		
-		
+
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
 		cbTupa = recursoServicio.cbTupa();
 		formExpediente.setTIPODOCUMENTOBUSCAR(tipopersona);
 		formExpediente.setCAJABUSQUEDA(numero);
 		formExpediente.setNTIPOPERSONA(tipopersona);
-		
-		
+
 		persona = principalServicio.busquedaSolicitante(formExpediente);
-		
-		if(tipopersona == Constantes.tipoPersonaJuridica) {
+
+		if (tipopersona == Constantes.tipoPersonaJuridica) {
 			formExpediente.setVRUC(persona.getVRUC());
 			formExpediente.setVRAZON_SOCIAL(persona.getVRAZONSOCIAL());
 		}
-		
-		
-		//SUBIRMOS EL ARCHIVO
-	 
+
+		// SUBIRMOS EL ARCHIVO
+
 		formExpediente.setNTIPOPERSONA(tipopersona);
 		formExpediente.setPERSONAFK(persona.getNIDPERSONAPK());
 		formExpediente.setVNOMBRE(persona.getVNOMBRE());
@@ -341,32 +333,30 @@ public class PrinicipalController {
 		formExpediente.setVDIRECCION(persona.getVDIRECCION());
 		formExpediente.setVTELEFONO(persona.getVTELEFONO());
 		formExpediente.setVNUMERODOCUMENTO("");
-				
+
 		pagina.setViewName("admin/tramite/externo/tupa");
-		pagina.addObject("formExpediente",formExpediente); 
-		pagina.addObject("cbTipoDocumentoPersona",cbTipoDocumentoPersona); 
-		pagina.addObject("cbTipoDocumento",cbTipoDocumento); 
-		pagina.addObject("cbTupa",cbTupa); 
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
+		pagina.addObject("cbTipoDocumento", cbTipoDocumento);
+		pagina.addObject("cbTupa", cbTupa);
 		return pagina;
 	}
-	
-	
-	
-	
-	@PostMapping(value = {"/grabar_tramite_tupa"})
-	public ModelAndView grabarTramiteTupa(@ModelAttribute Expediente  formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,HttpServletResponse res) {
+
+	@PostMapping(value = { "/grabar_tramite_tupa" })
+	public ModelAndView grabarTramiteTupa(@ModelAttribute Expediente formExpediente,
+			@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,
+			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		boolean respuesta = false;
-		
-		//OBTENEOS EL NUMERO DE EXPEDIENTE
-		 String correlativoExpediente = recursoServicio.numeroExpediente();
-		 formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
-		
-		//respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
-		 
+
+		// OBTENEOS EL NUMERO DE EXPEDIENTE
+		String correlativoExpediente = recursoServicio.numeroExpediente();
+		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
+
+		// respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
+
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
 		return pagina;
-	} 
-	
-	
+	}
+
 }

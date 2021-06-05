@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.Oficinas;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.utilitarios.Constantes;
@@ -114,6 +115,5 @@ public class RecursoDaoImpl implements RecursoDao {
 		}
 		return usuarios;
 	}
-
-
+ 
 }
