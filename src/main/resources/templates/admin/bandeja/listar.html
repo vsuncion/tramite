@@ -36,7 +36,7 @@
 
 
 					<div class="card">
-						<h5 class="card-header">LISTAR EXPEDIENTES </h5>
+						<h5 class="card-header">LISTAR EXPEDIENTES CON ESTADO <span th:text="${estadoDocumento.VNOMBRE}"></span></h5>
 						<div class="card-body">
 						<table class="table table-hover">
 							<thead>
@@ -69,7 +69,7 @@
 							     <td><span  th:text="${i.VESTADO_DOC}"></span></td>
 							     <td sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">
 							     
-							      <a th:if="${flagestadodocumento==1}" th:href="@{/admin/expediente/recibirExpediente?idmovimiento=} + ${i.NIDMOVIMIENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
+							      <a th:if="${flagestadodocumento==1}" th:href="@{/admin/expediente/recibirExpediente?idmovimiento=} + ${i.NIDMOVIMIENTOPK} + '&idestado='+ ${estadoDocumento.IDESTADOCUMENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
 							      <a th:if="${flagestadodocumento==2}" th:href="@{/admin/expediente/atenderexpediente?idexpediente=} + ${i.NIDEXPEDIENTEFK} + '&idmovimiento='+${i.NIDMOVIMIENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
 							     </td>
 							

@@ -29,6 +29,7 @@ import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Expediente;
+import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.Entidades.Oficinas;
@@ -82,10 +83,12 @@ public class ExpedienteController {
 
 		listaBandeja = expedienteServicio.listarBandeja(idoficina, idestado);
 		oficina = recursoServicio.infoOficina(idoficina);
-
+		estadoDocumento = recursoServicio.infoEstadoDocumento(idestado);
+		
 		pagina.addObject("formBandeja", formBandeja);
 		pagina.addObject("listaBandeja", listaBandeja);
 		pagina.addObject("flagestadodocumento", idestado);
+		pagina.addObject("estadoDocumento", estadoDocumento);
 		pagina.addObject("nombreoficina", oficina.getVNOMBRE());
 		pagina.setViewName("admin/bandeja/listar");
 		return pagina;
@@ -93,25 +96,31 @@ public class ExpedienteController {
 
 	@GetMapping(value = { "/recibirExpediente" })
 	public ModelAndView recibirExpediente(HttpServletRequest request, HttpServletResponse res,
-			@RequestParam Long idmovimiento) {
+			@RequestParam Long idmovimiento,@RequestParam Long idestado) {
 		ModelAndView pagina = new ModelAndView();
 		List<Bandeja> listaBandeja = new ArrayList<Bandeja>();
 		Bandeja formBandeja = new Bandeja();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();
-
+		EstadoDocumento estadoDocumento = new EstadoDocumento();
+		Oficinas oficina = new Oficinas();
 		// INSERTAR MOVIMIENTO
 		logger.info("==============" + idmovimiento);
 		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento);
 
 		usuario = recursoServicio.infoUsuario(autch.getName());
 
-		Long oficina = usuario.getNOFICINAFK();
-		listaBandeja = expedienteServicio.listarBandeja(oficina, Constantes.ESTADO_DOCUMENTO_RECIBIDO);
+		Long idoficina = usuario.getNOFICINAFK();
+		listaBandeja = expedienteServicio.listarBandeja(idoficina, Constantes.ESTADO_DOCUMENTO_RECIBIDO);
+		oficina = recursoServicio.infoOficina(idoficina);
+		estadoDocumento = recursoServicio.infoEstadoDocumento(idestado);
 
 		pagina.addObject("formBandeja", formBandeja);
 		pagina.addObject("listaBandeja", listaBandeja);
+		pagina.addObject("flagestadodocumento", idestado);
+		pagina.addObject("estadoDocumento", estadoDocumento);
+		pagina.addObject("nombreoficina", oficina.getVNOMBRE());
 		pagina.setViewName("admin/bandeja/listar");
 		return pagina;
 	}
@@ -223,6 +232,16 @@ public class ExpedienteController {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+	
+	@PostMapping(value = {"/hojaruta"})
+	public ModelAndView hojaRuta(HttpServletRequest request, HttpServletResponse res,@ModelAttribute HojaRuta formHojaRuta) {
+		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();
+		ModelAndView pagina = new ModelAndView();
+		
+		listaHoja = expedienteServicio.infoHojaRuta(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
+		
+		return pagina;
 	}
 
 	@GetMapping(value = { "/registroexpc" })

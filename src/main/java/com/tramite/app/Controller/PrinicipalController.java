@@ -2,10 +2,8 @@ package com.tramite.app.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Entidades.Expediente;
+import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
-import com.tramite.app.Entidades.Seleccion;
-import com.tramite.app.Entidades.TipoDocumentos;
+import com.tramite.app.Entidades.Seleccion; 
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
-import com.tramite.app.Servicios.FijaServicio;
+import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.Servicios.RecursoServicio;
@@ -39,6 +36,9 @@ public class PrinicipalController {
 
 	@Autowired
 	private MantenimientoServicio mantenimientoServicio;
+	
+	@Autowired
+	private ExpedienteServicio  expedienteServicio;
 
 	@Autowired
 	private RecursoServicio recursoServicio;
@@ -52,11 +52,39 @@ public class PrinicipalController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@GetMapping(value = { "/", "index" })
-	public ModelAndView hola() {
+	public ModelAndView hola(HttpServletRequest request, HttpServletResponse res) {
 		logger.info("======================= INFO ================");
 		ModelAndView pagina = new ModelAndView();
+		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>(); 
+		HojaRuta formHojaRuta = new HojaRuta();
+		Expediente infoExpediente = new Expediente();
+		
+ 
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.addObject("listaHoja",listaHoja);
+		pagina.addObject("formHojaRuta",formHojaRuta);
 		pagina.setViewName("index");
 		return pagina;
+	}
+	
+	@PostMapping(value = {"/buscarexpediente"})
+	public ModelAndView buscarExpediente(HttpServletRequest request, HttpServletResponse res,@ModelAttribute HojaRuta formHojaRuta) {
+		logger.info("======================= INFO ================");
+		ModelAndView pagina = new ModelAndView();
+		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();  
+		Expediente infoExpediente = new Expediente();
+		
+		infoExpediente = expedienteServicio.infoExpedienteCodigo(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
+		if(infoExpediente!=null) {
+			listaHoja = expedienteServicio.infoHojaRuta(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
+		}
+		
+ 
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.addObject("listaHoja",listaHoja);
+		pagina.addObject("formHojaRuta",formHojaRuta);
+		pagina.setViewName("index");
+		return pagina;	
 	}
 
 	@GetMapping(value = { "/admin/principal" })

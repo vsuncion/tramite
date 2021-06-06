@@ -1,6 +1,7 @@
 package com.tramite.app.Datos.Impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Oficinas;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Usuarios;
@@ -51,12 +53,13 @@ public class RecursoDaoImpl implements RecursoDao {
 	
 	@Override
 	public String numeroExpediente() {
-		 
+		Calendar fecha = Calendar.getInstance();
 		 String sql;
 		 String letraExpediente="E";
 		 int numeroExpediente=0;
 		 String numeroExpedienteLetra;
 		 String numeroFinalExpediente="0";
+		 int anio = fecha.get(Calendar.YEAR);
 		try {
 			sql="SELECT COUNT(1)+1 FROM "+Constantes.tablaExpediente;
 			numeroExpediente=jdbcTemplate.queryForObject(sql,  Integer.class);
@@ -64,27 +67,27 @@ public class RecursoDaoImpl implements RecursoDao {
 		
 			switch(numeroExpedienteLetra.length()) {
 			  case 1:
-				  numeroFinalExpediente = letraExpediente+"-00000"+numeroExpedienteLetra;
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-00000"+numeroExpedienteLetra;
 			   break;
 			   
 			  case 2:
-				  numeroFinalExpediente = letraExpediente+"-0000"+numeroExpedienteLetra;
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-0000"+numeroExpedienteLetra;
 			   break;
 			   
 			  case 3:
-				  numeroFinalExpediente = letraExpediente+"-000"+numeroExpedienteLetra;
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-000"+numeroExpedienteLetra;
 			   break;
 			   
 			  case 4:
-				  numeroFinalExpediente = letraExpediente+"-00"+numeroExpedienteLetra;
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-00"+numeroExpedienteLetra;
 			   break;
 			   
 			  case 5:
-				  numeroFinalExpediente = letraExpediente+"-0"+numeroExpedienteLetra;
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-0"+numeroExpedienteLetra;
 			   break;
 			   
 			  default :
-				  numeroFinalExpediente = letraExpediente+"-"+numeroExpedienteLetra;  
+				  numeroFinalExpediente = letraExpediente+"-"+anio+"-"+numeroExpedienteLetra;  
 			}
 			
 		} catch (Exception e) {
@@ -114,6 +117,31 @@ public class RecursoDaoImpl implements RecursoDao {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return usuarios;
+	}
+
+
+	@Override
+	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) {
+		StringBuffer sql = new StringBuffer();
+		EstadoDocumento info = new EstadoDocumento();
+		try {
+			sql.append(
+					"SELECT "+
+					"  ROW_NUMBER() OVER (ORDER BY IDESTADOCUMENTOPK) AS NITEM ,  \n"+
+				    "  IDESTADOCUMENTOPK,"+
+				    "  VNOMBRE,          "+
+				    "  VDESCRIPCION,     "+
+				    "  NESTADO,           "+
+				    "  DFECREGISTRO "+
+				    " FROM "+Constantes.tablaEstadoDocumento+" \n"+
+				    "WHERE IDESTADOCUMENTOPK= :P_IDESTADOCUMENTOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDESTADOCUMENTOPK", idEstadoDocumento);
+			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return info;
 	}
  
 }

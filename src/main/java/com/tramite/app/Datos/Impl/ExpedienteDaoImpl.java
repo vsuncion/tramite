@@ -19,6 +19,7 @@ import com.tramite.app.Datos.ExpedienteDao;
 import com.tramite.app.Entidades.ArchivoMovimiento;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
+import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.utilitarios.Constantes;
@@ -294,24 +295,21 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			// PROCEDEMOS A SUBIR EL ARCHIVO
 			sql4.append(
 			  " INSERT INTO "+Constantes.tablaArchivoMovimiento+" ( \n"+
-			  "   NEXPEDIENTEFK,      \n"+
-			  "   NMOVIMIENTOFK,      \n"+
+			  "   NEXPEDIENTEFK,      \n"+ 
 			  "   NOFICINAFK,         \n"+
 			  "   DFECHAREGISTRO,     \n"+
 			  "   VNOMBRE_ARCHIVO,    \n"+		 
 			  "   VUBICACION_ARCHIVO, \n"+  
 			  "   VEXTENSION )        \n"+
 			  " VALUES (            \n"+
-			  "   :P_NEXPEDIENTEFK,      \n"+
-			  "   :P_NMOVIMIENTOFK,      \n"+
+			  "   :P_NEXPEDIENTEFK,      \n"+ 
 			  "   :P_NOFICINAFK,         \n"+
 			  "   :P_DFECHAREGISTRO,     \n"+
 			  "   :P_VNOMBRE_ARCHIVO,    \n"+		 
 			  "   :P_VUBICACION_ARCHIVO, \n"+  
 			  "   :P_VEXTENSION )        ");
 			MapSqlParameterSource parametros4 = new MapSqlParameterSource();
-			parametros4.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK());
-			parametros4.addValue("P_NMOVIMIENTOFK", idMovimientoNuevo);
+			parametros4.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK()); 
 			parametros4.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
 			parametros4.addValue("P_DFECHAREGISTRO", Fechas.fechaActual());
 			parametros4.addValue("P_VNOMBRE_ARCHIVO", formexpediente.getVNOMBRE_ARCHIVO());
@@ -411,6 +409,82 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return archivoMovimiento;
+	}
+
+	@Override
+	public List<HojaRuta> infoHojaRuta(String anio, String codigoExpediente) {
+		StringBuffer sql = new StringBuffer();
+		List<HojaRuta> lista = new ArrayList<HojaRuta>();
+		 try {
+			 sql.append(
+				 "SELECT \n"+
+			     "    ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK )  AS NITEM,  \n"+
+			     "    T6.VNOMBRE AS TIPO_DOCUMENTO, \n"+
+			     "    CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			     "    T3.VNOMBRE AS OFICINA_ORIGEN, \n"+
+			     "    T4.VNOMBRE AS OFICINA_DESTINO, \n"+
+			     "    T5.VNOMBRE AS ESTADO_DOCUMENTO, \n"+
+			     "    CONVERT(varchar,T1.DFECHARECEPCION,22) AS VFECHARECEPCION, \n"+
+			     "    T1.VOBSERVACION \n"+
+			     " FROM "+Constantes.tablaMovimiento+"             T1  \n"+
+			     "  INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK  \n"+ 
+			     "  LEFT  JOIN "+Constantes.tablaOficinas+"        T3 ON T1.OFICINA_ORIGENFK=T3.NIDOFICINAPK \n"+ 
+			     "  LEFT  JOIN "+Constantes.tablaOficinas+"        T4 ON T1.OFICINA_DESTINOFK=T4.NIDOFICINAPK \n"+
+			     "  INNER JOIN "+Constantes.tablaEstadoDocumento+" T5 ON T1.NESTADODOCUMENTOFK=T5.IDESTADOCUMENTOPK \n"+
+			     "  INNER JOIN "+Constantes.tablaTipoDocumentos+"  T6 ON T6.NIDTIPODOCUMENTOPK=T2.TIPO_DOCUMENTOFK \n"+
+			     " WHERE  SUBSTRING(VCODIGO_EXPEDIENTE,3,4)= :P_ANIO \n"+
+			     "  AND   SUBSTRING(VCODIGO_EXPEDIENTE,8,LEN(VCODIGO_EXPEDIENTE))= :P_VCODIGO_EXPEDIENTE  \n"+
+			     "  AND T1.NELIMINADO= :P_NELIMINADO ORDER BY T1.NIDMOVIMIENTOPK ASC");
+			 MapSqlParameterSource parametros = new MapSqlParameterSource();
+			 parametros.addValue("P_ANIO", anio);
+			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente);
+			 parametros.addValue("P_NELIMINADO", Constantes.estadoDesactivado);
+			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(HojaRuta.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) {
+		StringBuffer sql = new StringBuffer();
+		Expediente info = new Expediente();
+		try {
+			sql.append(
+				"SELECT  \n"+
+				"    T1.NIDEXPEDIENTEPK, \n"+
+				"    T1.VCODIGO_EXPEDIENTE, \n"+
+				"    T2.VNOMBRE, \n"+
+				"    T1.VNUMERODOCUMENTO, \n"+
+				"    T1.VNUMEROFOLIO, \n"+
+				"    T1.VASUNTO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
+				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN T3.VDIRECCION  \n"+
+				"    WHEN 2 THEN T5.VDIRECCION  END   VDIRECCION_SOLICITANTE, \n"+ 
+				"    T1.VNOMBRE_ARCHIVO,    \n"+
+				"    T1.VUBICACION_ARCHIVO, \n"+
+				"    T1.VEXTENSION \n"+
+				" FROM        "+Constantes.tablaExpediente+"       T1  \n"+
+				"  INNER JOIN "+Constantes.tablaTipoDocumentos+"   T2 ON T1.TIPO_DOCUMENTOFK=T2.NIDTIPODOCUMENTOPK  \n"+
+				"  INNER JOIN "+Constantes.tablaPersona+"          T3 ON T1.PERSONAFK=T3.NIDPERSONAPK   \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaJuridica+"  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK  \n"+
+				" INNER JOIN " +Constantes.tablaEstadoDocumento+"  T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
+				 " WHERE  SUBSTRING(T1.VCODIGO_EXPEDIENTE,3,4)= :P_ANIO \n"+
+			     "  AND   SUBSTRING(T1.VCODIGO_EXPEDIENTE,8,LEN(VCODIGO_EXPEDIENTE))= :P_VCODIGO_EXPEDIENTE");
+			 MapSqlParameterSource parametros = new MapSqlParameterSource();
+			 parametros.addValue("P_ANIO", anio);
+			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
+		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			 
+		}
+		return info;
 	}
 
 	 

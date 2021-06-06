@@ -56,7 +56,8 @@ public class Expediente implements Serializable {
 	private Long NIDMOVIMIENTOFK;
 	private Long  OFICINA_ORIGENFK;
 	private String  VDFECREGISTRO;
-    
+	private String   VDIRECCION_SOLICITANTE;
+	
 	public Expediente() {
 	}
 
@@ -507,6 +508,20 @@ public class Expediente implements Serializable {
  
 	public void setVDFECREGISTRO(String vDFECREGISTRO) {
 		VDFECREGISTRO = vDFECREGISTRO;
+	}
+
+
+
+
+	public String getVDIRECCION_SOLICITANTE() {
+		return VDIRECCION_SOLICITANTE;
+	}
+
+
+
+
+	public void setVDIRECCION_SOLICITANTE(String vDIRECCION_SOLICITANTE) {
+		VDIRECCION_SOLICITANTE = vDIRECCION_SOLICITANTE;
 	}
 
 	

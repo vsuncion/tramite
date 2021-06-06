@@ -144,4 +144,11 @@ public class RecursoServiceImpl implements RecursoServicio {
 		return mantenimientoServicio.buscarOficina(idoficina);
 	}
 
+	@Override
+	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) { 
+		return recursoDao.infoEstadoDocumento(idEstadoDocumento);
+	}
+
+ 
+
 }
