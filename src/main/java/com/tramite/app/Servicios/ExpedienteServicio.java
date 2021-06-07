@@ -19,4 +19,6 @@ public interface ExpedienteServicio {
 	ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente,Long idoficina,String nombrearchivo);
 	List<HojaRuta> infoHojaRuta(String anio,String codigoExpediente);
 	Expediente infoExpedienteCodigo(String anio, String codigoExpediente); 
+	List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente);
+	Expediente infoExpedienteId(Long idExpediente); 
 }

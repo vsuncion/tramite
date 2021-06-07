@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+	
+	   <!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+		
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+		    <nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+				
+				<!-- CONTENIDO EDITABLE INICIO-->
+			    <div class="rows">
+			    <form th:object="${formHojaRuta}">
+			    
+ 
+			    
+			         <div class="row">
+			             <div class="col-sm-12 text-center"><a th:href="@{/admin/expediente/listarBandeja?idestado=}+${idestado}">REGRESAR</a></div>
+			        </div>
+			       <div class="card">
+						<div class="card-body">
+							<h5 class="card-title">INFORMACION DEL ADMINISTRADO</h5>
+							<hr>
+                              <div class="row">                        
+                                 <div class="col-sm-2"><span class="letras_subtitulo_cajas_texto">DOCUMENTO :</span></div>
+                                 <div class="col-sm-4"><span class="letras_subtitulo_cajas_texto_respuesta" th:text="${infoExpediente.VCODIGO_EXPEDIENTE}"></span></div>
+                                 <div class="col-sm-2"><span class="letras_subtitulo_cajas_texto">FECHA Y HORA :</span></div>
+                                 <div class="col-sm-4"><span class="letras_subtitulo_cajas_texto_respuesta" th:text="${infoExpediente.VDFECREGISTRO}"></span></div>
+                              </div>
+                              <p>
+                             
+                              <div class="row">                        
+                                 <div class="col-sm-2"><span class="letras_subtitulo_cajas_texto">ADMINISTRADO :</span></div>
+                                 <div class="col-sm-4"><span class="letras_subtitulo_cajas_texto_respuesta" th:text="${infoExpediente.VREMITENTE}"></span></div>
+                                 <div class="col-sm-2"><span class="letras_subtitulo_cajas_texto">DOMICILO :</span></div>
+                                 <div class="col-sm-4"><span class="letras_subtitulo_cajas_texto_respuesta" th:text="${infoExpediente.VDIRECCION_SOLICITANTE}"></span></div>
+                              </div>
+                              <p>
+                              <div class="row">                        
+                                 <div class="col-sm-2"><span class="letras_subtitulo_cajas_texto">ASUNTO :</span></div>
+                                 <div class="col-sm-10"><span class="letras_subtitulo_cajas_texto_respuesta" th:text="${infoExpediente.VASUNTO}"></span></div>
+                              </div>
+
+						</div>
+					</div>
+					
+					
+					
+					
+					
+					
+					<p>
+			<div class="card">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-sm-6">
+							<h5 class="card-title">HOJA DE RUTA DEL EXPEDIENTE</h5>
+						</div>
+						
+						<div class="col-sm-6 text-right" th:if="${#lists.size(listaHoja)}">
+						
+						<a class="btn btn-primary" th:href="@{/admin/expediente/exportarhojaruta?anio=}+${anio}+'&codigoexpediente='+${vcodigoexp}" role="button" target="_blank"><i class="fas fa-file-excel"></i> Exportar Excel</a>
+							 
+						</div>
+					</div>
+
+
+				</div>
+
+
+				<div class="card-body">
+
+					<table class="table table-hover">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">NITEM</th>
+								<th scope="col">TIPO DOCUMENTO</th>
+								<th scope="col">FECHA OFICINA</th>
+								<th scope="col">OFICINA ORIGEN</th>
+								<th scope="col">ESTADO DOCUMENTO</th>
+								<th scope="col">OFICINA DESTINO</th>
+								<th scope="col">FECHA RECEPCION</th>
+								<th scope="col">OBSERVACION</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="i : ${listaHoja}">
+								<th scope="row"><span th:text="${i.NITEM}"></span></th>
+								<td><span th:text="${i.TIPO_DOCUMENTO}"></span></td>
+								<td><span th:text="${i.VFECHAOFICINA}"></span></td>
+								<td><span th:text="${i.OFICINA_ORIGEN}"></span></td>
+								<td><span th:text="${i.ESTADO_DOCUMENTO}"></span></td>
+								<td><span th:text="${i.OFICINA_DESTINO}"></span></td>
+								<td><span th:text="${i.VFECHARECEPCION}"></span></td>
+								<td><span th:text="${i.VOBSERVACION}"></span></td>
+							</tr>
+							 
+						</tbody>
+					</table>
+				</div>
+			</div>
+					
+			    
+			    </form>
+			    
+				</div>
+		</div>
+	
+	
+	</div>
+	
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+ 
+
+</body>
+</html>

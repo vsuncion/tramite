@@ -1,9 +1,13 @@
 package com.tramite.app.Controller;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,7 @@ import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.ConstantesArchivos;
+import com.tramite.app.utilitarios.GenerarExcel;
 
 @Controller
 @RequestMapping("/")
@@ -48,6 +53,9 @@ public class PrinicipalController {
 
 	@Autowired
 	private ArchivoUtilitarioServicio archivoUtilitarioServicio;
+	
+	@Autowired
+	private GenerarExcel  generarExcel;
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -95,7 +103,7 @@ public class PrinicipalController {
 	}
 
 	@GetMapping(value = { "/nuevaPersonaNatural" })
-	public ModelAndView nuevaPersonaNatural() {
+	public ModelAndView nuevaPersonaNatural(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
@@ -112,7 +120,7 @@ public class PrinicipalController {
 	}
 
 	@GetMapping(value = { "/nuevaPersonaJuridica" })
-	public ModelAndView nuevaPersonaJuridica() {
+	public ModelAndView nuevaPersonaJuridica(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
@@ -182,7 +190,7 @@ public class PrinicipalController {
 	}
 
 	@GetMapping(value = { "/nueva_busqueda_simple" })
-	public ModelAndView buscarSolicitante() {
+	public ModelAndView buscarSolicitante(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
@@ -289,7 +297,7 @@ public class PrinicipalController {
 	}
 
 	@GetMapping(value = { "/nueva_busqueda_tupa" })
-	public ModelAndView buscarSolicitanteTupa() {
+	public ModelAndView buscarSolicitanteTupa(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
@@ -385,6 +393,39 @@ public class PrinicipalController {
 
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
 		return pagina;
+	}
+	
+	@GetMapping(value = {"/buscarexpediente/exportarhojaruta"})
+	public void exportarHojaRuta(HttpServletRequest request, HttpServletResponse res,@RequestParam String anio,String codigoexpediente) {
+		Expediente infoExpediente = new Expediente();
+		XSSFWorkbook libro = new XSSFWorkbook();
+		List<HojaRuta> listaHojaRuta = new ArrayList<HojaRuta>();
+		
+		try {
+			
+			infoExpediente = expedienteServicio.infoExpedienteCodigo(anio, codigoexpediente);
+			if(infoExpediente!=null) {
+				listaHojaRuta = expedienteServicio.infoHojaRuta(anio,codigoexpediente);
+				if(listaHojaRuta.size()>0) {
+					//GENERAMOS LA HOJA DE RUTA
+					generarExcel.reporteHojaRuta(libro, infoExpediente, listaHojaRuta);
+					String nombreReporte = "Hoja_Ruta_" + infoExpediente.getVCODIGO_EXPEDIENTE() + ".xlsx";
+					 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+					 
+					 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+					 libro.write(outByteStream);
+					 byte[] outArray = outByteStream.toByteArray();
+					 OutputStream outStream = res.getOutputStream();
+					 outStream.write(outArray);
+					 outStream.flush();
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 
 }

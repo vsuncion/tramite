@@ -207,7 +207,7 @@
 		$('#NESTADODOCUMENTOFK').on('change', function() {
 			var name = $('#NESTADODOCUMENTOFK option:selected').text();
 
-			if ('ARCHIVAR' == name) {
+			if ('ARCHIVAR' == name || 'FINALIZAR' == name) {
 				$('#OFICINA_DESTINOFK').attr("disabled", true);
 			} else {
 				$('#OFICINA_DESTINOFK').attr("disabled", false);

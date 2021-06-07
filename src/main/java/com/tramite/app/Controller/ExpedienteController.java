@@ -1,5 +1,6 @@
 package com.tramite.app.Controller;
 
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,7 @@ import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.ConstantesArchivos;
+import com.tramite.app.utilitarios.GenerarExcel;
 
 @Controller
 @RequestMapping("/admin/expediente")
@@ -56,6 +60,8 @@ public class ExpedienteController {
 
 	@Autowired
 	private ArchivoUtilitarioServicio archivoUtilitarioServicio;
+	@Autowired
+	private GenerarExcel generarExcel;
 
 	@Value("${rutaArchivo}")
 	private String rutaRaiz;
@@ -103,15 +109,17 @@ public class ExpedienteController {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();
-		EstadoDocumento estadoDocumento = new EstadoDocumento();
-		Oficinas oficina = new Oficinas();
+		//EstadoDocumento estadoDocumento = new EstadoDocumento();
+		//Oficinas oficina = new Oficinas();
 		// INSERTAR MOVIMIENTO
 		logger.info("==============" + idmovimiento);
-		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento);
-
+	 
 		usuario = recursoServicio.infoUsuario(autch.getName());
 
 		Long idoficina = usuario.getNOFICINAFK();
+		
+		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento);
+		/*
 		listaBandeja = expedienteServicio.listarBandeja(idoficina, Constantes.ESTADO_DOCUMENTO_RECIBIDO);
 		oficina = recursoServicio.infoOficina(idoficina);
 		estadoDocumento = recursoServicio.infoEstadoDocumento(idestado);
@@ -121,7 +129,9 @@ public class ExpedienteController {
 		pagina.addObject("flagestadodocumento", idestado);
 		pagina.addObject("estadoDocumento", estadoDocumento);
 		pagina.addObject("nombreoficina", oficina.getVNOMBRE());
-		pagina.setViewName("admin/bandeja/listar");
+		*/
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		pagina.setViewName("admin/bandeja/confirmacion");
 		return pagina;
 	}
 
@@ -188,8 +198,10 @@ public class ExpedienteController {
 		}
 
 		mostrarmensaje = expedienteServicio.responderExpediente(formExpediente);
-		logger.info("sdsd");
-		return null;
+		
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		pagina.setViewName("admin/bandeja/confirmacion");
+		return pagina;
 	}
 
 	@GetMapping(value = { "/descargarprincipal" })
@@ -234,6 +246,7 @@ public class ExpedienteController {
 		}
 	}
 	
+	/*
 	@PostMapping(value = {"/hojaruta"})
 	public ModelAndView hojaRuta(HttpServletRequest request, HttpServletResponse res,@ModelAttribute HojaRuta formHojaRuta) {
 		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();
@@ -242,6 +255,69 @@ public class ExpedienteController {
 		listaHoja = expedienteServicio.infoHojaRuta(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
 		
 		return pagina;
+	}*/
+	
+	@GetMapping(value = {"/listahojaruta"})
+	public ModelAndView listarHojaRuta(HttpServletRequest request, HttpServletResponse res,@RequestParam int idestado,@RequestParam Long idexpediente) {
+		ModelAndView pagina = new ModelAndView();	
+		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();
+		Expediente infoExpediente = new Expediente();
+		HojaRuta formHojaRuta = new HojaRuta();
+		
+		infoExpediente = expedienteServicio.infoExpedienteId(idexpediente);
+		
+		listaHoja = expedienteServicio.infoHojaRutaIdExpediente(idexpediente);
+		
+		String[] vcodigoexpediente = infoExpediente.getVCODIGO_EXPEDIENTE().split("-");
+		String anio = vcodigoexpediente[1];
+		String vcodigoexp  = vcodigoexpediente[2];
+		
+		//String anio =    infoExpediente.getVCODIGO_EXPEDIENTE().substring(2, 6);
+		
+		pagina.addObject("anio",anio);
+		pagina.addObject("vcodigoexp",vcodigoexp);
+		pagina.addObject("idestado",idestado);
+		pagina.addObject("formHojaRuta",formHojaRuta);
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.addObject("listaHoja",listaHoja);
+		pagina.setViewName("admin/bandeja/hojaruta");
+		return pagina;
+ 
+		
+	}
+	
+	
+	@GetMapping(value = {"/exportarhojaruta"})
+	public void exportarHojaRuta(HttpServletRequest request, HttpServletResponse res,@RequestParam String anio,String codigoexpediente) {
+		Expediente infoExpediente = new Expediente();
+		XSSFWorkbook libro = new XSSFWorkbook();
+		List<HojaRuta> listaHojaRuta = new ArrayList<HojaRuta>();
+		
+		try {
+			
+			infoExpediente = expedienteServicio.infoExpedienteCodigo(anio, codigoexpediente);
+			if(infoExpediente!=null) {
+				listaHojaRuta = expedienteServicio.infoHojaRuta(anio,codigoexpediente);
+				if(listaHojaRuta.size()>0) {
+					//GENERAMOS LA HOJA DE RUTA
+					generarExcel.reporteHojaRuta(libro, infoExpediente, listaHojaRuta);
+					String nombreReporte = "Hoja_Ruta_" + infoExpediente.getVCODIGO_EXPEDIENTE() + ".xlsx";
+					 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+					 
+					 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+					 libro.write(outByteStream);
+					 byte[] outArray = outByteStream.toByteArray();
+					 OutputStream outStream = res.getOutputStream();
+					 outStream.write(outArray);
+					 outStream.flush();
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 
 	@GetMapping(value = { "/registroexpc" })

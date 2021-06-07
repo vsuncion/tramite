@@ -52,15 +52,16 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 T8.VNOMBRE AS VOFICINA_DESTINO, \n"+
 			 " 	 T6.VNOMBRE AS VESTADO_DOC, \n"+
 			 " 	 T1.NIDEXPEDIENTEFK, \n"+
-			 " 	 T2.VCODIGO_EXPEDIENTE \n"+
-			 " FROM "+Constantes.tablaMovimiento+" T1 \n"+
-			 " 	 INNER JOIN EXPEDIENTE       T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
-			 " 	 INNER JOIN PERSONA          T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+
-			 " 	 LEFT JOIN PERSONA_NATURAL   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK \n"+
-			 " 	 LEFT JOIN PERSONA_JURIDICA  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK \n"+
-			 " 	 INNER JOIN ESTADO_DOCUMENTO T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
-			 " 	 INNER JOIN OFICINA          T7 ON T1.OFICINA_ORIGENFK=T7.NIDOFICINAPK \n"+
-			 " 	 LEFT JOIN OFICINA           T8 ON T1.OFICINA_DESTINOFK=T8.NIDOFICINAPK \n");
+			 " 	 T2.VCODIGO_EXPEDIENTE, \n"+
+			 " 	 T2.NIDEXPEDIENTEPK \n"+
+			 " FROM "+Constantes.tablaMovimiento+"              T1 \n"+
+			 " 	 INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
+			 " 	 INNER JOIN "+Constantes.tablaPersona+"         T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+
+			 " 	 LEFT JOIN  "+Constantes.tablaPersonaNatural+"  T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK \n"+
+			 " 	 LEFT JOIN  "+Constantes.tablaPersonaJuridica+" T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK \n"+
+			 " 	 INNER JOIN "+Constantes.tablaEstadoDocumento+" T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
+			 " 	 INNER JOIN "+Constantes.tablaOficinas+"        T7 ON T1.OFICINA_ORIGENFK=T7.NIDOFICINAPK \n"+
+			 " 	 LEFT JOIN  "+Constantes.tablaOficinas+"        T8 ON T1.OFICINA_DESTINOFK=T8.NIDOFICINAPK \n");
  			
 			if(estadodocumento==1 || estadodocumento==2) {
 				sql.append(" WHERE T1.OFICINA_DESTINOFK= :P_OFICINA_DESTINOFK  AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO AND T1.NELIMINADO= :P_NELIMINADO \n");
@@ -86,6 +87,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	public boolean recibirExpediente(Long idMovimiento) {
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sql2 = new StringBuffer();
+		StringBuffer sql3 = new StringBuffer();
 		boolean respuesta = false;
 		
 		try {
@@ -125,6 +127,21 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros2.addValue("P_NESTADOREGISTRO",  Constantes.estadoDesactivado);
 			parametros2.addValue("P_NIDMOVIMIENTOPK", idMovimiento);
 			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);
+			
+			
+			// ACTUALIZAMOS EL EXPEDIENTE
+			/*
+			sql3.append(
+			" UPDATE "+Constantes.tablaExpediente+
+			"  SET \n"+
+			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
+			"  NOFICINAFK= :P_NOFICINAFK \n"+
+			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
+			MapSqlParameterSource parametros3 = new MapSqlParameterSource();
+			parametros3.addValue("P_NESTADODOCUMENTOFK", value);
+			parametros3.addValue("P_NOFICINAFK", value);
+			parametros3.addValue("P_NIDEXPEDIENTEPK", value);
+			*/
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
@@ -479,6 +496,78 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_ANIO", anio);
 			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
+		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			 
+		}
+		return info;
+	}
+
+	@Override
+	public List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente) {
+		StringBuffer sql = new StringBuffer();
+		List<HojaRuta> lista = new ArrayList<HojaRuta>();
+		 try {
+			 sql.append(
+				 "SELECT \n"+
+			     "    ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK )  AS NITEM,  \n"+
+			     "    T6.VNOMBRE AS TIPO_DOCUMENTO, \n"+
+			     "    CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			     "    T3.VNOMBRE AS OFICINA_ORIGEN, \n"+
+			     "    T4.VNOMBRE AS OFICINA_DESTINO, \n"+
+			     "    T5.VNOMBRE AS ESTADO_DOCUMENTO, \n"+
+			     "    CONVERT(varchar,T1.DFECHARECEPCION,22) AS VFECHARECEPCION, \n"+
+			     "    T1.VOBSERVACION \n"+
+			     " FROM "+Constantes.tablaMovimiento+"             T1  \n"+
+			     "  INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK  \n"+ 
+			     "  LEFT  JOIN "+Constantes.tablaOficinas+"        T3 ON T1.OFICINA_ORIGENFK=T3.NIDOFICINAPK \n"+ 
+			     "  LEFT  JOIN "+Constantes.tablaOficinas+"        T4 ON T1.OFICINA_DESTINOFK=T4.NIDOFICINAPK \n"+
+			     "  INNER JOIN "+Constantes.tablaEstadoDocumento+" T5 ON T1.NESTADODOCUMENTOFK=T5.IDESTADOCUMENTOPK \n"+
+			     "  INNER JOIN "+Constantes.tablaTipoDocumentos+"  T6 ON T6.NIDTIPODOCUMENTOPK=T2.TIPO_DOCUMENTOFK \n"+
+			     " WHERE   T2.NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK  \n"+
+			     "  AND T1.NELIMINADO= :P_NELIMINADO ORDER BY T1.NIDMOVIMIENTOPK ASC");
+			 MapSqlParameterSource parametros = new MapSqlParameterSource(); 
+			 parametros.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+			 parametros.addValue("P_NELIMINADO", Constantes.estadoDesactivado);
+			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(HojaRuta.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public Expediente infoExpedienteId(Long idExpediente) {
+		StringBuffer sql = new StringBuffer();
+		Expediente info = new Expediente();
+		try {
+			sql.append(
+				"SELECT  \n"+
+				"    T1.NIDEXPEDIENTEPK, \n"+
+				"    T1.VCODIGO_EXPEDIENTE, \n"+
+				"    T2.VNOMBRE, \n"+
+				"    T1.VNUMERODOCUMENTO, \n"+
+				"    T1.VNUMEROFOLIO, \n"+
+				"    T1.VASUNTO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
+				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN T3.VDIRECCION  \n"+
+				"    WHEN 2 THEN T5.VDIRECCION  END   VDIRECCION_SOLICITANTE, \n"+ 
+				"    T1.VNOMBRE_ARCHIVO,    \n"+
+				"    T1.VUBICACION_ARCHIVO, \n"+
+				"    T1.VEXTENSION \n"+
+				" FROM        "+Constantes.tablaExpediente+"       T1  \n"+
+				"  INNER JOIN "+Constantes.tablaTipoDocumentos+"   T2 ON T1.TIPO_DOCUMENTOFK=T2.NIDTIPODOCUMENTOPK  \n"+
+				"  INNER JOIN "+Constantes.tablaPersona+"          T3 ON T1.PERSONAFK=T3.NIDPERSONAPK   \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaJuridica+"  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK  \n"+
+				"  INNER JOIN " +Constantes.tablaEstadoDocumento+"  T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
+				 " WHERE NIDEXPEDIENTEPK = :P_NIDEXPEDIENTEPK " );
+			 MapSqlParameterSource parametros = new MapSqlParameterSource(); 
+			  parametros.addValue("P_NIDEXPEDIENTEPK", idExpediente); 
 		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
 		} catch (Exception e) {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());

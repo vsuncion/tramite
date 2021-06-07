@@ -53,6 +53,7 @@
 									   <span th:if="${flagestadodocumento==1}" >RECEPCIONAR</span>
 									   <span th:if="${flagestadodocumento==2}" >ATENDER</span>
 									</th>
+									<th scope="col">HOJA RUTA</th> 
 									 
 									
 								</tr>
@@ -72,7 +73,7 @@
 							      <a th:if="${flagestadodocumento==1}" th:href="@{/admin/expediente/recibirExpediente?idmovimiento=} + ${i.NIDMOVIMIENTOPK} + '&idestado='+ ${estadoDocumento.IDESTADOCUMENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
 							      <a th:if="${flagestadodocumento==2}" th:href="@{/admin/expediente/atenderexpediente?idexpediente=} + ${i.NIDEXPEDIENTEFK} + '&idmovimiento='+${i.NIDMOVIMIENTOPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a>
 							     </td>
-							
+							     <td><a th:href="@{/admin/expediente/listahojaruta?idestado=}+${estadoDocumento.IDESTADOCUMENTOPK}+'&idexpediente='+${i.NIDEXPEDIENTEPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a></td>
 							   </tr>
 							</tbody>
 						</table>

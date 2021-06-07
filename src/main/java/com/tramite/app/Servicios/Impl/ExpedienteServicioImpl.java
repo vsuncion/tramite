@@ -101,6 +101,16 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 		return expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
 	}
 
+	@Override
+	public List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente) { 
+		return expedienteDao.infoHojaRutaIdExpediente(idExpediente);
+	}
+
+	@Override
+	public Expediente infoExpedienteId(Long idExpediente) { 
+		return expedienteDao.infoExpedienteId(idExpediente);
+	}
+
  
 
 	 
