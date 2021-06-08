@@ -1,5 +1,8 @@
 package com.tramite.app.Datos.Impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
+import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.Fechas;
 
@@ -37,10 +41,19 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			switch (tipoPersona) {
 			case Constantes.tipoPersonaNatural:
 
-				sql.append(" SELECT " + "	  VNOMBRE,	    \n" + "	  VAPEPATERNO,  \n" + "	  VAPEMATERNO,  \n"
-						+ "	  NTIPODOCFK,   \n" + "	  VNUMERODOC,   \n" + "	  VDIRECCION,   \n" + "	  VCORREO,      \n"
-						+ "	  VTELEFONO,    \n" + "	  NIDPERSONAPK \n" + " FROM " + Constantes.tablaPersona
-						+ " WHERE VNUMERODOC = :P_VNUMERODOC");
+				sql.append(
+			    	"SELECT           \n" +
+				    "   VNOMBRE,	  \n" +
+			    	"   VAPEPATERNO,  \n" + 
+				    "	VAPEMATERNO,  \n" +
+			    	"	NTIPODOCFK,   \n" +
+				    "	VNUMERODOC,   \n" + 
+			    	"	VDIRECCION,   \n" +
+				    "	VCORREO,      \n"	+
+			    	"	VTELEFONO,    \n" +
+				    "	NIDPERSONAPK  \n" + 
+			    	" FROM " + Constantes.tablaPersona+" \n"+
+			    	" WHERE VNUMERODOC = :P_VNUMERODOC");
 				parametros.addValue("P_VNUMERODOC", vnumero);
 				infoPersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,
 						BeanPropertyRowMapper.newInstance(Persona.class));
@@ -96,7 +109,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
           parametros.addValue("P_VAPEPATERNO", prePersona.getVAPEPATERNO());
           parametros.addValue("P_VAPEMATERNO", prePersona.getVAPEMATERNO());
           parametros.addValue("P_NTIPODOCFK", prePersona.getNTIPODOCFK());
-          parametros.addValue("P_VNUMERODOC", prePersona.getVNUMERODOC());
+          parametros.addValue("P_VNUMERODOC", prePersona.getVNUMERODOC().trim());
           parametros.addValue("P_VDIRECCION", prePersona.getVDIRECCION());
           parametros.addValue("P_VCORREO", prePersona.getVCORREO());
           parametros.addValue("P_VCODIGOACTIVACION", prePersona.getVCODIGOACTIVACION());
@@ -286,6 +299,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public boolean guardarExpedienteSimple(Expediente expediente) {
 		String sql ="";
 		Long idExpediente =0L;
+		StringBuffer sql3 = new StringBuffer();
 		boolean respuesta = false;
 		try {
 		   sql=
@@ -362,7 +376,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		 
 		       MapSqlParameterSource parametros2 = new MapSqlParameterSource();
 		       parametros2.addValue("P_NIDEXPEDIENTEFK", idExpediente);
-		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.EstadoDocumentoRegistrado);
+		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.EstadoDocumentoPendiente);
 		       parametros2.addValue("P_OFICINA_ORIGENFK",Constantes.OficinaMesaPartePk); 
 		       parametros2.addValue("P_OFICINA_DESTINOFK",Constantes.OficinaMesaPartePk); 
 		       parametros2.addValue("P_DFECHAOFICINA", Fechas.fechaActual()); 
@@ -370,6 +384,19 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		       KeyHolder keyHolder2= new GeneratedKeyHolder();
 		       namedParameterJdbcTemplate.update(sql, parametros2,keyHolder2, new String[] {"NIDMOVIMIENTOPK"});
 		       logger.info("NIDMOVIMIENTOPK++"+keyHolder2.getKey().longValue());
+		       
+		        sql3.append(
+	   			" UPDATE "+Constantes.tablaExpediente+
+	   			"  SET \n"+
+	   			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
+	   			"  NOFICINAFK= :P_NOFICINAFK \n"+
+	   			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
+	   			MapSqlParameterSource parametros3 = new MapSqlParameterSource();
+	   			parametros3.addValue("P_NESTADODOCUMENTOFK",  Constantes.EstadoDocumentoPendiente);
+	   			parametros3.addValue("P_NOFICINAFK", Constantes.OficinaMesaPartePk);
+	   			parametros3.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+	   			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
+		       
 		
 		respuesta =true;
 		} catch (Exception e) {
@@ -377,6 +404,152 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			respuesta =false;
 		}
 		return respuesta;
+	}
+
+	@Override
+	public Long guardarPreTupac(Expediente expediente) {
+		StringBuffer sql = new StringBuffer();
+		Long idpretupacexpediente = 0L;
+		try {
+			sql.append(
+			  "INSERT INTO "+Constantes.tablaPrExpediente+" ( \n"+
+			  "   TIPOPERSONAFK,      \n"+
+			  "   PERSONAFK,          \n"+
+			  "   TUPACFK,            \n"+
+			  "   TIPODOCUMENTOFK,    \n"+
+			  "   VNUMERODOCUMENTO,   \n"+
+			  "   VNUMEROFOLIO,       \n"+
+			  "   DFECHADOCUMENTO,    \n"+
+			  "   VASUNTO,            \n"+
+			  "   VNOMBRE_ARCHIVO,    \n"+
+			  "   VUBICACION_ARCHIVO, \n"+
+			  "   VEXTENSION          \n"+
+			  ") VALUES ( \n"+
+			  "   :P_TIPOPERSONAFK,      \n"+
+			  "   :P_PERSONAFK,          \n"+
+			  "   :P_TUPACFK,            \n"+
+			  "   :P_TIPODOCUMENTOFK,    \n"+
+			  "   :P_VNUMERODOCUMENTO,   \n"+
+			  "   :P_VNUMEROFOLIO,       \n"+
+			  "   :P_DFECHADOCUMENTO,    \n"+
+			  "   :P_VASUNTO,            \n"+
+			  "   :P_VNOMBRE_ARCHIVO,    \n"+
+			  "   :P_VUBICACION_ARCHIVO, \n"+
+			  "   :P_VEXTENSION)         ");
+			
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_TIPOPERSONAFK", expediente.getNTIPOPERSONA());
+			parametros.addValue("P_PERSONAFK", expediente.getPERSONAFK());
+			parametros.addValue("P_TUPACFK", expediente.getTUPACFK());
+			parametros.addValue("P_TIPODOCUMENTOFK", expediente.getTIPO_DOCUMENTOFK());
+			parametros.addValue("P_VNUMERODOCUMENTO", expediente.getVNUMERODOCUMENTO());
+			parametros.addValue("P_VNUMEROFOLIO", expediente.getVNUMEROFOLIO());
+			parametros.addValue("P_DFECHADOCUMENTO", Fechas.fechaActual());
+			parametros.addValue("P_VASUNTO", expediente.getVASUNTO());
+			parametros.addValue("P_VNOMBRE_ARCHIVO", expediente.getVNOMBRE_ARCHIVO());
+			parametros.addValue("P_VUBICACION_ARCHIVO", expediente.getVUBICACION_ARCHIVO());
+			parametros.addValue("P_VEXTENSION", expediente.getVEXTENSION());
+            KeyHolder  keyHolder = new GeneratedKeyHolder();
+			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder,new String[] {"IDPREEXPEDIENTEPK"});
+			idpretupacexpediente = keyHolder.getKey().longValue();
+			
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return idpretupacexpediente;
+	}
+
+	@Override
+	public Expediente preTupacExpediente(Long idprexpediente) {
+		StringBuffer sql = new StringBuffer();
+		Expediente infoExpediente = new Expediente();
+		try {
+			sql.append(
+				"SELECT \n"+
+				"   T1.IDPREEXPEDIENTEPK, \n"+
+				"   CASE T1.TIPOPERSONAFK WHEN 1 THEN CONCAT(T2.VAPEPATERNO,' ',T2.VAPEMATERNO,','+T2.VNOMBRE)  \n"+
+				"   WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+
+				"   T4.VNOMBRE AS VTIPO_DOCUMENTOS, \n"+
+				"   T1.TUPACFK, \n"+
+				"   T3.VNOMBRE AS VNOMBRETUPAC, \n"+
+				"   T1.VNUMERODOCUMENTO, \n"+
+				"   T1.VNUMEROFOLIO, \n"+
+				"   CONVERT(varchar,T1.DFECHADOCUMENTO,22) AS VDFECREGISTRO, \n"+
+				"   T1.VNOMBRE_ARCHIVO, \n"+
+				"   T1.VUBICACION_ARCHIVO, \n"+
+				"   T1.VEXTENSION \n"+
+				" FROM "+Constantes.tablaPrExpediente+"  		T1  \n"+
+				"  INNER JOIN "+Constantes.tablaPersona+" 		T2 ON T1.PERSONAFK=T2.NIDPERSONAPK \n"+
+				"  INNER JOIN "+Constantes.tablaTupac+"   		T3 ON T1.TUPACFK=T3.TUPACPK \n"+
+				"  INNER JOIN "+Constantes.tablaTipoDocumentos+" T4 ON T1.TIPODOCUMENTOFK=T4.NIDTIPODOCUMENTOPK \n"+
+				"  LEFT JOIN "+Constantes.tablaPersonaJuridica+" T5 ON T1.PERSONAFK=T5.NIDPERSONAFK \n"+
+				" WHERE  T1.IDPREEXPEDIENTEPK= :P_IDPREEXPEDIENTEPK ");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDPREEXPEDIENTEPK", idprexpediente);
+			infoExpediente=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Expediente.class));
+			
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return infoExpediente;
+	}
+
+	@Override
+	public boolean guardarPreRequisito(PreRequisitoTupa preRequisitoTupa) {
+		StringBuffer sql = new StringBuffer();
+		boolean respuesta = false;
+		try {
+			sql.append(
+			 "INSERT INTO "+Constantes.tablaPreRequisitosTupac+" ( \n"+
+			 "   IDPREEXPEDIENTEFK,  \n"+
+			 "   TUPACFK,            \n"+
+			 "   REQUISITOFK,        \n"+
+			 "   VNOMBRE_ARCHIVO,    \n"+
+			 "   VUBICACION_ARCHIVO,  \n"+
+			 "   VEXTENSION )        \n"+
+			 " VALUES( \n"+
+			 "   :P_IDPREEXPEDIENTEFK,  \n"+
+			 "   :P_TUPACFK,            \n"+
+			 "   :P_REQUISITOFK,        \n"+
+			 "   :P_VNOMBRE_ARCHIVO,    \n"+
+			 "   :P_VUBICACION_ARCHIVO, \n"+
+			 "   :P_VEXTENSION)");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDPREEXPEDIENTEFK", preRequisitoTupa.getIDPREEXPEDIENTEFK());
+			parametros.addValue("P_TUPACFK", preRequisitoTupa.getTUPACFK());
+			parametros.addValue("P_REQUISITOFK", preRequisitoTupa.getREQUISITOFK());
+			parametros.addValue("P_VNOMBRE_ARCHIVO", preRequisitoTupa.getVNOMBRE_ARCHIVO());
+			parametros.addValue("P_VUBICACION_ARCHIVO", preRequisitoTupa.getVUBICACION_ARCHIVO());
+			parametros.addValue("P_VEXTENSION", preRequisitoTupa.getVEXTENSION());
+			namedParameterJdbcTemplate.update(sql.toString(), parametros);
+			respuesta = true;
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			respuesta = false;
+		}
+		return respuesta;
+	}
+
+	@Override
+	public List<PreRequisitoTupa> listaPreRequisitos(Long idprexpediente) {
+		List<PreRequisitoTupa>  lista = new ArrayList<PreRequisitoTupa>();
+		StringBuffer sql = new StringBuffer();
+				
+		try {
+			sql.append(
+			" SELECT \n"+
+			"  T1.IDPREREQUISITOPK, \n"+
+			"  T2.VNOMBRE \n"+
+			" FROM "+Constantes.tablaPreRequisitosTupac+" T1  \n"+
+			"  INNER JOIN "+Constantes.tablaRequisitos+" T2 ON T1.REQUISITOFK=T2.REQUISITOSTUPACPK \n"+
+			" WHERE T1.IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDPREEXPEDIENTEFK", idprexpediente);
+			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
 	}
 
 }

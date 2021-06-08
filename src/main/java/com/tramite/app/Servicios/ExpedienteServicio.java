@@ -12,7 +12,7 @@ import com.tramite.app.Entidades.MovimientoExpediente;
 public interface ExpedienteServicio {
 
 	List<Bandeja> listarBandeja(Long oficina,Long estadodocumento);
-	MensajeRespuesta recibirExpediente(Long idMovimiento);
+	MensajeRespuesta recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente);
 	Expediente infoExpediente(Long idexpediente);
 	MovimientoExpediente infoMovimiento(Long idexpediente,Long idmovimiento);
 	MensajeRespuesta responderExpediente(Expediente formExpediente);
@@ -21,4 +21,5 @@ public interface ExpedienteServicio {
 	Expediente infoExpedienteCodigo(String anio, String codigoExpediente); 
 	List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente);
 	Expediente infoExpedienteId(Long idExpediente); 
+	MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento);
 }

@@ -1,5 +1,7 @@
 package com.tramite.app.Servicios.Impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,8 @@ import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
-import com.tramite.app.Entidades.PrePersona; 
+import com.tramite.app.Entidades.PrePersona;
+import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.Servicios.FijaServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.utilitarios.AutoGenerados;
@@ -36,6 +39,10 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	public MensajeRespuesta guardarPrePersona(PrePersona prePersona) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		
+		// VERICAMOS QUE LA PERSONA NO SE REPITA
+		
+		
 		
 		//GENERAMOS LOS CORRELATIVOS 
 		prePersona.setVCODIGOACTIVACION(AutoGenerados.getCorrelativoArchivo());
@@ -87,6 +94,35 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	public boolean guardarExpedienteSimple(Expediente expediente) {
 		return principalDao.guardarExpedienteSimple(expediente);
+	}
+
+	@Override
+	public Long guardarPreTupac(Expediente expediente) { 
+		return principalDao.guardarPreTupac(expediente);
+	}
+
+	@Override
+	public Expediente preTupacExpediente(Long idprexpediente) { 
+		return principalDao.preTupacExpediente(idprexpediente);
+	}
+
+	@Override
+	public MensajeRespuesta guardarPreRequisito(PreRequisitoTupa preRequisitoTupa) { 
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		boolean respuesta = principalDao.guardarPreRequisito(preRequisitoTupa);
+		if(respuesta==true) {
+			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		}else {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+		}
+		return mostrarmensaje; 
+	}
+
+	@Override
+	public List<PreRequisitoTupa> listaPreRequisitos(Long idprexpediente) { 
+		return principalDao.listaPreRequisitos(idprexpediente);
 	}
 
 	 

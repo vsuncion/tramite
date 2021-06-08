@@ -24,7 +24,8 @@ public class Constantes {
 	public static final String tablaExpediente="EXPEDIENTE";
 	public static final String tablaMovimiento="MOVIMIENTO";
 	public static final String tablaArchivoMovimiento="ARCHIVO_MOVIMIENTO";
-	
+	public static final String tablaPrExpediente="PRE_EXPEDIENTE";
+	public static final String tablaPreRequisitosTupac="PRE_REQUISITOS_TUPAC";
 	
 	public static int estadoDesactivado = 0;
 	public static final String estadoDesactivadoLetras = "DESACTIVO";
@@ -77,7 +78,7 @@ public class Constantes {
 	public static final String C_ARCHIVO_VALIDACION_UBICACION_CORRECTA ="El archivo se encuentra en su ubicacion";
 	public static final String C_ARCHIVO_VALIDACION_UBICACION_INCORRECTA ="El archivo no se encuentra en su ubicacion";
 	
-	public static final Long EstadoDocumentoRegistrado=1L;
+	public static final Long EstadoDocumentoPendiente=1L;
 	
 	public static final Long OficinaMesaPartePk=1L;
 	
@@ -93,5 +94,5 @@ public class Constantes {
 	public static final String LETRAS_ESTADO_DOCUMENTO_RECIBIDO   = "RECIBIR";
 	public static final String LETRAS_ESTADO_DOCUMENTO_ARCHIVADO   = "ARCHIVAR";
   	
-
+	public static final String MENSAJE_DUPLICIDAD_PERSONA="LA PERSONA SE ENCUENTRA DUPLICADA CON NUMERO DE DOCUMENTO $VNUMERO$";
 }

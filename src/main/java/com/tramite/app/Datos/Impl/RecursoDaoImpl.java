@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Oficinas;
+import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.utilitarios.Constantes;
@@ -142,6 +143,30 @@ public class RecursoDaoImpl implements RecursoDao {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
+	}
+
+
+	@Override
+	public List<Requisitos> cbRequisitos(Long idTupac) {
+		List<Requisitos> lista = new ArrayList<Requisitos>();
+		StringBuffer sql = new StringBuffer();
+		try {
+			sql.append(
+				"SELECT \n"+
+				"  T2.REQUISITOSTUPACPK, \n"+
+				"  T2.VNOMBRE\n"+
+				" FROM "+Constantes.tablaRequisitosTupac+" T1 \n"+
+				"  INNER JOIN "+Constantes.tablaRequisitos+" T2 ON T1.REQUISITOSFK=T2.REQUISITOSTUPACPK   \n"+
+				" WHERE TUPACFK= :P_TUPACFK  AND T1.NESTADO= :P_NESTADO");
+			  MapSqlParameterSource parametros = new MapSqlParameterSource();
+			  parametros.addValue("P_TUPACFK", idTupac);
+			  parametros.addValue("P_NESTADO", Constantes.estadoActivado);
+			  lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
+			  
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
 	}
  
 }

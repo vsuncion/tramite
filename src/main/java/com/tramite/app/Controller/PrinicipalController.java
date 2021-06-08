@@ -25,6 +25,8 @@ import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
+import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.PreTupacExpediente;
 import com.tramite.app.Entidades.Seleccion; 
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
 import com.tramite.app.Servicios.ExpedienteServicio;
@@ -142,10 +144,22 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		Persona personaDupliciedad = new Persona();
+		
 
 		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaNatural);
-		mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
+		
+		//VERIFICAMOS SI LA PERSONA YA EXISTE
+		personaDupliciedad = principalServicio.buscarPersona(prePersona.getNTIPO_PERSONA(), prePersona.getVNUMERODOC());
+			
+		if(personaDupliciedad.getVNUMERODOC()==null) {
+			mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
+		}else {
+			mostrarmensaje.setCodigo(0);
+			mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PERSONA.replace("$VNUMERO$", personaDupliciedad.getVNUMERODOC()));
+		}
+		
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 
 		pagina.setViewName("admin/persona/natural/nuevo");
@@ -291,7 +305,9 @@ public class PrinicipalController {
 		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 
 		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
-
+		
+		 
+		pagina.addObject("codigoexpediente",correlativoExpediente);
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
 		return pagina;
 	}
@@ -382,17 +398,32 @@ public class PrinicipalController {
 	public ModelAndView grabarTramiteTupa(@ModelAttribute Expediente formExpediente,
 			@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,
 			HttpServletResponse res) {
+		
 		ModelAndView pagina = new ModelAndView();
+		//PreTupacExpediente preTupacExpediente = new PreTupacExpediente();
 		boolean respuesta = false;
+        Long idPreTramiteTupac = 0L;
+		
+		// SUBIMOS EL DOCUMENTO
+		if (farchvio != null && farchvio.getSize() > 0) {
+			Archivos archivo = new Archivos();
 
-		// OBTENEOS EL NUMERO DE EXPEDIENTE
-		String correlativoExpediente = recursoServicio.numeroExpediente();
-		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
+			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
 
-		// respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
+			if (archivo.isVerificarCarga() == true) {
+				logger.info("ingresi el archivo");
+				formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
+				formExpediente.setVNOMBRE_ARCHIVO(archivo.getNombre());
+				formExpediente.setVEXTENSION(archivo.getExtension());
+			}
+		}
 
+	  
+		idPreTramiteTupac = principalServicio.guardarPreTupac(formExpediente);
+		
+		
 		pagina.setViewName("admin/tramite/externo/respuesta_simple");
-		return pagina;
+		return null;
 	}
 	
 	@GetMapping(value = {"/buscarexpediente/exportarhojaruta"})
@@ -427,5 +458,83 @@ public class PrinicipalController {
 		}
 		
 	}
+	
+	@GetMapping(value = {"/prerequisitos"})
+	public ModelAndView prerequisitos(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idpretupac) {
+		ModelAndView pagina = new ModelAndView();
+		Expediente formExpediente = new Expediente();
+		List<Seleccion> cbRequisitos = new ArrayList<>();
+		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
+		
+		
+		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO
+		formExpediente = principalServicio.preTupacExpediente(idpretupac);
+		
+		//BUSCAMOS LOS REQUSITOS TUPAC
+		cbRequisitos = recursoServicio.cbRequisitos(idpretupac);
+		
+		
+		
+		pagina.addObject("listarPreRequisito", listarPreRequisito);
+		pagina.addObject("cbrequisitos", cbRequisitos);
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.setViewName("admin/tramite/externo/prerequisitostupac");
+		return pagina;
+	}
+	
+	
+	@PostMapping(value = {"/grabar_tramite_requisito_tupa"})
+	public ModelAndView grabar_tramite_requisito_tupa(HttpServletRequest request, HttpServletResponse res,@ModelAttribute Expediente formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbRequisitos = new ArrayList<>();
+		PreRequisitoTupa  preRequisitoTupa = new PreRequisitoTupa();
+		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		
+		preRequisitoTupa.setIDPREEXPEDIENTEFK(formExpediente.getIDPREEXPEDIENTEPK());
+		preRequisitoTupa.setTUPACFK(formExpediente.getTUPACFK());
+		preRequisitoTupa.setREQUISITOFK(formExpediente.getVREQUISITO());
+		
+	 
+		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO
+		formExpediente = principalServicio.preTupacExpediente(preRequisitoTupa.getTUPACFK());
+		formExpediente.setVREQUISITO(preRequisitoTupa.getREQUISITOFK());
+		
+		//BUSCAMOS LOS REQUSITOS TUPAC
+		cbRequisitos = recursoServicio.cbRequisitos(preRequisitoTupa.getTUPACFK());
+		
+		
+		// SUBIMOS EL DOCUMENTO
+				if (farchvio != null && farchvio.getSize() > 0) {
+					Archivos archivo = new Archivos();
+
+					archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+
+					if (archivo.isVerificarCarga() == true) {
+						logger.info("ingresi el archivo");
+						preRequisitoTupa.setVUBICACION_ARCHIVO(archivo.getRuta());
+						preRequisitoTupa.setVNOMBRE_ARCHIVO(archivo.getNombre());
+						preRequisitoTupa.setVEXTENSION(archivo.getExtension());
+					}
+				}
+				
+		
+				//VERIFICAMOS QUE NO ESTE DUPLICADO
+				
+				
+				// INSERTAMOS LOS REGISTROS 
+				
+				mostrarmensaje = principalServicio.guardarPreRequisito(preRequisitoTupa);
+		
+		        // LISTAMOS LOS REQUISITOS
+				listarPreRequisito = principalServicio.listaPreRequisitos(preRequisitoTupa.getIDPREEXPEDIENTEFK());
+		
+		pagina.addObject("listarPreRequisito", listarPreRequisito);
+		pagina.addObject("cbrequisitos", cbRequisitos);
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.setViewName("admin/tramite/externo/agregarprerequisitostupac");
+		return pagina;
+	}
+	
 
 }

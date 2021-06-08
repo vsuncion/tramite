@@ -84,7 +84,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	}
 
 	@Override
-	public boolean recibirExpediente(Long idMovimiento) {
+	public boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente) {
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sql2 = new StringBuffer();
 		StringBuffer sql3 = new StringBuffer();
@@ -130,7 +130,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			
 			
 			// ACTUALIZAMOS EL EXPEDIENTE
-			/*
+			 
 			sql3.append(
 			" UPDATE "+Constantes.tablaExpediente+
 			"  SET \n"+
@@ -138,10 +138,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			"  NOFICINAFK= :P_NOFICINAFK \n"+
 			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
 			MapSqlParameterSource parametros3 = new MapSqlParameterSource();
-			parametros3.addValue("P_NESTADODOCUMENTOFK", value);
-			parametros3.addValue("P_NOFICINAFK", value);
-			parametros3.addValue("P_NIDEXPEDIENTEPK", value);
-			*/
+			parametros3.addValue("P_NESTADODOCUMENTOFK",  Constantes.ESTADO_DOCUMENTO_RECIBIDO);
+			parametros3.addValue("P_NOFICINAFK", idOficina);
+			parametros3.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
+			
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
@@ -226,6 +227,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		StringBuffer sql2 = new StringBuffer();
 		StringBuffer sql3 = new StringBuffer();
 		StringBuffer sql4 = new StringBuffer();
+		StringBuffer sql5 = new StringBuffer();
 		boolean respuesta = false;
 		
 		try {
@@ -333,6 +335,21 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros4.addValue("P_VUBICACION_ARCHIVO", formexpediente.getVUBICACION_ARCHIVO());
 			parametros4.addValue("P_VEXTENSION", formexpediente.getVEXTENSION());
 			namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
+			
+			
+			sql5.append(
+			" UPDATE "+Constantes.tablaExpediente+
+			"  SET \n"+
+			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
+			"  NOFICINAFK= :P_NOFICINAFK \n"+
+			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
+			MapSqlParameterSource parametros5 = new MapSqlParameterSource();
+			parametros5.addValue("P_NESTADODOCUMENTOFK",  Constantes.ESTADO_DOCUMENTO_PENDIENTE);
+			parametros5.addValue("P_NOFICINAFK", formexpediente.getOFICINA_DESTINOFK());
+			parametros5.addValue("P_NIDEXPEDIENTEPK", formexpediente.getNIDEXPEDIENTEPK());
+			namedParameterJdbcTemplate.update(sql5.toString(), parametros5);
+			
+			
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
@@ -345,6 +362,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	public boolean responderExpedienteArchivadoOfinalizado(Expediente formExpediente) {
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sql2 = new StringBuffer();
+		StringBuffer sql3 = new StringBuffer();
 		boolean respuesta = false;
 		
 		try {
@@ -391,6 +409,21 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros2.addValue("P_NESTADOREGISTRO",  Constantes.estadoDesactivado);
 			parametros2.addValue("P_NIDMOVIMIENTOPK", formExpediente.getNIDMOVIMIENTOFK());
 			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);
+			
+			
+			sql3.append(
+			" UPDATE "+Constantes.tablaExpediente+
+			"  SET \n"+
+			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
+			"  NOFICINAFK= :P_NOFICINAFK \n"+
+			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
+			MapSqlParameterSource parametros3 = new MapSqlParameterSource();
+			parametros3.addValue("P_NESTADODOCUMENTOFK", formExpediente.getNESTADODOCUMENTOFK());
+			parametros3.addValue("P_NOFICINAFK", formExpediente.getOFICINA_ORIGENFK());
+			parametros3.addValue("P_NIDEXPEDIENTEPK", formExpediente.getNIDEXPEDIENTEPK());
+			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
+			
+			
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
@@ -572,6 +605,29 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		} catch (Exception e) {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 			 
+		}
+		return info;
+	}
+
+	@Override
+	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) {
+		MovimientoExpediente info = new MovimientoExpediente();
+		StringBuffer sql = new StringBuffer();
+		try {
+			sql.append(
+			    " SELECT \n"+
+			    "   NIDMOVIMIENTOPK, \n"+
+			    "   NIDEXPEDIENTEFK, \n"+
+			    "   NESTADODOCUMENTOFK, \n"+
+			    "   OFICINA_ORIGENFK, \n"+
+			    "   OFICINA_DESTINOFK \n"+
+			    " FROM "+Constantes.tablaMovimiento+" \n"+
+			    " WHERE NIDMOVIMIENTOPK = :P_NIDMOVIMIENTOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NIDMOVIMIENTOPK", idMovimiento); 
+			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(MovimientoExpediente.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}

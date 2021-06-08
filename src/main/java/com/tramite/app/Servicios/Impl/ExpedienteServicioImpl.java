@@ -29,11 +29,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 	@Override
 	@Transactional
-	public MensajeRespuesta recibirExpediente(Long idMovimiento) {
+	public MensajeRespuesta recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		
-		respuesta = expedienteDao.recibirExpediente(idMovimiento);
+		respuesta = expedienteDao.recibirExpediente(idMovimiento,idOficina,idExpediente);
 		
 		if (respuesta == true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
@@ -109,6 +109,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	public Expediente infoExpedienteId(Long idExpediente) { 
 		return expedienteDao.infoExpedienteId(idExpediente);
+	}
+
+	@Override
+	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) { 
+		return expedienteDao.infoMovimientoIdexpediente(idMovimiento);
 	}
 
  

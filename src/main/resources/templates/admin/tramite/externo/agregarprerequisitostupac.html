@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form th:action="@{/grabar_tramite_requisito_tupa}" th:object="${formExpediente}" method="post"
+					enctype="multipart/form-data">
+
+					<div class="card">
+						<div class="card-header"></div>
+
+						<br>
+						<div class="card">
+							<div class="card-header">INFORMACION</div>
+							<div class="card-body">
+
+								<div class="form-row">
+									<div class="form-group col-md-8">
+										<span class="letras_expediente_externo">SOLICITANTE</span> <input
+											type="text" class="form-control form-control-sm"
+											id="VREMITENTE" name="VREMITENTE" th:value="*{VREMITENTE}"
+											readonly>
+									</div>
+
+
+									<div class="form-group col-md-4 text-center">
+										<span class="letras_expediente_externo">NOMBRE ARCHIVO
+											PRINCIPAL</span><br>
+										 <span th:text="*{VNOMBRE_ARCHIVO}+'.'+*{VEXTENSION}"></span>
+									</div>
+								</div>
+
+
+								<div class="form-row">
+
+									<div class="form-group col-md-3">
+										<span class="letras_expediente_externo">TIPO DOCUMENTO</span>
+										<input type="text" class="form-control form-control-sm"
+											id="VTIPO_DOCUMENTOS" name="VTIPO_DOCUMENTOS"
+											th:value="*{VTIPO_DOCUMENTOS}" readonly>
+									</div>
+
+									<div class="form-group col-md-3">
+										<span class="letras_expediente_externo">NUMERO
+											DOCUMENTO</span> <input type="text"
+											class="form-control form-control-sm" id="VNUMERODOCUMENTO"
+											name="VNUMERODOCUMENTO" readonly
+											th:value="*{VNUMERODOCUMENTO}">
+									</div>
+
+									<div class="form-group col-md-2">
+										<span class="letras_expediente_externo">FOLIO</span> <input
+											type="text" class="form-control form-control-sm"
+											id="VNUMEROFOLIO" name="VNUMEROFOLIO" readonly
+											th:value="*{VNUMEROFOLIO}">
+									</div>
+
+									<div class="form-group col-md-4">
+										<span class="letras_expediente_externo">FECHA DOCUMENTO</span>
+										<input type="text" class="form-control form-control-sm"
+											id="DFECHADOCUMENTO" name="DFECHADOCUMENTO" readonly
+											th:value="*{VDFECREGISTRO}">
+									</div>
+
+								</div>
+
+
+
+							</div>
+						</div>
+
+						<br>
+						<div class="card">
+							<div class="card-header">REQUISITOS DEL TUPAC</div>
+							<div class="card-body">
+
+								<div class="form-row">
+
+									<div class="form-group col-md-3">
+										<span class="letras_expediente_externo">TUPAC</span> <input
+											type="text" class="form-control form-control-sm"
+											id="VDIRECCION" name="VDIRECCION" readonly
+											th:value="*{VNOMBRETUPAC}">
+									</div>
+
+									<div class="form-group col-md-4">
+										<span class="letras_expediente_externo">SELECCIONE
+											REQUISITOS</span> <select class="form-control form-control-sm"
+											id="VREQUISITO" name="VREQUISITO" th:field="*{VREQUISITO}">
+											<option th:each="i : ${cbrequisitos}" th:text="${i.etiqueta}"
+												th:value="${i.codigo}"></option>
+										</select>
+
+									</div>
+
+
+									<div class="form-group col-md-4">
+										<br>
+										<button>AGREGAR</button>
+									</div>
+
+								</div>
+
+
+
+								<div class="card">
+									<div class="card-header">LISTA REQUISITOS AGREGADOS</div>
+									<div class="card-body">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th scope="col">#</th>
+													<th scope="col">REQUISITO</th>
+													<th scope="col">ELIMINAR</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="i : ${listarPreRequisito}">
+													<th scope="row"><span th:text="${i.IDPREREQUISITOPK}"></span></th>
+													<td><span th:text="${i.VNOMBRE}"></span></td>
+													<td><span th:text="${i.IDPREREQUISITOPK}"></span></td>
+												</tr>
+											</tbody>
+										</table>
+
+
+									</div>
+								</div>
+
+
+
+
+
+							</div>
+						</div>
+						<br>
+
+
+					</div>
+
+
+				</form>
+
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

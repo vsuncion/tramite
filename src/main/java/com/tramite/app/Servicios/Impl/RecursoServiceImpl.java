@@ -12,6 +12,7 @@ import org.thymeleaf.standard.expression.Each;
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Oficinas;
+import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Tupac;
@@ -147,6 +148,22 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) { 
 		return recursoDao.infoEstadoDocumento(idEstadoDocumento);
+	}
+
+	@Override
+	public List<Seleccion> cbRequisitos(Long idTupac) { 
+		List<Requisitos> listaRequisitos = new ArrayList<Requisitos>();
+		List<Seleccion> cbRequisito = new ArrayList<Seleccion>();
+		listaRequisitos = recursoDao.cbRequisitos(idTupac);
+		
+		for (Requisitos i : listaRequisitos) {
+			Seleccion item = new Seleccion();
+			item.setCodigo(i.getREQUISITOSTUPACPK());
+			item.setEtiqueta(i.getVNOMBRE());
+			cbRequisito.add(item);
+		}
+		
+		return cbRequisito;
 	}
 
  

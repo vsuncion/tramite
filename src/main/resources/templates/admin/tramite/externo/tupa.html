@@ -14,10 +14,14 @@
 
 		<!-- CONTENIDO PLANTILLA -->
 		<div id="content">
-			 
-			<form th:object="${formExpediente}" name="formExpediente" id="formExpediente" method="post"  th:action="@{/grabar_tramite_tupa}">
 
-
+			<form th:object="${formExpediente}" name="formExpediente"
+				id="formExpediente" method="post" enctype="multipart/form-data"
+				th:action="@{/grabar_tramite_tupa}">
+				
+                 <input type="hidden" id="NTIPOPERSONA" name="NTIPOPERSONA" th:value="*{NTIPOPERSONA}">
+ 				<input type="hidden" id="PERSONAFK" name="PERSONAFK" th:value="*{PERSONAFK}">
+ 				
 				<!-- CONTENIDO EDITABLE INICIO-->
 				<div class="rows">
 					<p>
@@ -26,24 +30,26 @@
 						<p>
 						<div class="rows">
 							<div class="col-sm-12">
- 
+
 								<div class="card border-dark mb-3">
 									<div class="card-header">DATOS SOLICITANTE</div>
 									<div class="card-body text-dark">
 
 										<!-- RJUC -->
-										<div class="form-row" th:if="${formExpediente.NTIPOPERSONA==2}">
-                                           
+										<div class="form-row"
+											th:if="${formExpediente.NTIPOPERSONA==2}">
+
 											<div class="form-group col-md-4 text-left">
-												<span class="letras_expediente_externo">RUC</span>
-												 <input type="text" class="form-control form-control-sm"
-												  th:field="*{VRUC}" name="VRUC"	id="VRUC" readonly>
+												<span class="letras_expediente_externo">RUC</span> <input
+													type="text" class="form-control form-control-sm"
+													th:field="*{VRUC}" name="VRUC" id="VRUC" readonly>
 											</div>
 
 											<div class="form-group col-md-8">
-												<span class="letras_expediente_externo" >RAZON SOCIAL</span> <input
-													type="text" class="form-control form-control-sm" th:field="*{VRAZON_SOCIAL}"
-													id="VRAZON_SOCIAL" name="VRAZON_SOCIAL" readonly>
+												<span class="letras_expediente_externo">RAZON SOCIAL</span>
+												<input type="text" class="form-control form-control-sm"
+													th:field="*{VRAZON_SOCIAL}" id="VRAZON_SOCIAL"
+													name="VRAZON_SOCIAL" readonly>
 											</div>
 
 										</div>
@@ -53,22 +59,25 @@
 										<div class="form-row">
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >NOMBRE </span> <input
-													type="text" class="form-control form-control-sm" th:field="*{VNOMBRE}"
-													id="VNOMBRE" name="VNOMBRE" readonly>
+												<span class="letras_expediente_externo">NOMBRE </span> <input
+													type="text" class="form-control form-control-sm"
+													th:field="*{VNOMBRE}" id="VNOMBRE" name="VNOMBRE" readonly>
 											</div>
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >APELLIDO PATERNO</span>
-												<input type="text" class="form-control form-control-sm"
-													id="VAPELLIDO_PATERNO" name="VAPELLIDO_PATERNO" th:field="*{VAPELLIDO_PATERNO}" readonly>
+												<span class="letras_expediente_externo">APELLIDO
+													PATERNO</span> <input type="text"
+													class="form-control form-control-sm" id="VAPELLIDO_PATERNO"
+													name="VAPELLIDO_PATERNO" th:field="*{VAPELLIDO_PATERNO}"
+													readonly>
 											</div>
 
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >APELLIDO MATERNO</span>
-												<input type="text" class="form-control " th:field="*{VAPELLIDO_MATERNO}"
-													id="VAPELLIDO_MATERNO"  name="VAPELLIDO_MATERNO" readonly>
+												<span class="letras_expediente_externo">APELLIDO
+													MATERNO</span> <input type="text" class="form-control "
+													th:field="*{VAPELLIDO_MATERNO}" id="VAPELLIDO_MATERNO"
+													name="VAPELLIDO_MATERNO" readonly>
 											</div>
 
 										</div>
@@ -76,21 +85,23 @@
 										<div class="form-row">
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >DIRECCION</span> <input
-													type="text" class="form-control form-control-sm" th:field="*{VDIRECCION}"
-													id="VDIRECCION" name="VDIRECCION" readonly>
+												<span class="letras_expediente_externo">DIRECCION</span> <input
+													type="text" class="form-control form-control-sm"
+													th:field="*{VDIRECCION}" id="VDIRECCION" name="VDIRECCION"
+													readonly>
 											</div>
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >CORREO</span> <input
-													type="text" class="form-control form-control-sm" th:field="*{VCORREO}"
-													id="VCORREO" name="VCORREO" readonly>
+												<span class="letras_expediente_externo">CORREO</span> <input
+													type="text" class="form-control form-control-sm"
+													th:field="*{VCORREO}" id="VCORREO" name="VCORREO" readonly>
 											</div>
 
 											<div class="form-group col-md-4">
-												<span class="letras_expediente_externo" >TELEFONO</span> <input
-													type="text" class="form-control form-control-sm" th:field="*{VTELEFONO}"
-													id="VTELEFONO" name="*{VTELEFONO}" readonly>
+												<span class="letras_expediente_externo">TELEFONO</span> <input
+													type="text" class="form-control form-control-sm"
+													th:field="*{VTELEFONO}" id="VTELEFONO" name="*{VTELEFONO}"
+													readonly>
 											</div>
 
 										</div>
@@ -105,65 +116,103 @@
 
 										<div class="form-row">
 
-											<div class="form-group col-md-2">
-												<span class="letras_expediente_externo" >TIPO DOCUMENTO</span>
-												<select
-													class="form-control form-control-sm"
-													id="TIPO_DOCUMENTOFK" name="TIPO_DOCUMENTOFK" th:field="*{TIPO_DOCUMENTOFK}">
-													<option th:each="i : ${cbTipoDocumento}" th:text="${i.etiqueta}" value="${i.codigo}"></option> 
-												</select>
-											</div>
-											
-											
 											<div class="form-group col-md-3">
-											<span class="letras_expediente_externo" >TIPO TUPA</span>
-												<select
-													class="form-control form-control-sm"
-													id="TUPACFK" name="TUPACFK" th:field="*{TUPACFK}" th:onchange="document.getElementById('VNUMERODOCUMENTO').focus();">
-													<option th:each="i : ${cbTupa}" th:text="${i.etiqueta}" value="${i.codigo}"></option> 
+
+												<span class="letras_expediente_externo">TIPO TUPA</span> <select
+													class="form-control form-control-sm" id="TUPACFK"
+													name="TUPACFK" th:field="*{TUPACFK}"
+													th:onchange="document.getElementById('VNUMERODOCUMENTO').focus();">
+													<option th:each="i : ${cbTupa}" th:text="${i.etiqueta}"
+														th:value="${i.codigo}"></option>
 												</select>
+
 											</div>
 
+
+											<div class="form-group col-md-4">
+												<span class="letras_expediente_externo">REQUISITOS
+													TUPAC</span> <select name="cbrequisitos" id="cbrequisitos"
+													class="form-control form-control-sm">
+													<option>Requsito 1</option>
+													<option>Requsito 2</option>
+												</select>
+												
+											</div>
+											
+											<div class="form-group col-md-5"><br>
+											   <span style="color: red;">Debe contar con todos los requisitos para continuar con el tramite</span>
+											</div>
+
+
+										</div>
+
+										<div class="form-row">
+
+											<div class="form-group col-md-3">
+												 
+												<span class="letras_expediente_externo">TIPO
+													DOCUMENTO</span> <select class="form-control form-control-sm"
+													id="TIPO_DOCUMENTOFK" name="TIPO_DOCUMENTOFK"
+													th:field="*{TIPO_DOCUMENTOFK}">
+													<option th:each="i : ${cbTipoDocumento}"
+														th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
+												</select>
+												 
+											</div>
+											<div class="form-group col-md-5 text-center">
+												 
+												<span class="letras_expediente_externo">NUMERO DE
+													DOCUMENTO</span> <input type="text"
+													class="form-control form-control-sm"
+													name="VNUMERODOCUMENTO" id="VNUMERODOCUMENTO"
+													th:field="*{VNUMERODOCUMENTO}"
+													Onkeyup="javascript:this.value=this.value.toUpperCase();">
+													 
+											</div>
+
+											<div class="form-group col-md-1 text-center">
+												<span class="letras_expediente_externo">FOLIOS</span> <input
+													type="number" class="form-control form-control-sm"
+													name="VNUMEROFOLIO" id="VNUMEROFOLIO"
+													th:field="*{VNUMEROFOLIO}">
+											</div>
 
 											<div class="form-group col-md-3 text-center">
-												<span class="letras_expediente_externo" >NUMERO DE DOCUMENTO</span> <input
-													type="text" class="form-control form-control-sm" name="VNUMERODOCUMENTO"
-													id="VNUMERODOCUMENTO" th:field="*{VNUMERODOCUMENTO}" onkeyup="javascript:this.value=this.value.toUpperCase();">
-											</div>
-											
-											<div class="form-group col-md-1 text-center">
-											<span class="letras_expediente_externo" >FOLIOS</span> <input
-													type="number" class="form-control form-control-sm" name="VNUMEROFOLIO"
-													id="VNUMEROFOLIO" th:field="*{VNUMEROFOLIO}">
-											</div>
-											
-											<div class="form-group col-md-2 text-center">
-											<span class="letras_expediente_externo" >FECHA DOCUMENTO</span>
-											   <input type="date" id="VFECHADOCUMENTO" class="form-control-sm" name="VFECHADOCUMENTO" th:field="*{VFECHADOCUMENTO}" required>
+												<span class="letras_expediente_externo">FECHA
+													DOCUMENTO</span> <input type="date" id="VFECHADOCUMENTO"
+													class="form-control-sm" name="VFECHADOCUMENTO"
+													th:field="*{VFECHADOCUMENTO}" required>
 											</div>
 
 										</div>
-										
+
+
+
+
 										<div class="form-row">
-									 
-										  <div class="form-group col-md-12">
-										  <span class="letras_expediente_externo" >ASUNTO</span> 
-   										  <textarea class="form-control" id="VASUNTO" th:field="*{VASUNTO}" rows="2" onkeyup="javascript:this.value=this.value.toUpperCase();" required></textarea>
-										  </div>
-				 
+
+											<div class="form-group col-md-12">
+												<span class="letras_expediente_externo">ASUNTO</span>
+												<textarea class="form-control" id="VASUNTO"
+													th:field="*{VASUNTO}" rows="2"
+													onkeyup="javascript:this.value=this.value.toUpperCase();"
+													required></textarea>
+											</div>
+
 										</div>
-										
+
 										<div class="form-row">
-										  <div class="form-group col-md-9 text-left">
-										   <span class="letras_expediente_externo" >SELECCIONE ARCHIVO</span>
-    										<input type="file" class="form-control-file" id="exampleFormControlFile1">
-										  </div>
-										  
-										  <div class="form-group col-md-3 text-right">
-										   <div style="padding-bottom: 15px;"></div>
-										   <button type="submit" class="btn btn-primary">GRABAR</button>
-										  </div>
-										    
+											<div class="form-group col-md-9 text-left">
+												<span class="letras_expediente_externo">SELECCIONE
+													ARCHIVO</span> <input type="file" class="form-control-file"
+													id="varchivosubida" name="varchivosubida">
+											</div>
+
+											<div class="form-group col-md-3 text-right">
+												<div style="padding-bottom: 15px;"></div>
+												<button type="submit" class="btn btn-primary">CONTINUAR</button>
+											</div>
+
 										</div>
 
 									</div>

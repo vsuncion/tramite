@@ -11,7 +11,7 @@ import com.tramite.app.Entidades.MovimientoExpediente;
 public interface ExpedienteDao {
 
 	List<Bandeja> listarBandeja(Long oficina,Long estadodocumento);
-	boolean recibirExpediente(Long idMovimiento);
+	boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente);
 	Expediente infoExpediente(Long idexpediente);
 	MovimientoExpediente infoMovimiento(Long idexpediente,Long idmovimiento);
 	boolean responderExpediente(Expediente formexpediente);
@@ -21,4 +21,5 @@ public interface ExpedienteDao {
 	Expediente infoExpedienteCodigo(String anio, String codigoExpediente); 
 	List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente);
 	Expediente infoExpedienteId(Long idExpediente); 
+	MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento);
 }

@@ -104,21 +104,25 @@ public class ExpedienteController {
 	public ModelAndView recibirExpediente(HttpServletRequest request, HttpServletResponse res,
 			@RequestParam Long idmovimiento,@RequestParam Long idestado) {
 		ModelAndView pagina = new ModelAndView();
-		List<Bandeja> listaBandeja = new ArrayList<Bandeja>();
-		Bandeja formBandeja = new Bandeja();
+		//List<Bandeja> listaBandeja = new ArrayList<Bandeja>();
+		//Bandeja formBandeja = new Bandeja();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();
+		MovimientoExpediente infoMovimiento = new MovimientoExpediente();
 		//EstadoDocumento estadoDocumento = new EstadoDocumento();
 		//Oficinas oficina = new Oficinas();
 		// INSERTAR MOVIMIENTO
 		logger.info("==============" + idmovimiento);
 	 
 		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		//INFORMACION DEL MOVIMIENTO
+		infoMovimiento = expedienteServicio.infoMovimientoIdexpediente(idmovimiento);
 
 		Long idoficina = usuario.getNOFICINAFK();
 		
-		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento);
+		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento,idoficina,infoMovimiento.getNIDEXPEDIENTEFK());
 		/*
 		listaBandeja = expedienteServicio.listarBandeja(idoficina, Constantes.ESTADO_DOCUMENTO_RECIBIDO);
 		oficina = recursoServicio.infoOficina(idoficina);
