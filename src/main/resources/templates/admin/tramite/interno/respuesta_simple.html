@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+
+				<div class="card">
+					<div class="card-header">SE REGISTRO EL EXPEDIENTE</div>
+					<div class="card-body">
+						<h5 class="card-title">EXPEDIENTE #: <span th:text="${codigoexpediente}"></span></h5>
+						<p class="card-text">ANOTE EL NUMERO DE EXPEDIENTE PARA REALIZAR LAS CONSULTAS DEL ESTADO DE SU TRAMITE. 
+						LO PUEDE REALIZAR <a th:href="@{/}">AQUI</a></p>  
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

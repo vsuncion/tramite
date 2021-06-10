@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper; 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,6 +20,7 @@ import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.Tupac;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.Fechas;
 
@@ -300,6 +302,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		String sql ="";
 		Long idExpediente =0L;
 		StringBuffer sql3 = new StringBuffer();
+		StringBuffer sql4 = new StringBuffer();
 		boolean respuesta = false;
 		try {
 		   sql=
@@ -345,7 +348,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		parametros.addValue("P_VNOMBRE_ARCHIVO", expediente.getVNOMBRE_ARCHIVO());
 		parametros.addValue("P_VUBICACION_ARCHIVO", expediente.getVUBICACION_ARCHIVO());
 		parametros.addValue("P_VEXTENSION", expediente.getVEXTENSION());
-		parametros.addValue("P_TUPACFK", null);
+		parametros.addValue("P_TUPACFK", expediente.getTUPACFK());
 		parametros.addValue("P_NTIPOPERSONA", expediente.getNTIPOPERSONA());
 		parametros.addValue("P_PERSONAFK", expediente.getPERSONAFK());
 		//parametros.addValue("P_DFECHATERMINO", expediente.getdf);
@@ -376,7 +379,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		 
 		       MapSqlParameterSource parametros2 = new MapSqlParameterSource();
 		       parametros2.addValue("P_NIDEXPEDIENTEFK", idExpediente);
-		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.EstadoDocumentoPendiente);
+		       parametros2.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_PENDIENTE);
 		       parametros2.addValue("P_OFICINA_ORIGENFK",Constantes.OficinaMesaPartePk); 
 		       parametros2.addValue("P_OFICINA_DESTINOFK",Constantes.OficinaMesaPartePk); 
 		       parametros2.addValue("P_DFECHAOFICINA", Fechas.fechaActual()); 
@@ -392,11 +395,25 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	   			"  NOFICINAFK= :P_NOFICINAFK \n"+
 	   			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
 	   			MapSqlParameterSource parametros3 = new MapSqlParameterSource();
-	   			parametros3.addValue("P_NESTADODOCUMENTOFK",  Constantes.EstadoDocumentoPendiente);
+	   			parametros3.addValue("P_NESTADODOCUMENTOFK",  Constantes.ESTADO_DOCUMENTO_PENDIENTE);
 	   			parametros3.addValue("P_NOFICINAFK", Constantes.OficinaMesaPartePk);
 	   			parametros3.addValue("P_NIDEXPEDIENTEPK", idExpediente);
 	   			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
-		       
+		   
+	   			//AGREGAMOS LOS ARCHIVOS TUPAC
+	   			
+	   			if(idExpediente>0) {
+	   				sql4.append(
+   				    "INSERT INTO "+Constantes.tablaArchivosTupa+" \n"+
+   					"(EXPEDIENTEFK,TUPAFK,REQUISITOFK,VNOMBRE_ARCHIVO,VUBICACION_ARCHIVO,VEXTENSION) \n"+
+   					"SELECT :P_NIDEXPEDIENTEPK,TUPACFK,REQUISITOFK,VNOMBRE_ARCHIVO,VUBICACION_ARCHIVO,VEXTENSION \n"+
+   					" FROM "+Constantes.tablaPreRequisitosTupac+" WHERE IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK  AND NESTADO= :P_NESTADO");
+   					MapSqlParameterSource parametros4 = new MapSqlParameterSource();
+   					parametros4.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+   					parametros4.addValue("P_IDPREEXPEDIENTEFK", expediente.getIDPREEXPEDIENTEPK());
+   					parametros4.addValue("P_NESTADO", Constantes.estadoActivado);
+   					namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
+	   			}
 		
 		respuesta =true;
 		} catch (Exception e) {
@@ -477,7 +494,11 @@ public class PrincipalDaoImpl implements PrincipalDao {
 				"   CONVERT(varchar,T1.DFECHADOCUMENTO,22) AS VDFECREGISTRO, \n"+
 				"   T1.VNOMBRE_ARCHIVO, \n"+
 				"   T1.VUBICACION_ARCHIVO, \n"+
-				"   T1.VEXTENSION \n"+
+				"   T1.VEXTENSION, \n"+
+				"   T1.TIPODOCUMENTOFK AS TIPO_DOCUMENTOFK, \n"+
+				"   T1.TIPOPERSONAFK AS NTIPOPERSONA, \n"+
+				"   T1.PERSONAFK, \n"+
+				"   T1.VASUNTO \n"+
 				" FROM "+Constantes.tablaPrExpediente+"  		T1  \n"+
 				"  INNER JOIN "+Constantes.tablaPersona+" 		T2 ON T1.PERSONAFK=T2.NIDPERSONAPK \n"+
 				"  INNER JOIN "+Constantes.tablaTupac+"   		T3 ON T1.TUPACFK=T3.TUPACPK \n"+
@@ -537,8 +558,9 @@ public class PrincipalDaoImpl implements PrincipalDao {
 				
 		try {
 			sql.append(
-			" SELECT \n"+
+			" SELECT \n"+ 
 			"  T1.IDPREREQUISITOPK, \n"+
+			"  T1.IDPREEXPEDIENTEFK, \n"+
 			"  T2.VNOMBRE \n"+
 			" FROM "+Constantes.tablaPreRequisitosTupac+" T1  \n"+
 			"  INNER JOIN "+Constantes.tablaRequisitos+" T2 ON T1.REQUISITOFK=T2.REQUISITOSTUPACPK \n"+
@@ -550,6 +572,88 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
+	}
+
+	@Override
+	public List<Tupac> listasTupacRequisitos() {
+		StringBuffer sql = new StringBuffer();
+		List<Tupac> lista = new ArrayList<Tupac>();
+		try { 
+			sql.append(
+			" SELECT \n"+
+			"  DISTINCT T2.TUPACPK, \n"+
+			"  T2.VNOMBRE  \n"+
+			" FROM "+Constantes.tablaRequisitosTupac+" T1  \n"+
+			"  INNER JOIN "+Constantes.tablaTupac+" T2 ON T1.TUPACFK=T2.TUPACPK  \n"+
+			" WHERE T2.NESTADO= :P_NESTADO");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
+			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Tupac.class));
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) {
+		StringBuffer sql = new StringBuffer();
+		PreRequisitoTupa info = new PreRequisitoTupa();
+		try {
+			sql.append(
+			 "SELECT \n"+
+			 " IDPREREQUISITOPK, \n"+
+			 " IDPREEXPEDIENTEFK, \n"+
+			 " TUPACFK, \n"+
+			 " REQUISITOFK \n"+
+			 "FROM "+Constantes.tablaPreRequisitosTupac+" \n"+
+			 "WHERE IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK AND TUPACFK = :P_TUPACFK AND REQUISITOFK= :P_REQUISITOFK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDPREEXPEDIENTEFK", preRequisitoTupa.getIDPREEXPEDIENTEFK());
+			parametros.addValue("P_TUPACFK", preRequisitoTupa.getTUPACFK());
+			parametros.addValue("P_REQUISITOFK", preRequisitoTupa.getREQUISITOFK());
+			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
+		
+		}catch(Exception e) {
+			logger.error("ERRORX : " + e.getMessage() + "---" + e.getClass());
+		}
+		return info;
+	}
+
+	@Override
+	public void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente) {
+		/*
+		StringBuffer sql = new StringBuffer();
+		try {
+			sql.append(
+			   "INSERT INTO "+Constantes.tablaArchivosTupa+" \n"+
+			   "(EXPEDIENTEFK,TUPAFK,REQUISITOFK,VNOMBRE_ARCHIVO,VUBICACION_ARCHIVO,VEXTENSION) \n"+
+			   "SELECT :P_NIDEXPEDIENTEPK ,TUPACFK,REQUISITOFK,VNOMBRE_ARCHIVO,VUBICACION_ARCHIVO,VEXTENSION \n"+
+			   " FROM "+Constantes.tablaPreRequisitosTupac+" WHERE IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK  AND NESTADO= :P_NESTADO");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NIDEXPEDIENTEPK", formExpediente.getNIDEXPEDIENTEPK());
+			parametros.addValue("P_IDPREEXPEDIENTEFK", formExpediente.getIDPREEXPEDIENTEPK());
+			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
+			namedParameterJdbcTemplate.update(sql.toString(), parametros);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		*/
+	}
+
+	@Override
+	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
+		StringBuffer sql = new StringBuffer();
+		try {
+			sql.append("DELETE FROM "+Constantes.tablaPreRequisitosTupac+" WHERE IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK AND IDPREREQUISITOPK= :P_IDPREREQUISITOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_IDPREEXPEDIENTEFK", idprexpediente);
+			parametros.addValue("P_IDPREREQUISITOPK", idrequisito);
+			namedParameterJdbcTemplate.update(sql.toString(), parametros);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 
 }

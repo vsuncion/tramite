@@ -105,11 +105,19 @@ public class RecursoDaoImpl implements RecursoDao {
 		try {
 			sql.append(
 				"  SELECT \n"+
-			    "   NTRABAJADORFK, \n"+
-			    "   NOFICINAFK, \n"+
-			    "   VUSUARIO \n"+
-			    "  FROM "+Constantes.tablaUsuario+" \n"+
-			    " WHERE VUSUARIO= :P_VUSUARIO");
+			    "    T1.NTRABAJADORFK, \n"+
+			    "    T1.NOFICINAFK, \n"+
+			    "    T1.VUSUARIO, \n"+
+			    "    T2.NIDPERSONAFK, \n"+
+			    "    T3.VNOMBRE, \n"+
+			    "    T3.VAPEPATERNO, \n"+
+			    "    T3.VAPEMATERNO, \n"+
+			    "    T4.VNOMBRE AS VOFICINA \n"+
+			    "  FROM "+Constantes.tablaUsuario+" T1 \n"+
+			    "  INNER JOIN  "+Constantes.tablaTrabajadores+" T2 ON T1.NTRABAJADORFK=T2.NIDTRABAJADORPK \n"+
+			    "  INNER JOIN  "+Constantes.tablaPersona+"      T3 ON T2.NIDPERSONAFK=T3.NIDPERSONAPK \n"+
+			    "  INNER JOIN  "+Constantes.tablaOficinas+"     T4 ON T1.NOFICINAFK=T4.NIDOFICINAPK \n"+
+			    " WHERE T1.VUSUARIO= :P_VUSUARIO");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VUSUARIO", vcorreo);
 			usuarios = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));

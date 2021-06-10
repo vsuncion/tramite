@@ -269,18 +269,7 @@
                     <ul class="collapse list-unstyled" id="homeSubmenu">
 		   
                         <li>
-                        <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">INGRESO EXPEDIENTE</a> 
-                        </li>
-                        <li>
-                            <a class="nav-link" th:href="@{/admin/expediente/registroexps}">INGRESO EXPEDIENTE SIMPLE</a>
-                        </li>
-                        
-                        <li>
-                            <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">SEGUIMIENTO EXPEDIENTE</a>
-                        </li>
-                        
-                         <li>
-                            <a class="nav-link" th:href="@{/admin/expediente/seguimientoexp}">LISTA</a>
+                         <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">INGRESO EXPEDIENTE</a> 
                         </li>
                         
                     </ul>
@@ -291,14 +280,12 @@
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >REPORTES</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <li>
-                            <a href="#">REPORTE 1</a>
+                            <a th:href="@{/admin/expediente/rptestadodocumento}">ESTADO DOCUMENTO</a>
                         </li>
                         <li>
-                            <a href="#">REPORTE 1</a>
+                            <a th:href="@{/admin/expediente/rptoficinaestadodocumento}">ESTADO DOCUMENTO OFICINA</a>
                         </li>
-                        <li>
-                            <a href="#">REPORTE 1</a>
-                        </li>
+                        
                     </ul>
                 </li>
                 
@@ -311,7 +298,7 @@
                     <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"  >CONFIGURACION</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu2">
                         <li>
-                            <a href="#">CAMBIAR CLAVE</a>
+                            <a th:href="@{/admin/expediente/actualizarclave}">CAMBIAR CLAVE</a>
                         </li>
                         <li>
                         

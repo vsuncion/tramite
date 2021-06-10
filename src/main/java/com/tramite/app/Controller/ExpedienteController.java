@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tramite.app.Entidades.ArchivoMovimiento;
+import com.tramite.app.Entidades.ArchivoTupac;
 import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.EstadoDocumento;
@@ -36,6 +37,7 @@ import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.Entidades.Oficinas;
+import com.tramite.app.Entidades.ReporteExpediente;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
@@ -47,7 +49,7 @@ import com.tramite.app.utilitarios.GenerarExcel;
 
 @Controller
 @RequestMapping("/admin/expediente")
-@PreAuthorize("hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')")
+@PreAuthorize("hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO','ROLE_REPORTES')")
 public class ExpedienteController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -323,32 +325,206 @@ public class ExpedienteController {
 		}
 		
 	}
+	
+	
+	@GetMapping(value = {"/descargaradjntos"})
+	public ModelAndView descargarequerimientostupa(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idexpediente,@RequestParam Long idmovimiento) {
+		ModelAndView pagina = new ModelAndView();
+		Expediente infoExpediente = new Expediente();
+		List<ArchivoTupac> listaTupacArchivos = new ArrayList<ArchivoTupac>();
+		
+		//OBTENEMOS INFORMACION DEL EXPEDIENTE
+		infoExpediente = expedienteServicio.infoExpedienteId(idexpediente);
+		listaTupacArchivos = expedienteServicio.listarArchivosTupa(idexpediente);
+		
+		pagina.addObject("pidexpediente",idexpediente);
+		pagina.addObject("pidmovimiento",idmovimiento);
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.addObject("listatupacarchivos",listaTupacArchivos);
+		pagina.setViewName("admin/bandeja/descargartupa");
+		return pagina;
+	}
+	
+	
+	@GetMapping(value = {"/archivosadjuntos"})
+	public void archivosAdjuntos(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idexpediente,@RequestParam Long idarchivorequisito) {
+		
+		ArchivoTupac info = new ArchivoTupac();
+		String ruta="";
+		
+		try {
+			info = expedienteServicio.infoArchivoTupa(idexpediente, idarchivorequisito);
+			if(info!=null) {
+				ruta = rutaRaiz + info.obtenerRutaAbsoluArchivo();
+				res.setHeader("Content-Disposition", "attachment; filename=" + info.getVNOMBRE_ARCHIVO() + "."
+						+ info.getVEXTENSION());
+				res.getOutputStream().write(Files.readAllBytes(Paths.get(ruta)));
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	
+	}
 
 	@GetMapping(value = { "/registroexpc" })
-	public ModelAndView registroExpedientec() {
+	public ModelAndView registroExpedientec(HttpServletRequest request, HttpServletResponse res) {
 
 		logger.info("======================= INFO 1 registroexpc================");
 		ModelAndView pagina = new ModelAndView();
-		pagina.setViewName("admin/registroexp_c");
+		Expediente formExpediente = new Expediente();
+		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
+		List<Seleccion> cbOficinas = new ArrayList<Seleccion>();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		formExpediente.setNTIPOPERSONA(Long.valueOf(Constantes.tipoPersonaNatural));
+		formExpediente.setPERSONAFK(usuario.getNIDPERSONAFK());
+		formExpediente.setVNOMBRE(usuario.getVNOMBRE());
+		formExpediente.setVAPELLIDO_PATERNO(usuario.getVAPEPATERNO());
+		formExpediente.setVAPELLIDO_MATERNO(usuario.getVAPEMATERNO());
+		
+		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
+		String vnombre_oficina = usuario.getVOFICINA();
+		
+		cbOficinas = recursoServicio.cbOficinasAtender(usuario.getNOFICINAFK());
+		
+		pagina.addObject("cbOficinas", cbOficinas);
+		pagina.addObject("vnombre_oficina", vnombre_oficina);
+		pagina.addObject("cbTipoDocumento", cbTipoDocumento);
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.setViewName("admin/tramite/interno/simple_old");
 		return pagina;
 	}
-
-	@GetMapping(value = { "/registroexps" })
-	public ModelAndView registroExpedientes() {
-
-		logger.info("======================= INFO 2 registroexps===============");
+	
+	
+	@PostMapping(value = {"/grabartramitesimpleinterno"})
+	public ModelAndView grabarTramiteSimpleInterno(HttpServletRequest request, HttpServletResponse res,Expediente formExpediente,@RequestParam("varchivosubida") MultipartFile farchvio) {
+		logger.info("======================= GRABAR ================");
 		ModelAndView pagina = new ModelAndView();
-		pagina.setViewName("admin/registroexp_s");
-		return pagina;
+		boolean respuesta = false;
+		
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		// SUBIMOS EL DOCUMENTO
+		if (farchvio != null && farchvio.getSize() > 0) {
+			Archivos archivo = new Archivos();
+
+			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+
+			if (archivo.isVerificarCarga() == true) {
+				logger.info("ingresi el archivo");
+				formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
+				formExpediente.setVNOMBRE_ARCHIVO(archivo.getNombre());
+				formExpediente.setVEXTENSION(archivo.getExtension());
+			}
+		}
+
+		// OBTENEOS EL NUMERO DE EXPEDIENTE
+		String correlativoExpediente = recursoServicio.numeroExpediente();
+		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
+		formExpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK());
+		formExpediente.setPERSONAFK(usuario.getNIDPERSONAFK());
+		formExpediente.setNTIPOPERSONA(Long.valueOf(Constantes.tipoPersonaNatural));
+		
+		respuesta = expedienteServicio.guardarExpedienteSimpleInterno(formExpediente);
+		
+		pagina.addObject("codigoexpediente",correlativoExpediente);
+		pagina.setViewName("admin/tramite/interno/respuesta_simple");
+		return pagina;	
 	}
-
-	@GetMapping(value = { "/seguimientoexp" })
-	public ModelAndView seguimientoExpedientes() {
-
-		logger.info("======================= INFO 3 seguimientoexp================");
+	
+	
+	@GetMapping(value = {"/actualizarclave"})
+	public ModelAndView actualizarClave(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
-		pagina.setViewName("admin/seguimientoexp");
+		Usuarios formusuario = new Usuarios();
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
+		Usuarios usuario = new Usuarios();
+
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		formusuario.setVUSUARIO(usuario.getUsername());
+		
+		pagina.addObject("formusuario",formusuario); 
+		pagina.setViewName("admin/usuario/cambioclave");
+		return pagina;	
+	}
+	
+	
+	@PostMapping(value = {"/grabaractualizarclave"})
+	public ModelAndView grabarActualizarClave(HttpServletRequest request, HttpServletResponse res,Usuarios formusuario) {
+		ModelAndView pagina = new ModelAndView();
+		boolean respuesta = false;
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		formusuario.setVUSUARIO(usuario.getVUSUARIO());
+		respuesta = expedienteServicio.actualizarClave(formusuario);
+		
+		
+		formusuario.setVCLAVE("");
+		pagina.addObject("formusuario",formusuario); 
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		pagina.setViewName("admin/usuario/cambioclave");
+		return pagina;	
+	}
+	
+	
+	@GetMapping(value = {"/rptestadodocumento"})
+	public ModelAndView reportEstadoDocumento(HttpServletRequest request, HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+        Expediente formexpediente = new Expediente();
+        List<Seleccion> listaEstadoDocumentos = new ArrayList<Seleccion>();
+        List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>();
+        
+        Long idestadoInicial = 0L;
+        listaReporte = expedienteServicio.listaExpedientesPorEstadoDocuemnto(idestadoInicial);
+        listaEstadoDocumentos = recursoServicio.cbAccionesAtender();
+        
+        pagina.addObject("listaReporte", listaReporte);
+        pagina.addObject("listaEstadoDocumentos", listaEstadoDocumentos);
+		pagina.addObject("formexpediente",formexpediente);
+		pagina.setViewName("admin/reportes/rptestadoDocumento");
 		return pagina;
 	}
-
+	
+	
+	@PostMapping(value = {"/buscareportedocumentoestado"})
+	public ModelAndView buscaReporteDocumentoEstado(HttpServletRequest request, HttpServletResponse res,Expediente formexpediente) {
+		ModelAndView pagina = new ModelAndView();
+		List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>();
+		 List<Seleccion> listaEstadoDocumentos = new ArrayList<Seleccion>();
+		 
+		listaReporte = expedienteServicio.listaExpedientesPorEstadoDocuemnto(formexpediente.getNESTADODOCUMENTOFK());
+		
+		listaEstadoDocumentos = recursoServicio.cbAccionesAtender();
+		
+		
+		pagina.addObject("listaReporte", listaReporte);
+		pagina.addObject("listaEstadoDocumentos", listaEstadoDocumentos);
+		pagina.addObject("formexpediente",formexpediente);
+		pagina.setViewName("admin/reportes/rptestadoDocumento");
+		return pagina;
+	}
+	
+	
+	@GetMapping(value = {"/rptoficinaestadodocumento"})
+	public ModelAndView reportOficinaEstadoDocumento(HttpServletRequest request, HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+		Expediente formexpediente = new Expediente();
+		
+		pagina.addObject("formexpediente",formexpediente); 
+		pagina.setViewName("admin/reportes/rptestadoOficina");
+		return pagina;
+	}
+	
+	
+	
+  
 }

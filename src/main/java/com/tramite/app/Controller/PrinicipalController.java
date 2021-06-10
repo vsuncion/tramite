@@ -25,8 +25,7 @@ import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
-import com.tramite.app.Entidades.PreRequisitoTupa;
-import com.tramite.app.Entidades.PreTupacExpediente;
+import com.tramite.app.Entidades.PreRequisitoTupa; 
 import com.tramite.app.Entidades.Seleccion; 
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
 import com.tramite.app.Servicios.ExpedienteServicio;
@@ -241,7 +240,7 @@ public class PrinicipalController {
 
 	@GetMapping(value = { "/nuevo_tramite_simple" })
 	public ModelAndView nuevoExternoSimple(HttpServletRequest request, HttpServletResponse res,
-			@RequestParam int tipopersona, @RequestParam String numero) {
+			@RequestParam Long tipopersona, @RequestParam String numero) {
 		Expediente formExpediente = new Expediente();
 		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
@@ -347,10 +346,46 @@ public class PrinicipalController {
 		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
 	}
+	
+	
+	@GetMapping(value = {"/buscarexpediente/exportarhojaruta"})
+	public void exportarHojaRuta(HttpServletRequest request, HttpServletResponse res,@RequestParam String anio,String codigoexpediente) {
+		Expediente infoExpediente = new Expediente();
+		XSSFWorkbook libro = new XSSFWorkbook();
+		List<HojaRuta> listaHojaRuta = new ArrayList<HojaRuta>();
+		
+		try {
+			
+			infoExpediente = expedienteServicio.infoExpedienteCodigo(anio, codigoexpediente);
+			if(infoExpediente!=null) {
+				listaHojaRuta = expedienteServicio.infoHojaRuta(anio,codigoexpediente);
+				if(listaHojaRuta.size()>0) {
+					//GENERAMOS LA HOJA DE RUTA
+					generarExcel.reporteHojaRuta(libro, infoExpediente, listaHojaRuta);
+					String nombreReporte = "Hoja_Ruta_" + infoExpediente.getVCODIGO_EXPEDIENTE() + ".xlsx";
+					 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+					 
+					 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+					 libro.write(outByteStream);
+					 byte[] outArray = outByteStream.toByteArray();
+					 OutputStream outStream = res.getOutputStream();
+					 outStream.write(outArray);
+					 outStream.flush();
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+	
+ 
 
 	@GetMapping(value = { "/nuevo_tramite_tupa" })
 	public ModelAndView nuevoExternoTupa(HttpServletRequest request, HttpServletResponse res,
-			@RequestParam int tipopersona, @RequestParam String numero) {
+			@RequestParam Long tipopersona, @RequestParam String numero) {
 		Expediente formExpediente = new Expediente();
 		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
@@ -361,7 +396,7 @@ public class PrinicipalController {
 
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
-		cbTupa = recursoServicio.cbTupa();
+		cbTupa = principalServicio.listasTupacRequisitos();
 		formExpediente.setTIPODOCUMENTOBUSCAR(tipopersona);
 		formExpediente.setCAJABUSQUEDA(numero);
 		formExpediente.setNTIPOPERSONA(tipopersona);
@@ -399,11 +434,12 @@ public class PrinicipalController {
 			@RequestParam("varchivosubida") MultipartFile farchvio, HttpServletRequest request,
 			HttpServletResponse res) {
 		
-		ModelAndView pagina = new ModelAndView();
-		//PreTupacExpediente preTupacExpediente = new PreTupacExpediente();
-		boolean respuesta = false;
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> cbRequisitos = new ArrayList<>();
+		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
         Long idPreTramiteTupac = 0L;
-		
+       
+        
 		// SUBIMOS EL DOCUMENTO
 		if (farchvio != null && farchvio.getSize() > 0) {
 			Archivos archivo = new Archivos();
@@ -417,47 +453,24 @@ public class PrinicipalController {
 				formExpediente.setVEXTENSION(archivo.getExtension());
 			}
 		}
-
-	  
+ 
+		
 		idPreTramiteTupac = principalServicio.guardarPreTupac(formExpediente);
 		
+		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO 
+		formExpediente = principalServicio.preTupacExpediente(idPreTramiteTupac);
 		
-		pagina.setViewName("admin/tramite/externo/respuesta_simple");
-		return null;
+		//BUSCAMOS LOS REQUSITOS TUPAC
+		cbRequisitos = recursoServicio.cbRequisitos(formExpediente.getTUPACFK());
+		
+ 
+		pagina.addObject("listarPreRequisito", listarPreRequisito);
+		pagina.addObject("cbrequisitos", cbRequisitos);
+		pagina.addObject("formExpediente", formExpediente);
+		pagina.setViewName("admin/tramite/externo/prerequisitostupac");
+		return pagina;
 	}
 	
-	@GetMapping(value = {"/buscarexpediente/exportarhojaruta"})
-	public void exportarHojaRuta(HttpServletRequest request, HttpServletResponse res,@RequestParam String anio,String codigoexpediente) {
-		Expediente infoExpediente = new Expediente();
-		XSSFWorkbook libro = new XSSFWorkbook();
-		List<HojaRuta> listaHojaRuta = new ArrayList<HojaRuta>();
-		
-		try {
-			
-			infoExpediente = expedienteServicio.infoExpedienteCodigo(anio, codigoexpediente);
-			if(infoExpediente!=null) {
-				listaHojaRuta = expedienteServicio.infoHojaRuta(anio,codigoexpediente);
-				if(listaHojaRuta.size()>0) {
-					//GENERAMOS LA HOJA DE RUTA
-					generarExcel.reporteHojaRuta(libro, infoExpediente, listaHojaRuta);
-					String nombreReporte = "Hoja_Ruta_" + infoExpediente.getVCODIGO_EXPEDIENTE() + ".xlsx";
-					 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-					 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
-					 
-					 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-					 libro.write(outByteStream);
-					 byte[] outArray = outByteStream.toByteArray();
-					 OutputStream outStream = res.getOutputStream();
-					 outStream.write(outArray);
-					 outStream.flush();
-				}
-			}
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-	}
 	
 	@GetMapping(value = {"/prerequisitos"})
 	public ModelAndView prerequisitos(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idpretupac) {
@@ -467,11 +480,11 @@ public class PrinicipalController {
 		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
 		
 		
-		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO
+		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO 
 		formExpediente = principalServicio.preTupacExpediente(idpretupac);
 		
 		//BUSCAMOS LOS REQUSITOS TUPAC
-		cbRequisitos = recursoServicio.cbRequisitos(idpretupac);
+		cbRequisitos = recursoServicio.cbRequisitos(formExpediente.getTUPACFK());
 		
 		
 		
@@ -488,8 +501,10 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView(); 
 		List<Seleccion> cbRequisitos = new ArrayList<>();
 		PreRequisitoTupa  preRequisitoTupa = new PreRequisitoTupa();
+		PreRequisitoTupa  buscarPreRequisitoTupa = new PreRequisitoTupa();
 		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		boolean respuesta = false; 
 		
 		preRequisitoTupa.setIDPREEXPEDIENTEFK(formExpediente.getIDPREEXPEDIENTEPK());
 		preRequisitoTupa.setTUPACFK(formExpediente.getTUPACFK());
@@ -497,37 +512,99 @@ public class PrinicipalController {
 		
 	 
 		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO
-		formExpediente = principalServicio.preTupacExpediente(preRequisitoTupa.getTUPACFK());
+		formExpediente = principalServicio.preTupacExpediente(preRequisitoTupa.getIDPREEXPEDIENTEFK());
 		formExpediente.setVREQUISITO(preRequisitoTupa.getREQUISITOFK());
+ 
 		
+		//VERIFICAMOS QUE NO ESTE DUPLICADO
+		buscarPreRequisitoTupa = principalServicio.infoPreRequisitoTupa(preRequisitoTupa);
+		
+		if(buscarPreRequisitoTupa.getIDPREREQUISITOPK()==0) {
+			
+			// SUBIMOS EL DOCUMENTO
+			if (farchvio != null && farchvio.getSize() > 0) {
+				Archivos archivo = new Archivos();
+
+				archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+
+				if (archivo.isVerificarCarga() == true) {
+					logger.info("ingresi el archivo");
+					preRequisitoTupa.setVUBICACION_ARCHIVO(archivo.getRuta());
+					preRequisitoTupa.setVNOMBRE_ARCHIVO(archivo.getNombre());
+					preRequisitoTupa.setVEXTENSION(archivo.getExtension());
+				}
+			}
+			
+			
+			// INSERTAMOS LOS REGISTROS 
+		 	mostrarmensaje = principalServicio.guardarPreRequisito(preRequisitoTupa);
+			
+		}
+		
+ 
 		//BUSCAMOS LOS REQUSITOS TUPAC
 		cbRequisitos = recursoServicio.cbRequisitos(preRequisitoTupa.getTUPACFK());
-		
-		
-		// SUBIMOS EL DOCUMENTO
-				if (farchvio != null && farchvio.getSize() > 0) {
-					Archivos archivo = new Archivos();
 
-					archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+        // LISTAMOS LOS REQUISITOS AGREGADOS
+		listarPreRequisito = principalServicio.listaPreRequisitos(preRequisitoTupa.getIDPREEXPEDIENTEFK());
+		
+		
+		if(cbRequisitos.size()==listarPreRequisito.size()) {
+			//PROCEDEMOS A REGISTRAR EL EXPEDIENTE
+			logger.info("========= PROCEDER A REGISTRAR EL EXPEDIENTE");
+			
+			//GRABAMOS EL EXPEDIENTE
+			String correlativoExpediente = recursoServicio.numeroExpediente();
+			formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
+			
+			//GRABAMOS EL TUPA EN EXPEDIENTE
+			respuesta = principalServicio.guardarExpedienteSimple(formExpediente); 
+			
+			// INSERTAMOS LOS DETALLES DE LOS DOCUMENTOS ADJUNTOS
+			//principalServicio.guardarDetalleArchivosExpedienteTupa(formExpediente);
+			
+			
+			if(respuesta== true) {
+				pagina.addObject("codigoexpediente", correlativoExpediente);
+			}else {
+				pagina.addObject("codigoexpediente", correlativoExpediente);
+			}
+			
+			pagina.setViewName("admin/tramite/externo/respuesta_simple");
+			
+		}else {
+			pagina.setViewName("admin/tramite/externo/agregarprerequisitostupac");
+		}
+		
+		
+		pagina.addObject("listarPreRequisito", listarPreRequisito);
+		pagina.addObject("cbrequisitos", cbRequisitos);
+		pagina.addObject("formExpediente", formExpediente);
+		//pagina.setViewName("admin/tramite/externo/agregarprerequisitostupac");
+		return pagina;
+	}
+	
+	@GetMapping(value = {"/eliminarequisitotupa"})
+	public ModelAndView eliminar_requisito_tupa(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idprexpediente,@RequestParam Long idrequisito) {
+		
+		ModelAndView pagina = new ModelAndView(); 
+		Expediente formExpediente = new Expediente();
+		List<Seleccion> cbRequisitos = new ArrayList<>();
+		List<PreRequisitoTupa> listarPreRequisito = new ArrayList<PreRequisitoTupa>();
+		
+		//OBTENEMOS LA INFORMACION DEL PRE-REGISTRO
+		formExpediente = principalServicio.preTupacExpediente(idprexpediente);
+		
+		//BUSCAMOS LOS REQUSITOS TUPAC
+		cbRequisitos = recursoServicio.cbRequisitos(formExpediente.getTUPACFK());
+		
+		//ELIMINAMOS EL ARCHIVO REQUERIMEINTO
+		principalServicio.eliminarArchivoRequerimeinto(idprexpediente,idrequisito);
 
-					if (archivo.isVerificarCarga() == true) {
-						logger.info("ingresi el archivo");
-						preRequisitoTupa.setVUBICACION_ARCHIVO(archivo.getRuta());
-						preRequisitoTupa.setVNOMBRE_ARCHIVO(archivo.getNombre());
-						preRequisitoTupa.setVEXTENSION(archivo.getExtension());
-					}
-				}
-				
+		 // LISTAMOS LOS REQUISITOS AGREGADOS
+		listarPreRequisito = principalServicio.listaPreRequisitos(idprexpediente);
 		
-				//VERIFICAMOS QUE NO ESTE DUPLICADO
-				
-				
-				// INSERTAMOS LOS REGISTROS 
-				
-				mostrarmensaje = principalServicio.guardarPreRequisito(preRequisitoTupa);
 		
-		        // LISTAMOS LOS REQUISITOS
-				listarPreRequisito = principalServicio.listaPreRequisitos(preRequisitoTupa.getIDPREEXPEDIENTEFK());
 		
 		pagina.addObject("listarPreRequisito", listarPreRequisito);
 		pagina.addObject("cbrequisitos", cbRequisitos);
@@ -536,5 +613,6 @@ public class PrinicipalController {
 		return pagina;
 	}
 	
-
+ 
+	
 }

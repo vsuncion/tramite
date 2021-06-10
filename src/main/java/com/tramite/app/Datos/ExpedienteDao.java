@@ -3,10 +3,13 @@ package com.tramite.app.Datos;
 import java.util.List;
 
 import com.tramite.app.Entidades.ArchivoMovimiento;
+import com.tramite.app.Entidades.ArchivoTupac;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.HojaRuta;
-import com.tramite.app.Entidades.MovimientoExpediente; 
+import com.tramite.app.Entidades.MovimientoExpediente;
+import com.tramite.app.Entidades.ReporteExpediente;
+import com.tramite.app.Entidades.Usuarios; 
 
 public interface ExpedienteDao {
 
@@ -22,4 +25,9 @@ public interface ExpedienteDao {
 	List<HojaRuta> infoHojaRutaIdExpediente(Long idExpediente);
 	Expediente infoExpedienteId(Long idExpediente); 
 	MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento);
+	List<ArchivoTupac> listarArchivosTupa(Long idexpediente);
+	ArchivoTupac infoArchivoTupa(Long idexpediente,Long idarchivorequisito);
+	boolean guardarExpedienteSimpleInterno(Expediente expediente);
+	boolean actualizarClave(Usuarios formUsuario);
+	List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento);
 }

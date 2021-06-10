@@ -7,6 +7,7 @@ import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.Tupac;
 
 public interface PrincipalDao {
 	
@@ -20,4 +21,8 @@ public interface PrincipalDao {
 	Expediente preTupacExpediente(Long idprexpediente);
 	boolean guardarPreRequisito(PreRequisitoTupa preRequisitoTupa);
 	List<PreRequisitoTupa> listaPreRequisitos(Long idprexpediente);
+	List<Tupac> listasTupacRequisitos();
+	PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa);
+	void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente);
+	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
 }

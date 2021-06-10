@@ -2,17 +2,21 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tramite.app.Datos.ExpedienteDao;
 import com.tramite.app.Entidades.ArchivoMovimiento;
+import com.tramite.app.Entidades.ArchivoTupac;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
+import com.tramite.app.Entidades.ReporteExpediente;
+import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.utilitarios.Constantes;
 
@@ -21,6 +25,9 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	
 	@Autowired
 	private ExpedienteDao expedienteDao;
+	
+	@Autowired
+	private BCryptPasswordEncoder encriptar;
 	
 	@Override
 	public List<Bandeja> listarBandeja(Long oficina, Long estadodocumento) { 
@@ -114,6 +121,32 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) { 
 		return expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+	}
+
+	@Override
+	public List<ArchivoTupac> listarArchivosTupa(Long idexpediente) { 
+		return expedienteDao.listarArchivosTupa(idexpediente);
+	}
+
+	@Override
+	public ArchivoTupac infoArchivoTupa(Long idexpediente, Long idarchivorequisito) { 
+		return expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+	}
+
+	@Override
+	public boolean guardarExpedienteSimpleInterno(Expediente expediente) { 
+		return expedienteDao.guardarExpedienteSimpleInterno(expediente);
+	}
+
+	@Override
+	public boolean actualizarClave(Usuarios formUsuario) {
+		formUsuario.setVCLAVE(encriptar.encode(formUsuario.getVCLAVE()));
+		return expedienteDao.actualizarClave(formUsuario);
+	}
+
+	@Override
+	public List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento) { 
+		return expedienteDao.listaExpedientesPorEstadoDocuemnto(idEstadoDocumento);
 	}
 
  

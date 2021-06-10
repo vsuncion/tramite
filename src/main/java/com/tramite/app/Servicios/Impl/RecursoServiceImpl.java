@@ -108,6 +108,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 		
 		listaOfinas =  mantenimientoServicio.listarOficinas();
 		for (Oficinas i : listaOfinas) {
+			logger.info("==== "+i.getNIDOFICINAPK());
 			if(idoficiActual != i.getNIDOFICINAPK()) {
 				Seleccion item = new Seleccion(); 
 				item.setCodigo(i.getNIDOFICINAPK());

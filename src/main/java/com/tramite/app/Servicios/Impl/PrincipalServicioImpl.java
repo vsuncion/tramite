@@ -1,5 +1,6 @@
 package com.tramite.app.Servicios.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.Seleccion;
+import com.tramite.app.Entidades.Tupac;
 import com.tramite.app.Servicios.FijaServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.utilitarios.AutoGenerados;
@@ -123,6 +126,35 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	public List<PreRequisitoTupa> listaPreRequisitos(Long idprexpediente) { 
 		return principalDao.listaPreRequisitos(idprexpediente);
+	}
+
+	@Override
+	public  List<Seleccion> listasTupacRequisitos() { 
+		List<Seleccion> listafinal = new ArrayList<Seleccion>();
+		List<Tupac> lista = principalDao.listasTupacRequisitos();
+		for (Tupac i : lista) {
+			Seleccion item = new Seleccion();
+			item.setCodigo(i.getTUPACPK());
+			item.setEtiqueta(i.getVNOMBRE());
+			listafinal.add(item);
+		}
+		return listafinal;
+	}
+
+	@Override
+	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) { 
+		return principalDao.infoPreRequisitoTupa(preRequisitoTupa);
+	}
+
+	@Override
+	public void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente) {
+		principalDao.guardarDetalleArchivosExpedienteTupa(formExpediente);
+		
+	}
+
+	@Override
+	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
+		principalDao.eliminarArchivoRequerimeinto(idprexpediente, idrequisito);
 	}
 
 	 

@@ -18,6 +18,11 @@ public class Usuarios implements Serializable {
 	private Long NTRABAJADORFK;
 	private Long NOFICINAFK;
 	private String VUSUARIO;
+	private String VNOMBRE;
+	private String VAPEPATERNO;
+	private String VAPEMATERNO;
+	private String VOFICINA;
+	private Long NIDPERSONAFK;
 	
 	@NotEmpty(message = "EL CAMPO CLAVE, ES OBLIGATORIO") 
 	 @Size(min=4, max=50)
@@ -39,8 +44,7 @@ public class Usuarios implements Serializable {
 	
 	private Long   NITEM;
 	private String VCORREO;
-	private String VPERFIL;
-	private String VOFICINA;  
+	private String VPERFIL; 
 	private Long NIDUSUAPERFILFK;
 	
 	private String username;
@@ -253,7 +257,38 @@ public class Usuarios implements Serializable {
 	public void setNidpersonapk(Long nidpersonapk) {
 		this.nidpersonapk = nidpersonapk;
 	}
-	
-	
 
+	public String getVNOMBRE() {
+		return VNOMBRE;
+	}
+
+	public void setVNOMBRE(String vNOMBRE) {
+		VNOMBRE = vNOMBRE;
+	}
+
+	public String getVAPEPATERNO() {
+		return VAPEPATERNO;
+	}
+
+	public void setVAPEPATERNO(String vAPEPATERNO) {
+		VAPEPATERNO = vAPEPATERNO;
+	}
+
+	public String getVAPEMATERNO() {
+		return VAPEMATERNO;
+	}
+
+	public void setVAPEMATERNO(String vAPEMATERNO) {
+		VAPEMATERNO = vAPEMATERNO;
+	}
+
+	public Long getNIDPERSONAFK() {
+		return NIDPERSONAFK;
+	}
+
+	public void setNIDPERSONAFK(Long nIDPERSONAFK) {
+		NIDPERSONAFK = nIDPERSONAFK;
+	}
+
+	 
 }

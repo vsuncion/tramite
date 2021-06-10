@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form th:object="${infoExpediente}">
+
+					<div class="rows text-center">
+						<a
+							th:href="@{/admin/expediente/atenderexpediente?idexpediente=}+${pidexpediente}+'&idmovimiento='+${pidmovimiento}"><i class="fas fa-arrow-alt-circle-left"></i><span class="letras_numero">  REGRESAR</span></a>
+
+					</div>
+					<div class="card">
+						<div class="card-header">INFORMACION EXPEDIENTE</div>
+						<div class="card-body">
+
+							<div class="form-row">
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">NUMERO
+										EXPEDIENTE :</label> <span id="nexpediente"
+										th:text="*{VCODIGO_EXPEDIENTE}"></span>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">NUMERO
+										DOCUMENTO :</label> <span th:text="*{VNUMERODOCUMENTO}"></span>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">FECHA
+										REGISTRO :</label> <span id="nexpediente" th:text="*{VDFECREGISTRO}"></span>
+								</div>
+							</div>
+
+							<div class="form-row">
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">TIPO
+										DOCUMENTO :</label> <span id="nexpediente" th:text="*{VNOMBRE}">SIMPLE</span>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">TIPO
+										TRAMITE :</label> <span id="nexpediente" th:if="*{TUPACFK!=null}"
+										th:text="*{VNOMBRETUPAC}"> </span>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for="nexpediente" class="letras_numero">NUMERO
+										DOCUMENTO :</label> <span id="nexpediente"
+										th:text="*{VNUMERODOCUMENTO}"></span>
+								</div>
+							</div>
+
+							<div class="form-row">
+
+								<div class="form-group col-md-8">
+									<label for="nexpediente" class="letras_numero">REMITENTE
+										:</label> <span id="nexpediente" th:text="*{VREMITENTE}"></span>
+								</div>
+
+
+
+
+
+							</div>
+
+							<div class="form-row">
+
+								<div class="form-group col-md-8">
+									<label for="nexpediente" class="letras_numero">ASUNTO:</label>
+									<span id="nexpediente" th:text="*{VASUNTO}"></span>
+								</div>
+								<div class="form-group col-md-4"></div>
+
+							</div>
+
+						</div>
+					</div>
+
+					<div class="card">
+						<h5 class="card-header">
+							REQUERIMIENTOS TUPA - <span th:text="*{VNOMBRETUPAC}"></span>
+						</h5>
+						<div class="card-body">
+							<table class="table table-hover">
+								<thead>
+									<tr style="text-align: center;" class="cuerpo_letras_grilla">
+										<th scope="col">#</th>
+										<th scope="col">REQUISITO</th>
+										<th scope="col">DESCARGAR</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="i : ${listatupacarchivos}"
+										style="text-align: center;" class="cuerpo_letras_grilla">
+										<th scope="row"><span th:text="${i.NITEM}"></span></th>
+										<td><span th:text="${i.VNOMBRE}"></span></td>
+										<td><a
+											th:href="@{/admin/expediente/archivosadjuntos?idexpediente=}+${i.EXPEDIENTEFK}+'&idarchivorequisito='+${i.NARCHIVOTUPAPK}"
+											target="_blank"><i class="fas fa-download"></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+
+				</form>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

@@ -21,7 +21,7 @@ public class Expediente implements Serializable {
 	private String VUBICACION_ARCHIVO;
 	private String VEXTENSION;
 	private Long TUPACFK;
-	private int NTIPOPERSONA;
+	private Long NTIPOPERSONA;
 	private Long PERSONAFK;
 	private Date DFECHATERMINO;
 	private int NDIASPLAZO;
@@ -37,7 +37,7 @@ public class Expediente implements Serializable {
 	private Long NUSUELIMINA;
 	private Long NIDPERSONAPK;
 
-	private int TIPODOCUMENTOBUSCAR;
+	private Long TIPODOCUMENTOBUSCAR;
 	private String CAJABUSQUEDA;
 	private String ESTADODOCUMENTO;
 	private String VREMITENTE;
@@ -174,11 +174,13 @@ public class Expediente implements Serializable {
 		TUPACFK = tUPACFK;
 	}
 
-	public int getNTIPOPERSONA() {
+	 
+
+	public Long getNTIPOPERSONA() {
 		return NTIPOPERSONA;
 	}
 
-	public void setNTIPOPERSONA(int nTIPOPERSONA) {
+	public void setNTIPOPERSONA(Long nTIPOPERSONA) {
 		NTIPOPERSONA = nTIPOPERSONA;
 	}
 
@@ -294,11 +296,13 @@ public class Expediente implements Serializable {
 		NIDPERSONAPK = nIDPERSONAPK;
 	}
 
-	public int getTIPODOCUMENTOBUSCAR() {
+	 
+
+	public Long getTIPODOCUMENTOBUSCAR() {
 		return TIPODOCUMENTOBUSCAR;
 	}
 
-	public void setTIPODOCUMENTOBUSCAR(int tIPODOCUMENTOBUSCAR) {
+	public void setTIPODOCUMENTOBUSCAR(Long tIPODOCUMENTOBUSCAR) {
 		TIPODOCUMENTOBUSCAR = tIPODOCUMENTOBUSCAR;
 	}
 

@@ -60,16 +60,21 @@
 
 							<div class="form-group col-md-4">
 								<label for="nexpediente" class="letras_numero">NUMERO
-									DOCUMENTO :</label> <span id="nexpediente" th:text="*{VASUNTO}"></span>
+									DOCUMENTO :</label> <span id="nexpediente" th:text="*{VNUMERODOCUMENTO}"></span>
 							</div>
 						</div>
 
 						<div class="form-row">
 
-							<div class="form-group col-md-8">
+							<div class="form-group col-md-4">
 								<label for="nexpediente" class="letras_numero">TIPO
-									TRAMITE :</label> <span id="nexpediente" th:if="*{TUPACFK==null}">SIMPLE</span>
-								<span id="nexpediente" th:if="*{TUPACFK!=null}">TUPAC</span>
+									DOCUMENTO :</label> <span id="nexpediente" th:text="*{VNOMBRE}">SIMPLE</span> 
+							</div>
+							
+							<div class="form-group col-md-4">
+								<label for="nexpediente" class="letras_numero">TIPO
+									TRAMITE :</label> 
+								<span id="nexpediente" th:if="*{TUPACFK!=null}" th:text="*{VNOMBRETUPAC}"> </span>
 							</div>
 
 							<div class="form-group col-md-4">
@@ -87,8 +92,13 @@
 									id="nexpediente" th:text="*{VASUNTO}"></span>
 							</div>
 							<div class="form-group col-md-4">
-								<span id="nexpediente" th:if="*{TUPACFK==null}">DESCARGAR
-									DOCUMENTOS ANEXOS</span>
+							<div th:if="*{TUPACFK!=null}">
+							<span id="nexpediente">DESCARGAR DOCUMENTOS ANEXOS</span>
+							  <a class="btn btn-outline-primary" target="_parent"
+									th:href="@{/admin/expediente/descargaradjntos?idexpediente=}+ *{NIDEXPEDIENTEPK}+'&idmovimiento='+ *{NIDMOVIMIENTOFK}"
+									role="button" >DESCARGAR DOCUMENTO REQUESITOS</a>
+							</div>
+							 
 							</div>
 
 						</div>
