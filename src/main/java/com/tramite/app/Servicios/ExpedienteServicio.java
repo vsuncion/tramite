@@ -45,4 +45,6 @@ public interface ExpedienteServicio {
 	boolean actualizarClave(Usuarios formUsuario);
 	
 	List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento);
+	
+	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
 }

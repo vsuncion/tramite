@@ -15,9 +15,11 @@ import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.RequisitosTupac;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.Tupac;
 import com.tramite.app.Servicios.FijaServicio;
+import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.PrincipalServicio;
 import com.tramite.app.utilitarios.AutoGenerados;
 import com.tramite.app.utilitarios.Constantes; 
@@ -32,6 +34,9 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	
 	@Autowired
 	private FijaServicio  fijaServicio;
+	
+	@Autowired
+	private MantenimientoServicio  mantenimientoServicio;
 
 	@Override
 	public Persona buscarPersona(int tipoPersona, String vnumero) { 
@@ -155,6 +160,11 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
 		principalDao.eliminarArchivoRequerimeinto(idprexpediente, idrequisito);
+	}
+
+	@Override
+	public List<RequisitosTupac> listaRequerimientosTupac(Long idtupac) {  
+		return mantenimientoServicio.listarRequisitosTupacPorIdTupac(idtupac);
 	}
 
 	 

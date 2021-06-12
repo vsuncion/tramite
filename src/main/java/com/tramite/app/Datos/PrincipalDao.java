@@ -25,4 +25,5 @@ public interface PrincipalDao {
 	PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa);
 	void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente);
 	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
+	
 }

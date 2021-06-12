@@ -149,8 +149,10 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 		return expedienteDao.listaExpedientesPorEstadoDocuemnto(idEstadoDocumento);
 	}
 
- 
-
-	 
+	@Override
+	public List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente) { 
+		return expedienteDao.listaExpedientesPorOficina(formexpediente);
+	}
+  
 
 }

@@ -30,4 +30,5 @@ public interface ExpedienteDao {
 	boolean guardarExpedienteSimpleInterno(Expediente expediente);
 	boolean actualizarClave(Usuarios formUsuario);
 	List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento);
+	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
 }

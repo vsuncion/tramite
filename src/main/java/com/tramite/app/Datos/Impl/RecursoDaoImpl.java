@@ -3,7 +3,6 @@ package com.tramite.app.Datos.Impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.tramite.app.Datos.RecursoDao;
-import com.tramite.app.Entidades.EstadoDocumento;
-import com.tramite.app.Entidades.Oficinas;
+import com.tramite.app.Entidades.EstadoDocumento; 
 import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Usuarios;
@@ -171,6 +168,25 @@ public class RecursoDaoImpl implements RecursoDao {
 			  parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			  lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
 			  
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+
+	@Override
+	public List<EstadoDocumento> listaEstadoDocumentos() {
+		StringBuffer sql = new StringBuffer();
+		List<EstadoDocumento>  lista = new ArrayList<EstadoDocumento>();
+		try {
+			sql.append(
+			   "SELECT \n"+ 
+			   "  IDESTADOCUMENTOPK, \n"+
+			   "  VNOMBRE \n"+
+			   " FROM "+Constantes.tablaEstadoDocumento+" \n"+
+			   " ESTADO_DOCUMENTO ORDER BY VNOMBRE");
+			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}

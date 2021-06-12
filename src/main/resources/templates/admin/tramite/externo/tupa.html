@@ -120,8 +120,7 @@
 
 												<span class="letras_expediente_externo">TIPO TUPA</span> <select
 													class="form-control form-control-sm" id="TUPACFK"
-													name="TUPACFK" th:field="*{TUPACFK}"
-													th:onchange="document.getElementById('VNUMERODOCUMENTO').focus();document.getElementById('VASUNTO').value=$(this).find('option:selected').text();">
+													name="TUPACFK" th:field="*{TUPACFK}">
 													<option th:each="i : ${cbTupa}" 
 													 th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 												</select>
@@ -133,8 +132,7 @@
 												<span class="letras_expediente_externo">REQUISITOS
 													TUPAC</span> <select name="cbrequisitos" id="cbrequisitos"
 													class="form-control form-control-sm">
-													<option>Requsito 1</option>
-													<option>Requsito 2</option>
+													 
 												</select>
 												
 											</div>
@@ -231,9 +229,27 @@
 
 		</div>
 
-	</div>
-
+	</div> 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	 <script th:inline="javascript">
+	  $('#TUPACFK').on('change', function() {
+		  //alert( window.location.pathname ); 
+		  document.getElementById('VNUMERODOCUMENTO').focus();
+		  document.getElementById('VASUNTO').value=$(this).find('option:selected').text();
+		  $("#cbrequisitos").empty();
+		  jQuery.ajax({
+				url : window.location.pathname+'/listarrequerimientos?idtupac='+this.value,
+				type : 'get',
+				success : function(info) {
+					 
+					$.each( info, function( key, value ) {
+					    $("#cbrequisitos").append('<option value="'+info[key].nreqtupacpk+'">'+info[key].vnombre+'</option>'); 
+					});
+				}
+			});
+		  
+		});
+	</script>
 
 </body>
 </html>

@@ -10,6 +10,7 @@ public class ReporteExpediente implements Serializable {
 	private String VESTADOCUEMNTO;
 	private String VNOMBREOFICINA;
 	private int NCANTIDAD;
+	private int NITEM;
 	
  
 	public ReporteExpediente() {
@@ -44,6 +45,16 @@ public class ReporteExpediente implements Serializable {
 
 	public void setNCANTIDAD(int nCANTIDAD) {
 		NCANTIDAD = nCANTIDAD;
+	}
+
+
+	public int getNITEM() {
+		return NITEM;
+	}
+
+
+	public void setNITEM(int nITEM) {
+		NITEM = nITEM;
 	}
 	
 	

@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,7 @@ import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.ConstantesArchivos;
+import com.tramite.app.utilitarios.Fechas;
 import com.tramite.app.utilitarios.GenerarExcel;
 
 @Controller
@@ -485,7 +487,7 @@ public class ExpedienteController {
         
         Long idestadoInicial = 0L;
         listaReporte = expedienteServicio.listaExpedientesPorEstadoDocuemnto(idestadoInicial);
-        listaEstadoDocumentos = recursoServicio.cbAccionesAtender();
+        listaEstadoDocumentos = recursoServicio.listaEstadoDocumentos();
         
         pagina.addObject("listaReporte", listaReporte);
         pagina.addObject("listaEstadoDocumentos", listaEstadoDocumentos);
@@ -503,7 +505,7 @@ public class ExpedienteController {
 		 
 		listaReporte = expedienteServicio.listaExpedientesPorEstadoDocuemnto(formexpediente.getNESTADODOCUMENTOFK());
 		
-		listaEstadoDocumentos = recursoServicio.cbAccionesAtender();
+		listaEstadoDocumentos = recursoServicio.listaEstadoDocumentos();
 		
 		
 		pagina.addObject("listaReporte", listaReporte);
@@ -518,13 +520,104 @@ public class ExpedienteController {
 	public ModelAndView reportOficinaEstadoDocumento(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		Expediente formexpediente = new Expediente();
+		List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>();
+		List<Seleccion> listaOfinas = new ArrayList<Seleccion>();
 		
+		formexpediente.setOFICINA_ORIGENFK(0L); 
+		listaReporte = expedienteServicio.listaExpedientesPorOficina(formexpediente);
+		listaOfinas = recursoServicio.cbOficinasReportes(formexpediente.getOFICINA_ORIGENFK());
+		
+		 
+		
+		pagina.addObject("listaOfinas", listaOfinas);
+		pagina.addObject("listaReporte", listaReporte);
 		pagina.addObject("formexpediente",formexpediente); 
 		pagina.setViewName("admin/reportes/rptestadoOficina");
 		return pagina;
 	}
 	
 	
+	@PostMapping(value = {"/buscareportedocumentooficina"})
+	public ModelAndView buscaReporteDocumentoOficina(HttpServletRequest request, HttpServletResponse res,Expediente formexpediente) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>();
+		List<Seleccion> listaOfinas = new ArrayList<Seleccion>();
+		
+		
+		 
+		listaReporte = expedienteServicio.listaExpedientesPorOficina(formexpediente);
+		listaOfinas = recursoServicio.cbOficinasReportes(formexpediente.getOFICINA_ORIGENFK());
+		
+		pagina.addObject("listaOfinas", listaOfinas);
+		pagina.addObject("listaReporte", listaReporte);
+		pagina.addObject("formexpediente",formexpediente); 
+		pagina.setViewName("admin/reportes/rptestadoOficina");
+		return pagina;
+	}
 	
+	
+	@GetMapping(value = {"/rptestadodocumento/exportarexelestadodocumentos","/buscareportedocumentoestado/exportarexelestadodocumentos"})
+	public void  exportarExelEstadoDocumentos(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idestadodocumento) {
+		XSSFWorkbook libro = new XSSFWorkbook(); 
+		List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>(); 
+		
+		try { 
+			listaReporte = expedienteServicio.listaExpedientesPorEstadoDocuemnto(idestadodocumento); 
+			if(listaReporte.size()>0) {
+				//GENERAMOS LA HOJA DE RUTA
+				generarExcel.reporteEstadoDocumentos(libro, listaReporte);
+				String nombreReporte = "ESTADO_DOCUMENTOS" +".xlsx";
+				 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+				 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+				 
+				 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+				 libro.write(outByteStream);
+				 byte[] outArray = outByteStream.toByteArray();
+				 OutputStream outStream = res.getOutputStream();
+				 outStream.write(outArray);
+				 outStream.flush();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	@GetMapping(value = {"/rptoficinaestadodocumento/rptoficina","/buscareportedocumentooficina/rptoficina"})
+   public void  exportarExelEstadoDocumentoOficinas(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idoficina, @RequestParam(required = false) String vfechainicio,
+			@RequestParam(required = false) String vfechafin) {
+		
+		XSSFWorkbook libro = new XSSFWorkbook(); 
+		List<ReporteExpediente> listaReporte = new ArrayList<ReporteExpediente>(); 
+		Expediente formexpediente = new Expediente();  
+		try {
+			
+			 if(!"".equals(vfechainicio) && !"".equals(vfechafin)) {
+				 formexpediente.setDFECHAINICIO(Fechas.convertStringToDate(vfechainicio)); 
+				 formexpediente.setDFECHAFIN(Fechas.convertStringToDate(vfechafin));
+			 }
+			 
+			formexpediente.setOFICINA_ORIGENFK(idoficina);
+			listaReporte = expedienteServicio.listaExpedientesPorOficina(formexpediente);
+			if(listaReporte.size()>0) {
+				//GENERAMOS LA HOJA DE RUTA 
+				generarExcel.reporteEstadoDocumentoOficinas(libro, listaReporte);
+				String nombreReporte = "REPORTE_OFICINAS" +".xlsx";
+				 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+				 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+				 
+				 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+				 libro.write(outByteStream);
+				 byte[] outArray = outByteStream.toByteArray();
+				 OutputStream outStream = res.getOutputStream();
+				 outStream.write(outArray);
+				 outStream.flush();
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
   
 }

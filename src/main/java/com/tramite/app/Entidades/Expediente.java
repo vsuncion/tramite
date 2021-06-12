@@ -3,6 +3,8 @@ package com.tramite.app.Entidades;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Expediente implements Serializable {
 
 	/**
@@ -61,6 +63,12 @@ public class Expediente implements Serializable {
 	private String VTIPO_DOCUMENTOS;
 	private String VNOMBRETUPAC;
 	private Long  VREQUISITO;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date DFECHAINICIO;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date DFECHAFIN;
 
 	public Expediente() {
 	}
@@ -465,5 +473,22 @@ public class Expediente implements Serializable {
 	public void setVREQUISITO(Long vREQUISITO) {
 		VREQUISITO = vREQUISITO;
 	}
+
+	public Date getDFECHAINICIO() {
+		return DFECHAINICIO;
+	}
+
+	public void setDFECHAINICIO(Date dFECHAINICIO) {
+		DFECHAINICIO = dFECHAINICIO;
+	}
+
+	public Date getDFECHAFIN() {
+		return DFECHAFIN;
+	}
+
+	public void setDFECHAFIN(Date dFECHAFIN) {
+		DFECHAFIN = dFECHAFIN;
+	}
+	
 
 }

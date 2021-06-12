@@ -8,24 +8,109 @@
 <body>
 
 	<div class="wrapper">
-	
-	   <!-- MENU PLANTILLA -->
+
+		<!-- MENU PLANTILLA -->
 		<nav th:replace="loyout/plantilla :: html_menu"></nav>
-		
+
 		<!-- CONTENIDO PLANTILLA -->
 		<div id="content">
-		    <nav class="navbar navbar-expand-lg navbar-light bg-light"
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
 				th:replace="loyout/plantilla :: html_submenu"></nav>
-				
-				<!-- CONTENIDO EDITABLE INICIO-->
-			    <div class="rows">
-				</div>
-		</div>
-	
-	
-	</div>
-	
-	<div th:replace="loyout/plantilla :: html_scrip"></div>
 
+
+			<form th:object="${formexpediente}"
+				th:action="@{/admin/expediente/buscareportedocumentooficina}" method="post">
+
+
+				<!-- CONTENIDO EDITABLE INICIO-->
+				<div class="rows">
+
+					<div class="card border-dark mb-3">
+						<div class="card-header  text-center">REPORTE POR  OFICINA</div>
+						<div class="card-body text-dark">
+
+							<div class="form-row">
+
+								<div class="form-group col-md-4">
+									<span class="letras_expediente_externo">OFICINA</span> <select class="form-control form-control-sm"
+										id="OFICINA_ORIGENFK" name="OFICINA_ORIGENFK"
+										th:field="*{OFICINA_ORIGENFK}"  > <!--   th:onchange="this.form.submit();"--> 
+										<option value="0" >-- SELECCIONE --</option>
+										<option th:each="i : ${listaOfinas}"
+											th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
+									</select>
+								</div>
+								<div class="form-group col-md-3 text-center">
+								  <span class="letras_expediente_externo" >FECHA REGISTRO INICIO</span><br>
+								  <input id="DFECHAINICIO" name="DFECHAINICIO" type="date" th:field="*{DFECHAINICIO}" max="3000-12-31" min="1000-01-01" class="form-control">
+								</div>
+								<div class="form-group col-md-3 text-center">
+								  <span class="letras_expediente_externo">FECHA REGISTRO FIN</span><br>
+								  <input id="DFECHAFIN" name="DFECHAFIN"  type="date" th:field="*{DFECHAFIN}" max="3000-12-31" min="1000-01-01" class="form-control">
+								</div>
+								
+								<div class="form-group col-md-2 text-right">
+								<button type="submit">BUSCAR</button>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
+                    
+					<div class="card border-dark mb-3">
+						<div class="card-header  text-center">CANTIDAD EXPEDIENTES
+							POR ESTADO DOCUMENTO</div>
+						<div class="card-body text-dark">
+
+							<table class="table table-hover">
+								<thead>
+									<tr class="text-center">
+										<th scope="col">#</th>
+										<th scope="col">NOMBRE OFICINA</th>
+										<th scope="col">ESTADO DOCUMENTO</th>
+										<th scope="col">CANTIDAD</th>
+									</tr>
+								</thead>
+								<tbody>
+									 <tr th:each="i : ${listaReporte}"  class="text-center">
+									 <th scope="row"><span th:text="${i.NITEM}"></span></th>
+									  <td><span th:text="${i.VNOMBREOFICINA}"></span></td>
+									 <td><span th:text="${i.VESTADOCUEMNTO}"></span></td>
+									 <td><span th:text="${i.NCANTIDAD}"></span></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+					<div class="rows">
+                       <div class="col-sm-6 text-right" th:if="${#lists.size(listaReporte)}">
+							<button type="button" class="btn btn-dark" title="Exportal Excel"
+								name="btnexportar" id="btnexportar">
+								<i class="fas fa-file-excel"></i> Exportar Excel
+							</button>
+						</div>
+                    </div>
+
+				</div>
+				<!-- CONTENIDO EDITABLE FIN-->
+			</form>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+    <script th:inline="javascript">
+ 
+	$("#btnexportar").click(function(){
+		var oficinaorigen=$("#OFICINA_ORIGENFK").val(); 
+		var fechainicio=$("#DFECHAINICIO").val();
+		var fechafin=$("#DFECHAFIN").val();
+		var win = window.open(window.location+'/rptoficina?idoficina='+oficinaorigen+'&vfechainicio='+fechainicio+'&vfechafin='+fechafin, '_blank');
+		});
+	</script>
 </body>
 </html>

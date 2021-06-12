@@ -24,15 +24,14 @@ import com.tramite.app.utilitarios.Constantes;
 
 @Service
 public class RecursoServiceImpl implements RecursoServicio {
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	private RecursoDao recursoDao;
-	 
-	
+
 	@Autowired
-	private MantenimientoServicio  mantenimientoServicio;
+	private MantenimientoServicio mantenimientoServicio;
 
 	@Override
 	public List<Seleccion> cbTipoDocumentoPersona() {
@@ -56,48 +55,46 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
-	public List<Seleccion>  cbTipoDocuemnto() { 
-		List<TipoDocumentos> listarTipoDocuemntoCarga  = new ArrayList<TipoDocumentos>();
-		List<Seleccion> cbListarTipoDocuemnto  = new ArrayList<Seleccion>();
-		
+	public List<Seleccion> cbTipoDocuemnto() {
+		List<TipoDocumentos> listarTipoDocuemntoCarga = new ArrayList<TipoDocumentos>();
+		List<Seleccion> cbListarTipoDocuemnto = new ArrayList<Seleccion>();
+
 		listarTipoDocuemntoCarga = recursoDao.listarTipoDocuemnto();
-		
+
 		for (TipoDocumentos i : listarTipoDocuemntoCarga) {
 			Seleccion seleccion = new Seleccion();
 			seleccion.setCodigo(i.getNIDTIPODOCUMENTOPK());
 			seleccion.setEtiqueta(i.getVNOMBRE());
 			cbListarTipoDocuemnto.add(seleccion);
 		}
-		
-		
+
 		return cbListarTipoDocuemnto;
 	}
 
 	@Override
 	public List<Seleccion> cbTupa() {
-		List<Tupac> listarTupaCarga  = new ArrayList<Tupac>();
-		List<Seleccion> cbListarTipoDocuemnto  = new ArrayList<Seleccion>();
-		
+		List<Tupac> listarTupaCarga = new ArrayList<Tupac>();
+		List<Seleccion> cbListarTipoDocuemnto = new ArrayList<Seleccion>();
+
 		listarTupaCarga = mantenimientoServicio.listarTupac();
-		
+
 		for (Tupac i : listarTupaCarga) {
 			Seleccion seleccion = new Seleccion();
 			seleccion.setCodigo(i.getTUPACPK());
 			seleccion.setEtiqueta(i.getVNOMBRE());
 			cbListarTipoDocuemnto.add(seleccion);
 		}
-		
-		
+
 		return cbListarTipoDocuemnto;
 	}
 
 	@Override
-	public String numeroExpediente() { 
+	public String numeroExpediente() {
 		return recursoDao.numeroExpediente();
 	}
 
 	@Override
-	public Usuarios infoUsuario(String vcorreo) { 
+	public Usuarios infoUsuario(String vcorreo) {
 		return recursoDao.infoUsuario(vcorreo);
 	}
 
@@ -105,12 +102,12 @@ public class RecursoServiceImpl implements RecursoServicio {
 	public List<Seleccion> cbOficinasAtender(Long idoficiActual) {
 		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
 		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
-		
-		listaOfinas =  mantenimientoServicio.listarOficinas();
+
+		listaOfinas = mantenimientoServicio.listarOficinas();
 		for (Oficinas i : listaOfinas) {
-			logger.info("==== "+i.getNIDOFICINAPK());
-			if(idoficiActual != i.getNIDOFICINAPK()) {
-				Seleccion item = new Seleccion(); 
+			logger.info("==== " + i.getNIDOFICINAPK());
+			if (idoficiActual != i.getNIDOFICINAPK()) {
+				Seleccion item = new Seleccion();
 				item.setCodigo(i.getNIDOFICINAPK());
 				item.setEtiqueta(i.getVNOMBRE());
 				listaOfinasFinal.add(item);
@@ -123,50 +120,78 @@ public class RecursoServiceImpl implements RecursoServicio {
 	public List<Seleccion> cbAccionesAtender() {
 		List<EstadoDocumento> listaEstadoDocumento = new ArrayList<EstadoDocumento>();
 		List<Seleccion> listaEstadoDocumentoFinal = new ArrayList<Seleccion>();
-		
+
 		listaEstadoDocumento = mantenimientoServicio.listarEstadoDocumento();
 		for (EstadoDocumento i : listaEstadoDocumento) {
-			
-			if(!Constantes.LETRAS_ESTADO_DOCUMENTO_PENDIENTE.equals(i.getVNOMBRE())) {
-				if(!Constantes.LETRAS_ESTADO_DOCUMENTO_RECIBIDO.equals(i.getVNOMBRE())) {
+
+			if (!Constantes.LETRAS_ESTADO_DOCUMENTO_PENDIENTE.equals(i.getVNOMBRE())) {
+				if (!Constantes.LETRAS_ESTADO_DOCUMENTO_RECIBIDO.equals(i.getVNOMBRE())) {
 					Seleccion item = new Seleccion();
 					item.setCodigo(i.getIDESTADOCUMENTOPK());
 					item.setEtiqueta(i.getVNOMBRE());
 					listaEstadoDocumentoFinal.add(item);
 				}
 			}
-			
+
 		}
-		
+
 		return listaEstadoDocumentoFinal;
 	}
 
 	@Override
-	public Oficinas infoOficina(Long idoficina) { 
+	public Oficinas infoOficina(Long idoficina) {
 		return mantenimientoServicio.buscarOficina(idoficina);
 	}
 
 	@Override
-	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) { 
+	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) {
 		return recursoDao.infoEstadoDocumento(idEstadoDocumento);
 	}
 
 	@Override
-	public List<Seleccion> cbRequisitos(Long idTupac) { 
+	public List<Seleccion> cbRequisitos(Long idTupac) {
 		List<Requisitos> listaRequisitos = new ArrayList<Requisitos>();
 		List<Seleccion> cbRequisito = new ArrayList<Seleccion>();
 		listaRequisitos = recursoDao.cbRequisitos(idTupac);
-		
+
 		for (Requisitos i : listaRequisitos) {
 			Seleccion item = new Seleccion();
 			item.setCodigo(i.getREQUISITOSTUPACPK());
 			item.setEtiqueta(i.getVNOMBRE());
 			cbRequisito.add(item);
 		}
-		
+
 		return cbRequisito;
 	}
 
- 
+	@Override
+	public List<Seleccion> listaEstadoDocumentos() {
+		List<Seleccion> listaFinal = new ArrayList<Seleccion>();
+		List<EstadoDocumento> lista = new ArrayList<EstadoDocumento>();
+		lista = recursoDao.listaEstadoDocumentos();
+		for (EstadoDocumento i : lista) {
+			Seleccion item = new Seleccion();
+			item.setCodigo(i.getIDESTADOCUMENTOPK());
+			item.setEtiqueta(i.getVNOMBRE());
+			listaFinal.add(item);
+		}
+		return listaFinal;
+	}
+
+	@Override
+	public List<Seleccion> cbOficinasReportes(Long idOficina) {
+		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
+		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
+
+		listaOfinas = mantenimientoServicio.listarOficinas();
+		for (Oficinas i : listaOfinas) {
+			    logger.info("==== " + i.getNIDOFICINAPK()); 
+				Seleccion item = new Seleccion();
+				item.setCodigo(i.getNIDOFICINAPK());
+				item.setEtiqueta(i.getVNOMBRE());
+				listaOfinasFinal.add(item); 
+		}
+		return listaOfinasFinal;
+	}
 
 }

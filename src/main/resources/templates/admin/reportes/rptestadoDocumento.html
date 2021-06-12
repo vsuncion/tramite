@@ -37,6 +37,7 @@
 										DOCUMENTO</span> <select class="form-control form-control-sm"
 										id="NESTADODOCUMENTOFK" name="NESTADODOCUMENTOFK"
 										th:field="*{NESTADODOCUMENTOFK}" th:onchange="this.form.submit();">
+										<option value="0" >-- SELECCIONE --</option>
 										<option th:each="i : ${listaEstadoDocumentos}"
 											th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 									</select>
@@ -48,7 +49,7 @@
 						</div>
 					</div>
 
-
+                    
 					<div class="card border-dark mb-3">
 						<div class="card-header  text-center">CANTIDAD EXPEDIENTES
 							POR ESTADO DOCUMENTO</div>
@@ -63,8 +64,8 @@
 									</tr>
 								</thead>
 								<tbody>
-									 <tr th:each="i : ${listaReporte}">
-									 <th scope="row"><span th:text="${i.VESTADOCUEMNTO}"></span></th>
+									 <tr th:each="i : ${listaReporte}"  class="text-center">
+									 <th scope="row"><span th:text="${i.NITEM}"></span></th>
 									 <td><span th:text="${i.VESTADOCUEMNTO}"></span></td>
 									 <td><span th:text="${i.NCANTIDAD}"></span></td>
 									</tr>
@@ -73,7 +74,14 @@
 
 						</div>
 					</div>
-
+					<div class="rows">
+                       <div class="col-sm-6 text-right" th:if="${#lists.size(listaReporte)}">
+							<button type="button" class="btn btn-dark" title="Exportal Excel"
+								name="btnexportar" id="btnexportar">
+								<i class="fas fa-file-excel"></i> Exportar Excel
+							</button>
+						</div>
+                    </div>
 
 				</div>
 				<!-- CONTENIDO EDITABLE FIN-->
@@ -84,6 +92,12 @@
 	</div>
 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
-
+    <script th:inline="javascript">
+ 
+	$("#btnexportar").click(function(){
+		var estadocumento=$("#NESTADODOCUMENTOFK").val(); 
+		var win = window.open(window.location+'/exportarexelestadodocumentos?idestadodocumento='+estadocumento, '_blank');
+		});
+	</script>
 </body>
 </html>

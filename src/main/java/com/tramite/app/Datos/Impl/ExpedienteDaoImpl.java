@@ -872,6 +872,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		try {
 			sql.append(
 			 " SELECT \n"+
+			 "    ROW_NUMBER() OVER ( ORDER BY T2.VNOMBRE )  AS NITEM," +
 			 "    T2.VNOMBRE AS VESTADOCUEMNTO, \n"+
 			 "    COUNT(1) AS NCANTIDAD    \n"+
 			 "  FROM "+Constantes.tablaExpediente+" T1    \n"+
@@ -890,6 +891,59 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			}
 			
  
+		} catch (Exception e) {
+			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente) {
+		List<ReporteExpediente>  lista = new ArrayList<ReporteExpediente>();
+		StringBuffer sql = new StringBuffer();
+		MapSqlParameterSource parametros = new MapSqlParameterSource();
+		try {
+			sql.append(
+			  "SELECT \n"+
+			  "  ROW_NUMBER() OVER ( ORDER BY T3.VNOMBRE )  AS NITEM, \n"+
+			  "  T3.VNOMBRE AS VNOMBREOFICINA, \n"+
+			  "  T2.VNOMBRE AS VESTADOCUEMNTO, \n"+
+			  "  COUNT(1) AS NCANTIDAD \n"+
+			  "FROM "+Constantes.tablaExpediente+" T1 \n"+
+			  "INNER JOIN "+Constantes.tablaEstadoDocumento+" T2 ON T1.NESTADODOCUMENTOFK=T2.IDESTADOCUMENTOPK \n"+
+			  "INNER JOIN "+Constantes.tablaOficinas+" T3 ON T1.NOFICINAFK=T3.NIDOFICINAPK \n");
+			if(formexpediente.getOFICINA_ORIGENFK()>0) {
+				
+				
+				if(formexpediente.getDFECHAINICIO() !=null && formexpediente.getDFECHAFIN()!=null) {
+					sql.append(" WHERE T1.NOFICINAFK= :P_NOFICINAFK AND \n"+
+				               " CONVERT(date,T1.DFECREGISTRO) BETWEEN :P_FECHAINICIO AND :P_FECHAFIN \n"+
+							   "GROUP BY T2.VNOMBRE,T3.VNOMBRE ORDER BY T3.VNOMBRE");
+					 parametros.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
+					 parametros.addValue("P_FECHAINICIO", formexpediente.getDFECHAINICIO());
+					 parametros.addValue("P_FECHAFIN", formexpediente.getDFECHAFIN());
+				}else {
+					sql.append(" WHERE T1.NOFICINAFK= :P_NOFICINAFK \n"+
+							   "GROUP BY T2.VNOMBRE,T3.VNOMBRE ORDER BY T3.VNOMBRE");
+					 parametros.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
+				}
+				
+				lista=namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(ReporteExpediente.class));
+			}else {
+				
+				if(formexpediente.getDFECHAINICIO() !=null && formexpediente.getDFECHAFIN()!=null) {
+					sql.append( " WHERE CONVERT(date,T1.DFECREGISTRO) BETWEEN :P_FECHAINICIO AND :P_FECHAFIN \n"+
+					             "GROUP BY T2.VNOMBRE,T3.VNOMBRE ORDER BY T3.VNOMBRE");
+					 parametros.addValue("P_FECHAINICIO", formexpediente.getDFECHAINICIO());
+					 parametros.addValue("P_FECHAFIN", formexpediente.getDFECHAFIN());
+					lista=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(ReporteExpediente.class));
+				}else {
+					sql.append("GROUP BY T2.VNOMBRE,T3.VNOMBRE ORDER BY T3.VNOMBRE");
+					lista=namedParameterJdbcTemplate.query(sql.toString(),BeanPropertyRowMapper.newInstance(ReporteExpediente.class));
+				}
+				
+			}
+			
 		} catch (Exception e) {
 			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
 		}

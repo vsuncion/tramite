@@ -21,4 +21,6 @@ public interface RecursoServicio {
 	 Oficinas infoOficina (Long idoficina);
 	 EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento);
 	 List<Seleccion> cbRequisitos(Long idTupac);
+	 List<Seleccion> listaEstadoDocumentos();
+	 List<Seleccion>  cbOficinasReportes(Long idOficina);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import com.tramite.app.Entidades.Archivos;
@@ -25,8 +26,10 @@ import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.PrePersona;
-import com.tramite.app.Entidades.PreRequisitoTupa; 
-import com.tramite.app.Entidades.Seleccion; 
+import com.tramite.app.Entidades.PreRequisitoTupa;
+import com.tramite.app.Entidades.RequisitosTupac;
+import com.tramite.app.Entidades.Seleccion;
+import com.tramite.app.Entidades.Tupac;
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
 import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
@@ -603,15 +606,25 @@ public class PrinicipalController {
 
 		 // LISTAMOS LOS REQUISITOS AGREGADOS
 		listarPreRequisito = principalServicio.listaPreRequisitos(idprexpediente);
-		
-		
-		
+ 
 		pagina.addObject("listarPreRequisito", listarPreRequisito);
 		pagina.addObject("cbrequisitos", cbRequisitos);
 		pagina.addObject("formExpediente", formExpediente);
 		pagina.setViewName("admin/tramite/externo/agregarprerequisitostupac");
 		return pagina;
 	}
+	
+	
+	@GetMapping(value = { "/nuevo_tramite_tupa/listarrequerimientos" },produces = "application/json" )
+	@ResponseBody
+	public List<RequisitosTupac>  listarRequerimientos(HttpServletRequest request,HttpServletResponse res,@RequestParam Long idtupac){
+		List<RequisitosTupac> listaRequisitosTupac = new  ArrayList<RequisitosTupac>();
+		listaRequisitosTupac = principalServicio.listaRequerimientosTupac(idtupac);
+		return listaRequisitosTupac;
+		
+	}
+	
+	 
 	
  
 	
