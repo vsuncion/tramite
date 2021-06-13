@@ -63,7 +63,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 			   " FROM "+Constantes.tablaUsuarioPerfil+ "      T1 \n"+
 			   "  INNER JOIN "+Constantes.tablaUsuario+"      T2 ON T1.NUSUARIOFK=T2.NIDUSUARIOPK  \n"+
 			   "  INNER JOIN "+Constantes.tablaPerfil+"       T3 ON T1.NPERFILFK=T3.NIDPERFILPK \n"+
-			   "  INNER JOIN "+Constantes.tablaTrabajadores+" T4 ON T4.NIDPERSONAFK=T2.NTRABAJADORFK \n"+
+			   "  INNER JOIN "+Constantes.tablaTrabajadores+" T4 ON T4.NIDTRABAJADORPK=T2.NTRABAJADORFK \n"+
 			   "  INNER JOIN "+Constantes.tablaPersona+"      T5 ON T5.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
 			   " WHERE T2.NESTADO= :P_NESTADO AND T2.VUSUARIO= :P_VUSUARIO");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
@@ -71,7 +71,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			usuario = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : SeguridadDaoImpl " + e.getMessage() + "---" + e.getClass());
 		}
 		return usuario;
 	}
@@ -93,7 +93,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(UsuarioPerfil.class));
 			  
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : SeguridadDaoImpl " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}

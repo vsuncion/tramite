@@ -66,7 +66,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			}
 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl buscarPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return infoPersona;
 	}
@@ -121,7 +121,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
           logger.info("++"+keyHolder.getKey().longValue()); 
           respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl guardarPrePersona " + e.getMessage() + "---" + e.getClass());
 			respuesta= false;
 		}
 		return respuesta;
@@ -245,7 +245,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			respuesta = true;
 			
 		} catch (Exception e) { 
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl confirmacionCodigoActivacion " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -290,7 +290,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			}
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl busquedaSolicitante " + e.getMessage() + "---" + e.getClass());
 			persona = null;
 		}
 		return persona;
@@ -417,7 +417,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		
 		respuesta =true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl guardarExpedienteSimple " + e.getMessage() + "---" + e.getClass());
 			respuesta =false;
 		}
 		return respuesta;
@@ -471,7 +471,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			idpretupacexpediente = keyHolder.getKey().longValue();
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl guardarPreTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return idpretupacexpediente;
 	}
@@ -510,7 +510,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			infoExpediente=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Expediente.class));
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl preTupacExpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return infoExpediente;
 	}
@@ -545,7 +545,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl guardarPreRequisito " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -569,7 +569,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_IDPREEXPEDIENTEFK", idprexpediente);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl listaPreRequisitos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -590,7 +590,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Tupac.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : PrincipalDaoImpl listasTupacRequisitos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -615,7 +615,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
 		
 		}catch(Exception e) {
-			logger.error("ERRORX : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERRORX : PrincipalDaoImpl infoPreRequisitoTupa " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -651,7 +651,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_IDPREREQUISITOPK", idrequisito);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.error("ERRORX : PrincipalDaoImpl eliminarArchivoRequerimeinto " + e.getMessage() + "---" + e.getClass());
 		}
 		
 	}

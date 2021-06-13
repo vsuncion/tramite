@@ -52,7 +52,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			stringBuilder.append("SELECT * FROM "+Constantes.tablaTrabajadores);
 			lsTrabajadores = namedParameterJdbcTemplate.query(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Trabajadores.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarTrabajadores " + e.getMessage() + "---" + e.getClass());
 		}
 		return lsTrabajadores;
 	}
@@ -63,7 +63,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		try {
 			sql.append("");
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarPorNombre " + e.getMessage() + "---" + e.getClass());
 		}
 		return null;
 	}
@@ -76,7 +76,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		try {
 		 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR :MantenimientoDaoImpl  registrarTrabajador " + e.getMessage() + "---" + e.getClass());
 			 respuesta=false;
 		}
 		return respuesta;
@@ -95,7 +95,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			// CONSULTAMOS
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarTrabajador " + e.getMessage() + "---" + e.getClass());
 		}
 		return nuevoTrabajador;
 	}
@@ -108,7 +108,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			stringBuilder.append("");
 		} catch (Exception e) {
 			respuesta=false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarTrabajador  " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -119,20 +119,21 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 Informacion  informacion = new Informacion();
 		
 		 try {
-			 stringBuilder.append("SELECT "+
-									      " RAZONSOCIAL,  \n"+
-									      " RUC,  \n"+
-									      " TITULOALTERNO,  \n"+
-									      " SIGLAS,  \n"+
-									      " DIRECCION,  \n"+
-									      " PAGINAWEB,  \n"+
-									      " CORREO,  \n"+
-									      " TELEFONO  \n"+
-							      " FROM "+Constantes.tablaInformacion);
+			 stringBuilder.append(
+				  " SELECT "+
+			      "   RAZONSOCIAL,  \n"+
+			      "   RUC,  \n"+
+			      "   TITULOALTERNO,  \n"+
+			      "   SIGLAS,  \n"+
+			      "   DIRECCION,  \n"+
+			      "   PAGINAWEB,  \n"+
+			      "   CORREO,  \n"+
+			      "   TELEFONO  \n"+
+	              " FROM "+Constantes.tablaInformacion);
 			 informacion=jdbcTemplate.queryForObject(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Informacion.class));
 			 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "XX---" + e.getClass());
+			logger.error("ERROR :  MantenimientoDaoImpl informacionMunicipalidad " + e.getMessage() + "XX---" + e.getClass());
 		}
 		return informacion;
 	}
@@ -142,19 +143,20 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuilder stringBuilder = new StringBuilder();
 		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
 		 try {
-			 stringBuilder.append("SELECT "+
-					  " ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
-				      " NIDOFICINAPK,  \n"+
-				      " VNOMBRE,  \n"+
-				      " VSIGLA,  \n"+
-				      " VSIGLADOCUMENTO,  \n"+
-				      " VDESCRIPCION,  \n"+
-				      "  DFECREGISTRO,  \n"+
-				      " NESTADO  \n"+ 
+			 stringBuilder.append(
+			  " SELECT "+
+			  "    ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
+		      "    NIDOFICINAPK,  \n"+
+		      "    VNOMBRE,  \n"+
+		      "    VSIGLA,  \n"+
+		      "    VSIGLADOCUMENTO,  \n"+
+		      "    VDESCRIPCION,  \n"+
+		      "    DFECREGISTRO,  \n"+
+		      "	   NESTADO  \n"+ 
 		      " FROM "+Constantes.tablaOficinas+" ORDER BY NIDOFICINAPK ASC");
 			 listarOficinas=namedParameterJdbcTemplate.query(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Oficinas.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarOficinas " + e.getMessage() + "---" + e.getClass());
 		}
 		return listarOficinas;
 	}
@@ -184,7 +186,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 logger.info("++"+keyHolder.getKey().longValue()); 
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarOficina " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -196,15 +198,16 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
 		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
 		 try {
-			 sql.append("SELECT "+
-					 " ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
-				      " NIDOFICINAPK,  \n"+
-				      " VNOMBRE,  \n"+
-				      " VSIGLA,  \n"+
-				      " VSIGLADOCUMENTO,  \n"+
-				      " VDESCRIPCION,  \n"+
-				      "  DFECREGISTRO,  \n"+
-				      " NESTADO  \n"+ 
+			 sql.append(
+			  "SELECT "+
+			  "   ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
+		      "   NIDOFICINAPK,  \n"+
+		      "   VNOMBRE,  \n"+
+		      "   VSIGLA,  \n"+
+		      "   VSIGLADOCUMENTO,  \n"+
+		      "   VDESCRIPCION,  \n"+
+		      "   DFECREGISTRO,  \n"+
+		      "   NESTADO  \n"+ 
 		      " FROM "+Constantes.tablaOficinas+" WHERE 1=1");
 			 if(oficinas.getCAJABUSQUEDA() !=null && oficinas.getCAJABUSQUEDA().trim().length()>0) {
 				 sql.append(" AND VNOMBRE LIKE :P_VNOMBRE");
@@ -213,7 +216,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 
 			 listarOficinas=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Oficinas.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR :  MantenimientoDaoImpl buscarOficinas " + e.getMessage() + "---" + e.getClass());
 		}
 		return listarOficinas;
 	}
@@ -225,21 +228,21 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 Oficinas  oficina = new Oficinas();
 		try {
 			 sql.append(
-				"SELECT "+
-				      " NIDOFICINAPK,  \n"+
-				      " VNOMBRE,  \n"+
-				      " VSIGLA,  \n"+
-				      " VSIGLADOCUMENTO,  \n"+
-				      " VDESCRIPCION,  \n"+
-				      " DFECREGISTRO,  \n"+
-				      " NIDPADRE,  \n"+ 
-				      " NESTADO \n"+ 
+			  " SELECT "+
+		      "   NIDOFICINAPK,  \n"+
+		      "   VNOMBRE,  \n"+
+		      "   VSIGLA,  \n"+
+		      "   VSIGLADOCUMENTO,  \n"+
+		      "   VDESCRIPCION,  \n"+
+		      "   DFECREGISTRO,  \n"+
+		      "   NIDPADRE,  \n"+ 
+		      "   NESTADO \n"+ 
 		      " FROM "+Constantes.tablaOficinas+" WHERE NIDOFICINAPK=:codigo");
 			 parametros.addValue("codigo", id);
 			 oficina = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Oficinas.class));
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarOficinaId " + e.getMessage() + "---" + e.getClass());
 		}
 		return oficina;
 	}
@@ -260,7 +263,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 "       NESTADO	 	 = :P_NESTADO,          \n"+ 
 				 "       NIDPADRE	 	 = :P_NIDPADRE,         \n"+ 
 				 "       DFECMODIFICA	 = :P_DFECMODIFICA      \n"+
-				 " WHERE NIDOFICINAPK	 = :P_NIDOFICINAPK      \n");
+				 " WHERE NIDOFICINAPK	 = :P_NIDOFICINAPK       ");
 				 
  			 parametros.addValue("P_NIDOFICINAPK", oficina.getNIDOFICINAPK());
 			 parametros.addValue("P_VNOMBRE", oficina.getVNOMBRE());
@@ -273,7 +276,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("CAUSA: " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
+			logger.error("CAUSA: MantenimientoDaoImpl actualizarOficina " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
 			respuesta =false; 
 		}
 		return respuesta;
@@ -298,7 +301,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta =true;
 		} catch (Exception e) {
-			logger.error("CAUSA: " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
+			logger.error("CAUSA: MantenimientoDaoImpl eliminarOficina " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
 			respuesta =false; 
 		}
 		return respuesta;
@@ -321,7 +324,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			    " FROM "+Constantes.tablaTipoDocumentos);
 			listaTipoDocumento = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarTipoDocumento " + e.getMessage() + "---" + e.getClass());
 		}
 		return listaTipoDocumento;
 	}
@@ -347,7 +350,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 					logger.info("=== CODIGO ="+keyHolder.getKey().longValue());
 					respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarTipoDocumentos " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -377,7 +380,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			
 			buscarTipoDocumentos = namedParameterJdbcTemplate.query(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass()); 
+			logger.error("ERROR : MantenimientoDaoImpl buscarTipoDocumentos " + e.getMessage() + "---" + e.getClass()); 
 		}
 		return buscarTipoDocumentos;
 	}
@@ -407,7 +410,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarTipoDocumento " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -430,7 +433,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarTipoDocumento " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -456,7 +459,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 tipoDocumentos=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,  BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
 			 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTipoDocumentoId " + e.getMessage() + "---" + e.getClass());
 		}
 		return tipoDocumentos;
 	}
@@ -479,7 +482,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			listar = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoTramite.class));
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarTipoTramite " + e.getMessage() + "---" + e.getClass());
 		}
 		return listar;
 	}
@@ -508,7 +511,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 
 			 listarTipoTramite = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(TipoTramite.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTipoTramite " + e.getMessage() + "---" + e.getClass());
 		}
 		return listarTipoTramite;
 	}
@@ -533,7 +536,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				tipoTramite = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(TipoTramite.class));
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTipoTramiteId " + e.getMessage() + "---" + e.getClass());
 		}
 		 
 		return  tipoTramite;
@@ -554,7 +557,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarTipoTramite " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -582,7 +585,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql, parametros); 
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarTipoTramite " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -606,7 +609,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder , new String[] {"IDTIPOTRAMITEPK"});
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarTipoTramite " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -628,7 +631,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			    " FROM "+Constantes.tablaEstadoDocumento);
 			lista = namedParameterJdbcTemplate.query(sql.toString(),BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarEstadoDocumento " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -655,7 +658,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			}
 			lista = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarEstadoDocumento " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -676,7 +679,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			       " FROM " +Constantes.tablaProfesion);
 			lista=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Profesiones.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarProfesiones " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -704,7 +707,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			}
 			lista=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Profesiones.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarProfesiones " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -727,7 +730,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				parametros.addValue("P_NIDPROFESIONPK", id);
 				profesiones = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Profesiones.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarProfesionesId " + e.getMessage() + "---" + e.getClass());
 		}
 		return profesiones;
 	}
@@ -750,7 +753,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 logger.info("==="+keyHolder.getKey().longValue());
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarProfesiones " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -775,7 +778,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarProfesiones " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -796,7 +799,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
 	 } catch (Exception e) {
-		logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+		logger.error("ERROR : MantenimientoDaoImpl eliminarProfesiones " + e.getMessage() + "---" + e.getClass());
 		respuesta = false;
 	  }
 		return respuesta;
@@ -829,7 +832,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	          namedParameterJdbcTemplate.update(sql.toString(), parametros);
 	          respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarinformacionMunicipalidad " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -858,7 +861,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 
 			    
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarRequisitos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -892,7 +895,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 lista=namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
 			 
 			} catch (Exception e) {
-				logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+				logger.error("ERROR : MantenimientoDaoImpl buscarRequisitos " + e.getMessage() + "---" + e.getClass());
 			}
 		return lista;
 	}
@@ -922,7 +925,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 requisitos=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Requisitos.class));
 				
 			} catch (Exception e) {
-				logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+				logger.error("ERROR : MantenimientoDaoImpl buscarRequisitosId " + e.getMessage() + "---" + e.getClass());
 			}
 		return requisitos;
 	}
@@ -944,7 +947,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 respuesta = true; 
 			 logger.info("++"+keyHolder.getKey().longValue());
 			} catch (Exception e) {
-				logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+				logger.error("ERROR : MantenimientoDaoImpl guardarRequisitos " + e.getMessage() + "---" + e.getClass());
 				respuesta = false; 
 			}
 		return respuesta;
@@ -972,7 +975,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
 			} catch (Exception e) {
-				logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+				logger.error("ERROR : MantenimientoDaoImpl actualizarRequisitos " + e.getMessage() + "---" + e.getClass());
 				respuesta = false;
 			}
 		return respuesta;
@@ -996,7 +999,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
 			} catch (Exception e) {
-				logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+				logger.error("ERROR : MantenimientoDaoImpl eliminarRequisitos" + e.getMessage() + "---" + e.getClass());
 				respuesta = false;
 			}
 		return respuesta;
@@ -1025,7 +1028,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
   
   
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -1056,7 +1059,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
             lista=namedParameterJdbcTemplate.query(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Tupac.class));
   
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -1084,7 +1087,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
             tupac=namedParameterJdbcTemplate.queryForObject(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Tupac.class));
             
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass()); 
+			logger.error("ERROR : MantenimientoDaoImpl buscarTupacPorId " + e.getMessage() + "---" + e.getClass()); 
 		}
 		return tupac;
 	}
@@ -1118,7 +1121,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta =true;
 			logger.info("++"+keyHolder.getKey().longValue());
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR :MantenimientoDaoImpl guardarTupac " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -1153,7 +1156,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1177,7 +1180,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta =true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1203,7 +1206,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_TUPACFK", id);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(RequisitosTupac.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarRequisitosTupacPorIdTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -1228,7 +1231,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1252,7 +1255,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl activarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1276,7 +1279,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1309,7 +1312,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 }
 			 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarPorTupacRequisitos " + e.getMessage() + "---" + e.getClass());
 		}
 		return requisitosTupac;
 	}
@@ -1337,7 +1340,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 " INNER JOIN OFICINA T4 ON T2.NOFICINAFK=T4.NIDOFICINAPK");
 			listaPersonas = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Persona.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return listaPersonas;
 	}
@@ -1387,7 +1390,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 
 					listaPersonas = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Persona.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return listaPersonas;
 	}
@@ -1420,7 +1423,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			persona=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
 	  
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarTrabajadorPersonaPorId " + e.getMessage() + "---" + e.getClass());
 		}
 		return persona;
 	}
@@ -1485,7 +1488,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1552,7 +1555,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1574,7 +1577,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR :MantenimientoDaoImpl  eliminarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1602,7 +1605,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 " LEFT JOIN PERFIL T6 ON T4.NPERFILFK=T6.NIDPERFILPK \n");
 			lsUsuarioPersona=namedParameterJdbcTemplate.query(sql.toString(),BeanPropertyRowMapper.newInstance(Usuarios.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return lsUsuarioPersona;
 	}
@@ -1651,7 +1654,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				
 				 lsUsuarioPersona=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return lsUsuarioPersona;
 	}
@@ -1685,7 +1688,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NIDUSUARIOPK", id);
 			usuarios=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Usuarios.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarUsuarioPersonaPorId " + e.getMessage() + "---" + e.getClass());
 		}
 		return usuarios;
 	}
@@ -1731,7 +1734,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 logger.info("++"+keyHolder2.getKey().longValue()); 
 				respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarUsuarioPersona" + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -1774,7 +1777,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sqlUsuarioPerfil.toString(), parametros2);
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl actualizarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -1801,7 +1804,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -1821,7 +1824,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			   " FROM "+Constantes.tablaPerfil);
 			 lsPerfiles=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Perfiles.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarPerfiles " + e.getMessage() + "---" + e.getClass());
 		}
 		return lsPerfiles;
 	}
@@ -1845,7 +1848,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 logger.info("++"+keyHolder.getKey().longValue()); 
 			 respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl guardarFeriado " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -1866,7 +1869,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl eliminarFeriado " + e.getMessage() + "---" + e.getClass());
 			respuesta = false;
 		}
 		return respuesta;
@@ -1888,7 +1891,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			  " ORDER BY NIDFERIADOPK DESC");
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Feriados.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl listarFeriados " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -1912,7 +1915,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_VDESCRIPCION", "%"+feriados.getCAJABUSQUEDA()+"%");
 			lista = namedParameterJdbcTemplate.query(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Feriados.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : MantenimientoDaoImpl buscarFeriados " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}	

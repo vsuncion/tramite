@@ -43,7 +43,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			  "  FROM "+Constantes.tablaTipoDocumentos);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl listarTipoDocuemnto " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -89,7 +89,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			}
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl numeroExpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return numeroFinalExpediente;
 	}
@@ -120,7 +120,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			usuarios = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
 				     
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl infoUsuario " + e.getMessage() + "---" + e.getClass());
 		}
 		return usuarios;
 	}
@@ -145,7 +145,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			parametros.addValue("P_IDESTADOCUMENTOPK", idEstadoDocumento);
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl infoEstadoDocumento " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -169,7 +169,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			  lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
 			  
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl cbRequisitos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -188,7 +188,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			   " ESTADO_DOCUMENTO ORDER BY VNOMBRE");
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : RecursoDaoImpl listaEstadoDocumentos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}

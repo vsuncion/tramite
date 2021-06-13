@@ -65,23 +65,27 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 INNER JOIN "+Constantes.tablaEstadoDocumento+" T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
 			 " 	 INNER JOIN "+Constantes.tablaOficinas+"        T7 ON T1.OFICINA_ORIGENFK=T7.NIDOFICINAPK \n"+
 			 " 	 LEFT JOIN  "+Constantes.tablaOficinas+"        T8 ON T1.OFICINA_DESTINOFK=T8.NIDOFICINAPK \n");
- 			
+			
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			if(estadodocumento==1 || estadodocumento==2) {
 				sql.append(" WHERE T1.OFICINA_DESTINOFK= :P_OFICINA_DESTINOFK  AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO AND T1.NELIMINADO= :P_NELIMINADO \n");
+				parametros.addValue("P_NESTADOREGISTRO",Constantes.estadoActivado);
+				
 			}else {
 				sql.append(" WHERE T1.OFICINA_ORIGENFK= :P_OFICINA_DESTINOFK  AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO AND T1.NELIMINADO= :P_NELIMINADO \n");
+				parametros.addValue("P_NESTADOREGISTRO",Constantes.estadoDesactivado);
 			}
 			
 			sql.append(" AND T1.NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK  ORDER BY T1.NIDMOVIMIENTOPK DESC");
 			
-			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			
 			parametros.addValue("P_OFICINA_DESTINOFK",oficina);
 			parametros.addValue("P_NESTADODOCUMENTOFK", estadodocumento);
-			parametros.addValue("P_NESTADOREGISTRO",Constantes.estadoActivado);
+			
 			parametros.addValue("P_NELIMINADO", Constantes.estadoDesactivado);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Bandeja.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl listarBandeja " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -149,7 +153,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl recibirExpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -188,7 +192,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		      parametros.addValue("P_NIDEXPEDIENTEPK", idexpediente);
 		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoExpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -214,7 +218,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			" FROM "+Constantes.tablaMovimiento+" T1 \n"+
 			"  INNER JOIN "+Constantes.tablaOficinas+" T2 ON T1.OFICINA_ORIGENFK=T2.NIDOFICINAPK  \n"+
 			"  INNER JOIN "+Constantes.tablaEstadoDocumento+" T3 ON T1.NESTADODOCUMENTOFK=T3.IDESTADOCUMENTOPK \n"+
-			"  LEFT JOIN  "+Constantes.tablaArchivoMovimiento+" T4   ON T4.NEXPEDIENTEFK=T1.NIDEXPEDIENTEFK  AND T4.NOFICINAFK=T1.OFICINA_ORIGENFK \n"+
+			"  LEFT JOIN  "+Constantes.tablaArchivoMovimiento+" T4   ON T4.NEXPEDIENTEFK=T1.NIDEXPEDIENTEFK  AND T4.NOFICINAFK=T1.OFICINA_ORIGENFK AND T4.NESTADOREGISTRO=1 \n"+
 			" WHERE T1.NIDEXPEDIENTEFK= :P_NIDEXPEDIENTEFK AND T1.NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK AND T1.NESTADOREGISTRO= :P_NESTADOREGISTRO");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NIDEXPEDIENTEFK", idexpediente);
@@ -222,7 +226,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros.addValue("P_NESTADOREGISTRO", Constantes.estadoActivado);
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(MovimientoExpediente.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoMovimiento " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -234,6 +238,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		StringBuffer sql3 = new StringBuffer();
 		StringBuffer sql4 = new StringBuffer();
 		StringBuffer sql5 = new StringBuffer();
+		StringBuffer sql6 = new StringBuffer();
 		boolean respuesta = false;
 		
 		try {
@@ -270,9 +275,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros2.addValue("P_VOBSERVACION", formexpediente.getVOBSERVACION());
 			parametros2.addValue("P_NIDMOVIMIENTOPK", formexpediente.getNIDMOVIMIENTOFK());
 			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);	 
-			
-			
-			
+ 
 			
 			//APAGAMOS EL QUE ESTA EN ESTADO PENDIENTE
 			sql3.append(
@@ -317,31 +320,47 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder, new String[] {"NIDMOVIMIENTOPK"});	
 			logger.info("++"+keyHolder.getKey().longValue()); 
 	       Long idMovimientoNuevo = keyHolder.getKey().longValue();
-			// PROCEDEMOS A SUBIR EL ARCHIVO
-			sql4.append(
-			  " INSERT INTO "+Constantes.tablaArchivoMovimiento+" ( \n"+
-			  "   NEXPEDIENTEFK,      \n"+ 
-			  "   NOFICINAFK,         \n"+
-			  "   DFECHAREGISTRO,     \n"+
-			  "   VNOMBRE_ARCHIVO,    \n"+		 
-			  "   VUBICACION_ARCHIVO, \n"+  
-			  "   VEXTENSION )        \n"+
-			  " VALUES (            \n"+
-			  "   :P_NEXPEDIENTEFK,      \n"+ 
-			  "   :P_NOFICINAFK,         \n"+
-			  "   :P_DFECHAREGISTRO,     \n"+
-			  "   :P_VNOMBRE_ARCHIVO,    \n"+		 
-			  "   :P_VUBICACION_ARCHIVO, \n"+  
-			  "   :P_VEXTENSION )        ");
-			MapSqlParameterSource parametros4 = new MapSqlParameterSource();
-			parametros4.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK()); 
-			parametros4.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
-			parametros4.addValue("P_DFECHAREGISTRO", Fechas.fechaActual());
-			parametros4.addValue("P_VNOMBRE_ARCHIVO", formexpediente.getVNOMBRE_ARCHIVO());
-			parametros4.addValue("P_VUBICACION_ARCHIVO", formexpediente.getVUBICACION_ARCHIVO());
-			parametros4.addValue("P_VEXTENSION", formexpediente.getVEXTENSION());
-			namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
-			
+	       
+	       if(formexpediente.getVNOMBRE_ARCHIVO().length()>0) {
+	    	   
+	    	//APAGAMOS LOS DEMAS ARCHIVOS DEL EXPEDIENTE
+	    	   sql6.append(
+	    		   " UPDATE "+Constantes.tablaArchivoMovimiento+" SET \n"+
+	    	       "   NESTADOREGISTRO = :P_DESACTIVO \n"+
+	    		   " WHERE NEXPEDIENTEFK = :P_NEXPEDIENTEFK");
+	    	   MapSqlParameterSource parametros6 = new MapSqlParameterSource();
+	    	   parametros6.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK());
+	    	   parametros6.addValue("P_DESACTIVO", Constantes.estadoDesactivado);
+	    	   namedParameterJdbcTemplate.update(sql6.toString(), parametros6);
+	    	   
+	    	// PROCEDEMOS A SUBIR EL ARCHIVO
+				sql4.append(
+				  " INSERT INTO "+Constantes.tablaArchivoMovimiento+" ( \n"+
+				  "   NEXPEDIENTEFK,      \n"+ 
+				  "   NOFICINAFK,         \n"+
+				  "   DFECHAREGISTRO,     \n"+
+				  "   VNOMBRE_ARCHIVO,    \n"+		 
+				  "   VUBICACION_ARCHIVO, \n"+  
+				  "   VEXTENSION )        \n"+
+				  " VALUES (            \n"+
+				  "   :P_NEXPEDIENTEFK,      \n"+ 
+				  "   :P_NOFICINAFK,         \n"+
+				  "   :P_DFECHAREGISTRO,     \n"+
+				  "   :P_VNOMBRE_ARCHIVO,    \n"+		 
+				  "   :P_VUBICACION_ARCHIVO, \n"+  
+				  "   :P_VEXTENSION )        ");
+				MapSqlParameterSource parametros4 = new MapSqlParameterSource();
+				parametros4.addValue("P_NEXPEDIENTEFK", formexpediente.getNIDEXPEDIENTEPK()); 
+				parametros4.addValue("P_NOFICINAFK", formexpediente.getOFICINA_ORIGENFK());
+				parametros4.addValue("P_DFECHAREGISTRO", Fechas.fechaActual());
+				parametros4.addValue("P_VNOMBRE_ARCHIVO", formexpediente.getVNOMBRE_ARCHIVO());
+				parametros4.addValue("P_VUBICACION_ARCHIVO", formexpediente.getVUBICACION_ARCHIVO());
+				parametros4.addValue("P_VEXTENSION", formexpediente.getVEXTENSION());
+				namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
+	    	   
+	       }
+	       
+	       
 			
 			sql5.append(
 			" UPDATE "+Constantes.tablaExpediente+
@@ -359,7 +378,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl responderExpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -433,7 +452,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			respuesta = true;
 		} catch (Exception e) {
 			respuesta = false;
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl responderExpedienteArchivadoOfinalizado " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -462,7 +481,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			
 			 
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoMovimientoArchivoRespuesta " + e.getMessage() + "---" + e.getClass());
 		}
 		return archivoMovimiento;
 	}
@@ -497,7 +516,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 parametros.addValue("P_NELIMINADO", Constantes.estadoDesactivado);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(HojaRuta.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoHojaRuta " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -537,7 +556,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
 		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoExpedienteCodigo " + e.getMessage() + "---" + e.getClass());
 			 
 		}
 		return info;
@@ -571,7 +590,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 parametros.addValue("P_NELIMINADO", Constantes.estadoDesactivado);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(HojaRuta.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR :ExpedienteDaoImpl  infoHojaRutaIdExpediente  " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -612,7 +631,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			  parametros.addValue("P_NIDEXPEDIENTEPK", idExpediente); 
 		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoExpedienteId " + e.getMessage() + "---" + e.getClass());
 			 
 		}
 		return info;
@@ -636,7 +655,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			parametros.addValue("P_NIDMOVIMIENTOPK", idMovimiento); 
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(MovimientoExpediente.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoMovimientoIdexpediente " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -666,7 +685,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		 lista= namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(ArchivoTupac.class));
 		  
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl listarArchivosTupa " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -697,7 +716,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				 parametros.addValue("P_EXPEDIENTEFK", idexpediente );	
 				 info= namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(ArchivoTupac.class));
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl infoArchivoTupa " + e.getMessage() + "---" + e.getClass());
 		}
 		return info;
 	}
@@ -839,7 +858,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		
 		respuesta =true;
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl guardarExpedienteSimpleInterno " + e.getMessage() + "---" + e.getClass());
 			respuesta =false;
 		}
 		return respuesta;
@@ -860,7 +879,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			
 		} catch (Exception e) {
 			 respuesta = false;
-			 logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			 logger.error("ERROR : ExpedienteDaoImpl actualizarClave " + e.getMessage() + "---" + e.getClass());
 		}
 		return respuesta;
 	}
@@ -892,7 +911,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			
  
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl listaExpedientesPorEstadoDocuemnto " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
@@ -945,7 +964,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			}
 			
 		} catch (Exception e) {
-			logger.error("ERROR : " + e.getMessage() + "---" + e.getClass());
+			logger.error("ERROR : ExpedienteDaoImpl listaExpedientesPorOficina " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}
