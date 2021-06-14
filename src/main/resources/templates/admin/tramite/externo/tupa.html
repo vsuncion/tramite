@@ -120,7 +120,8 @@
 
 												<span class="letras_expediente_externo">TIPO TUPA</span> <select
 													class="form-control form-control-sm" id="TUPACFK"
-													name="TUPACFK" th:field="*{TUPACFK}">
+													name="TUPACFK" th:field="*{TUPACFK}" required>
+													<option value="0">-- SELECCIONE --</option>
 													<option th:each="i : ${cbTupa}" 
 													 th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 												</select>
@@ -131,7 +132,7 @@
 											<div class="form-group col-md-4">
 												<span class="letras_expediente_externo">REQUISITOS
 													TUPAC</span> <select name="cbrequisitos" id="cbrequisitos"
-													class="form-control form-control-sm">
+													class="form-control form-control-sm" required>
 													 
 												</select>
 												
@@ -151,7 +152,7 @@
 												<span class="letras_expediente_externo">TIPO
 													DOCUMENTO</span> <select class="form-control form-control-sm"
 													id="TIPO_DOCUMENTOFK" name="TIPO_DOCUMENTOFK"
-													th:field="*{TIPO_DOCUMENTOFK}">
+													th:field="*{TIPO_DOCUMENTOFK}" required>
 													<option th:each="i : ${cbTipoDocumento}"
 														th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 												</select>
@@ -202,8 +203,8 @@
 										<div class="form-row">
 											<div class="form-group col-md-9 text-left">
 												<span class="letras_expediente_externo">SELECCIONE
-													ARCHIVO</span> <input type="file" class="form-control-file"
-													id="varchivosubida" name="varchivosubida">
+													ARCHIVO PRINCIPAL</span> <input type="file" class="form-control-file"
+													id="varchivosubida" name="varchivosubida" required>
 											</div>
 
 											<div class="form-group col-md-3 text-right">

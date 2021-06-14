@@ -94,6 +94,7 @@ public interface MantenimientoDao {
 	boolean guardarTrabajadorPersona(Persona persona);
 	boolean actualizarTrabajadorPersona(Persona persona);
 	boolean eliminarTrabajadorPersona(Long id);
+	Persona infoPersona (Persona persona);
 	
 	List<Usuarios> listarUsuarioPersona();
 	List<Usuarios> buscarUsuarioPersona(Usuarios usuarios);

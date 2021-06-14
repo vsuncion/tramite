@@ -13,6 +13,7 @@ import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
+import com.tramite.app.Entidades.PersonaJuridica;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.Entidades.RequisitosTupac;
@@ -59,7 +60,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		
 		if(respuesta==true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto+", Se le envio un correo a "+prePersona.getVCORREO());
+			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto+", Se le envio un correo para confirmar a "+prePersona.getVCORREO()+", por favor confirme el correo");
 			
 			//ENVIAMOS CORREO
 			String  cuerpo = "";
@@ -79,7 +80,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		boolean respuesta = false;
@@ -165,6 +166,25 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	public List<RequisitosTupac> listaRequerimientosTupac(Long idtupac) {  
 		return mantenimientoServicio.listarRequisitosTupacPorIdTupac(idtupac);
+	}
+
+	@Override
+	public MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
+		PersonaJuridica personaJuridica = new PersonaJuridica();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		
+		
+		personaJuridica = principalDao.buscarPersonaJuridicaDuplicada(prePersona);
+		
+		if(personaJuridica.getVRUC()!=null) {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje("EL NUMERO DE RUC :"+prePersona.getVRUC()+" SE ENCUENTRA DUPLICADO");
+			
+		}else {
+			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);  
+		}
+		
+		return mostrarmensaje;
 	}
 
 	 

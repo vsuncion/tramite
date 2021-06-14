@@ -96,4 +96,7 @@ public class Constantes {
 	public static final String LETRAS_ESTADO_DOCUMENTO_ARCHIVADO   = "ARCHIVAR";
   	
 	public static final String MENSAJE_DUPLICIDAD_PERSONA="LA PERSONA SE ENCUENTRA DUPLICADA CON NUMERO DE DOCUMENTO $VNUMERO$";
+	public static final String MENSAJE_BUSCAR_EXPEDIENTE="NO SE ENCONTRARON RESULTADOS";
+	public static final String habilitadoboton="false";
+	public static final String deshabilitadoboton="true";
 }

@@ -94,6 +94,7 @@ public interface MantenimientoServicio {
 	MensajeRespuesta  guardarTrabajadorPersona(Persona persona);
 	MensajeRespuesta  actualizarTrabajadorPersona(Persona persona);
 	MensajeRespuesta  eliminarTrabajadorPersona(Long id);
+	Persona infoPersona (Persona persona);
 	
 	
 	List<Usuarios> listarUsuarioPersona();

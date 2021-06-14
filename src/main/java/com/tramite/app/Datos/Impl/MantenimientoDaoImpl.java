@@ -1918,6 +1918,29 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			logger.error("ERROR : MantenimientoDaoImpl buscarFeriados " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
+	}
+
+	@Override
+	public Persona infoPersona(Persona persona) {
+		StringBuffer sql = new StringBuffer();
+		Persona infoPersona = new Persona();
+		try {
+			sql.append(
+				"SELECT              \n"+
+				" T2.VNOMBRE,        \n"+
+				" T2.VAPEPATERNO,    \n"+
+				" T2.VAPEMATERNO,    \n"+
+				" T2.VNUMERODOC      \n"+
+				"FROM "+Constantes.tablaTrabajadores+" T1  \n"+
+				" INNER JOIN "+Constantes.tablaPersona+" T2 ON T1.NIDPERSONAFK=T2.NIDPERSONAPK \n"+
+				"WHERE T2.VNUMERODOC= :P_VNUMERODOC");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_VNUMERODOC", persona.getVNUMERODOC());
+			infoPersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
+		} catch (Exception e) {
+			logger.error("ERROR : MantenimientoDaoImpl infoPersona " + e.getMessage() + "---" + e.getClass());
+		}
+		return infoPersona;
 	}	
 
 }

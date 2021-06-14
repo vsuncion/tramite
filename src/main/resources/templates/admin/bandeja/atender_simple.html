@@ -152,7 +152,7 @@
 							<div class="form-group col-md-4">
 								<span class="letras_expediente_externo">TIPO ACCION</span> <select
 									class="form-control form-control-sm" id="NESTADODOCUMENTOFK"
-									name="NESTADODOCUMENTOFK" th:field="*{NESTADODOCUMENTOFK}">
+									name="NESTADODOCUMENTOFK" th:field="*{NESTADODOCUMENTOFK}" required>
 									<option th:each="i : ${listaEstadoDocumentos}"
 										th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
 								</select>

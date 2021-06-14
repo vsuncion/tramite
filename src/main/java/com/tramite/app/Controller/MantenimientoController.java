@@ -127,6 +127,9 @@ public class MantenimientoController {
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		Persona InfoPersona = new Persona();
+		
+		
 		
 		cbOficinas = mantenimientoServicio.listarOficinasCombo();
 		cbProfesiones = mantenimientoServicio.cbProfesiones();
@@ -142,8 +145,17 @@ public class MantenimientoController {
 			return pagina;
 		}
 
+		// VERIFICAR SI EL TRABAJA
+		InfoPersona = mantenimientoServicio.infoPersona(formPersona);
+		
+		if(InfoPersona.getVNUMERODOC()!=null) {
+			mostrarmensaje.setCodigo(1);
+			mostrarmensaje.setMensaje("LA DNI SE ENCUENTRA DUPLICADOS "+InfoPersona.getVNUMERODOC());
+		}else {
+			mostrarmensaje = mantenimientoServicio.guardarTrabajadorPersona(formPersona); 
+		}
 	 
-		mostrarmensaje = mantenimientoServicio.guardarTrabajadorPersona(formPersona);         
+		        
   
 		pagina.setViewName("admin/trabajador/nuevo");
 		//pagina.setViewName("redirect:/admin/mantenimiento/listarTranbajador");

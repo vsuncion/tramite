@@ -28,4 +28,6 @@ public interface PrincipalServicio {
 	void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente);
 	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
 	List<RequisitosTupac> listaRequerimientosTupac(Long idtupac);
+	MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona);  
+	
 }

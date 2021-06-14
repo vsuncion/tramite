@@ -10,11 +10,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; 
 
 import com.tramite.app.Entidades.Perfiles;
 
-@SpringBootApplication
+@SpringBootApplication 
 public class TramiteApplication implements CommandLineRunner {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());

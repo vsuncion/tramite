@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -25,11 +24,11 @@ import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.Persona;
+import com.tramite.app.Entidades.PersonaJuridica;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.Entidades.RequisitosTupac;
-import com.tramite.app.Entidades.Seleccion;
-import com.tramite.app.Entidades.Tupac;
+import com.tramite.app.Entidades.Seleccion; 
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
 import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
@@ -70,8 +69,9 @@ public class PrinicipalController {
 		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>(); 
 		HojaRuta formHojaRuta = new HojaRuta();
 		Expediente infoExpediente = new Expediente();
+		String mensajeRespuesta ="";
 		
- 
+		pagina.addObject("mensajerespuesta",mensajeRespuesta);
 		pagina.addObject("infoExpediente",infoExpediente);
 		pagina.addObject("listaHoja",listaHoja);
 		pagina.addObject("formHojaRuta",formHojaRuta);
@@ -85,13 +85,15 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();  
 		Expediente infoExpediente = new Expediente();
+		String mensajeRespuesta =Constantes.MENSAJE_BUSCAR_EXPEDIENTE;
 		
 		infoExpediente = expedienteServicio.infoExpedienteCodigo(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
-		if(infoExpediente!=null) {
+		if(infoExpediente.getVCODIGO_EXPEDIENTE()!=null) {
 			listaHoja = expedienteServicio.infoHojaRuta(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
-		}
+			mensajeRespuesta="";
+		} 
 		
- 
+		pagina.addObject("mensajerespuesta",mensajeRespuesta);
 		pagina.addObject("infoExpediente",infoExpediente);
 		pagina.addObject("listaHoja",listaHoja);
 		pagina.addObject("formHojaRuta",formHojaRuta);
@@ -120,6 +122,7 @@ public class PrinicipalController {
 		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		pagina.addObject("estadobotton", Constantes.habilitadoboton);
 		return pagina;
 	}
 
@@ -162,12 +165,13 @@ public class PrinicipalController {
 			mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PERSONA.replace("$VNUMERO$", personaDupliciedad.getVNUMERODOC()));
 		}
 		
-		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
+		//cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 
-		pagina.setViewName("admin/persona/natural/nuevo");
-		pagina.addObject("prePersona", prePersona);
-		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
+		pagina.setViewName("admin/persona/mensajeinformacion");
+		//pagina.addObject("prePersona", prePersona);
+		//pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		//pagina.addObject("estadobotton", Constantes.deshabilitadoboton);
 		return pagina;
 	}
 
@@ -176,11 +180,17 @@ public class PrinicipalController {
 			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>(); 
 
 		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaJuridica);
-		mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
+		
+		mostrarmensaje = principalServicio.buscarPersonaJuridicaDuplicada(prePersona);
+		
+		if(mostrarmensaje.getCodigo()==0) {
+			mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
+		} 
+		
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 
 		pagina.setViewName("admin/persona/juridica/nuevo");
@@ -210,12 +220,15 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 
+		
 		pagina.setViewName("admin/tramite/buscarSimple");
 		pagina.addObject("formExpediente", formExpediente);
 		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
 
@@ -225,6 +238,7 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		persona = principalServicio.busquedaSolicitante(formExpediente);
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
@@ -234,8 +248,11 @@ public class PrinicipalController {
 					+ "&numero=" + formExpediente.getCAJABUSQUEDA().trim());
 		} else {
 			pagina.setViewName("admin/tramite/buscarSimple");
+			mostrarmensaje.setCodigo(0);
+			mostrarmensaje.setMensaje("NO SE ENCONTRARON RESULTADOS");
 		}
 
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		pagina.addObject("formExpediente", formExpediente);
 		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;
@@ -319,12 +336,14 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		Expediente formExpediente = new Expediente();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 
 		pagina.setViewName("admin/tramite/buscarTupa");
 		pagina.addObject("formExpediente", formExpediente);
 		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
 
@@ -334,6 +353,7 @@ public class PrinicipalController {
 		ModelAndView pagina = new ModelAndView();
 		List<Seleccion> cbTipoDocumentoPersona = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		persona = principalServicio.busquedaSolicitante(formExpediente);
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
@@ -343,8 +363,10 @@ public class PrinicipalController {
 					+ "&numero=" + formExpediente.getCAJABUSQUEDA().trim());
 		} else {
 			pagina.setViewName("admin/tramite/buscarTupa");
+			mostrarmensaje.setMensaje("NO SE ENCONTRARON RESULTADOS");
 		}
 
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		pagina.addObject("formExpediente", formExpediente);
 		pagina.addObject("cbTipoDocumentoPersona", cbTipoDocumentoPersona);
 		return pagina;

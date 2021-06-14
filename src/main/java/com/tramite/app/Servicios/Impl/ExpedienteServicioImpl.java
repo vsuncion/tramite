@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tramite.app.Datos.ExpedienteDao;
@@ -134,11 +135,13 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	}
 
 	@Override
+	@Transactional
 	public boolean guardarExpedienteSimpleInterno(Expediente expediente) { 
 		return expedienteDao.guardarExpedienteSimpleInterno(expediente);
 	}
 
 	@Override
+	@Transactional
 	public boolean actualizarClave(Usuarios formUsuario) {
 		formUsuario.setVCLAVE(encriptar.encode(formUsuario.getVCLAVE()));
 		return expedienteDao.actualizarClave(formUsuario);

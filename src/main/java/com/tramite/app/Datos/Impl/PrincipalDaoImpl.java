@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.Persona;
+import com.tramite.app.Entidades.PersonaJuridica;
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.Entidades.Tupac;
@@ -654,6 +655,37 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			logger.error("ERRORX : PrincipalDaoImpl eliminarArchivoRequerimeinto " + e.getMessage() + "---" + e.getClass());
 		}
 		
+	}
+
+	@Override
+	public PersonaJuridica buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
+		StringBuffer sql = new StringBuffer();
+		PersonaJuridica personaJuridica = new PersonaJuridica();
+		try {
+			sql.append(
+			    "SELECT  \n"+
+	    		"	NIDPERJURIDICAPK	,  \n"+
+	    		"	NIDPERSONAFK		,  \n"+
+	    		"	VRAZONSOCIAL		,  \n"+
+	    		"	VRUC				,  \n"+
+	    		"	VDIRECCION			,  \n"+
+	    		"	NESTADO				,  \n"+
+	    		"	DFECREGISTRO		,  \n"+
+	    		"	NUSUREGISTRA		,  \n"+
+	    		"	DFECMODIFICA		,  \n"+
+	    		"	NUSUMODIFICA		,  \n"+
+	    		"	DFECELIMINA			, \n"+
+	    		"	NUSUELIMINA  		\n"+
+	    		"FROM  "+Constantes.tablaPersonaJuridica+" \n"+
+	    		"WHERE VRUC= :P_VRUC");
+			MapSqlParameterSource parametro = new MapSqlParameterSource();
+			parametro.addValue("P_VRUC", prePersona.getVRUC());
+			personaJuridica = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametro, BeanPropertyRowMapper.newInstance(PersonaJuridica.class));
+ 
+		} catch (Exception e) {
+			logger.error("ERRORX : PrincipalDaoImpl buscarPersonaJuridicaDuplicada " + e.getMessage() + "---" + e.getClass());
+		}
+		return personaJuridica;
 	}
 
 }

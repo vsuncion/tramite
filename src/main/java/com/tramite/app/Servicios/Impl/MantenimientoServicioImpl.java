@@ -61,7 +61,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarOficina(Oficinas oficina) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -109,7 +109,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarOficina(Oficinas oficina) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -130,7 +130,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarOficina(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -175,7 +175,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -200,7 +200,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarTipoDocumento(TipoDocumentos tipoDocumentos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -220,7 +220,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarTipoDocumento(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -260,7 +260,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarTipoTramite(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -280,7 +280,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarTipoTramite(TipoTramite tipoTramite) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -300,7 +300,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarTipoTramite(TipoTramite tipoTramite) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -345,7 +345,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarProfesiones(Profesiones profesiones) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -365,7 +365,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarProfesiones(Profesiones profesiones) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -385,7 +385,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarProfesiones(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -405,7 +405,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarinformacionMunicipalidad(Informacion informacion) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -439,7 +439,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarRequisitos(Requisitos requisitos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -459,7 +459,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarRequisitos(Requisitos requisitos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -479,7 +479,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarRequisitos(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -514,7 +514,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarTupac(Tupac tupac) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -534,7 +534,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarTupac(Tupac tupac) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -554,7 +554,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -648,7 +648,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional 
 	public MensajeRespuesta activarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -668,7 +668,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -739,7 +739,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -759,7 +759,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -779,7 +779,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarTrabajadorPersona(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -841,7 +841,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta guardarUsuarioPersona(Usuarios usuarios) {
 		usuarios.setVCLAVE(encriptar.encode(usuarios.getVCLAVE()));
 
@@ -863,7 +863,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta actualizarUsuarioPersona(Usuarios usuarios) {
 
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -905,7 +905,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional
 	public MensajeRespuesta eliminarUsuarioPersona(Long idUsuario, Long idUsuarioPerfil) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -969,6 +969,11 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	public List<Feriados> buscarFeriados(Feriados feriados) {
 		return mantenimientoDao.buscarFeriados(feriados);
+	}
+
+	@Override
+	public Persona infoPersona(Persona persona) { 
+		return mantenimientoDao.infoPersona(persona);
 	}
 
 }
