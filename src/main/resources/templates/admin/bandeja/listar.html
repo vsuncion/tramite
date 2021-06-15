@@ -42,7 +42,7 @@
 					<div class="card">
 						<h5 class="card-header">LISTAR EXPEDIENTES CON ESTADO <span th:text="${estadoDocumento.VNOMBRE}"></span></h5>
 						<div class="card-body">
-						<table class="table table-hover">
+						<table class="table table-hover" id="listaBandeja">
 							<thead>
 								<tr style="text-align: center;" class="cabecera_letras_grilla">
 									<th scope="col">ITEM</th>
@@ -95,6 +95,16 @@
 	</div>
 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
-
+	<script type="text/javascript">
+		$('#listaBandeja').paginate({ 
+			limit: 10,
+			initialPage: 0,
+			previous: true, 
+			previousText: 'Anterior',
+			next: true,
+			nextText: 'Siguiente',
+			optional: false
+			});
+	</script>
 </body>
 </html>
