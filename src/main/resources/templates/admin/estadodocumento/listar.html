@@ -61,7 +61,7 @@
 				<div class="card">
 					<h5 class="card-header">LISTA DE ESTADOS DE DOCUMENTO</h5>
 					<div class="card-body">
-						<table class="table table-hover">
+						<table class="table table-hover" id="listaEstadosDoc">
 							<thead>
 								<tr>
 									<th scope="col">CODIGO</th>
@@ -171,6 +171,16 @@
 
 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
-
+	<script type="text/javascript">
+		$('#listaEstadosDoc').paginate({ 
+			limit: 10,
+			initialPage: 0,
+			previous: true, 
+			previousText: 'Anterior',
+			next: true,
+			nextText: 'Siguiente',
+			optional: false
+			});
+	</script>
 </body>
 </html>

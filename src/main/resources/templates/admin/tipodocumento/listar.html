@@ -58,7 +58,7 @@
 				<div class="card">
 					<h5 class="card-header">LISTA DE ESTADOS DE DOCUMENTO</h5>
 					<div class="card-body">
-						<table class="table table-hover">
+						<table class="table table-hover" id="listaTipoDocumentos">
 							<thead>
 								<tr>
 									<th scope="col">ITEM</th>
@@ -101,6 +101,16 @@
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
-
+	<script type="text/javascript">
+		$('#listaTipoDocumentos').paginate({ 
+			limit: 10,
+			initialPage: 0,
+			previous: true, 
+			previousText: 'Anterior',
+			next: true,
+			nextText: 'Siguiente',
+			optional: false
+			});
+	</script>
 </body>
 </html>
