@@ -727,6 +727,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		StringBuffer sql2 = new StringBuffer();
 		Long idExpediente =0L;
 		StringBuffer sql3 = new StringBuffer();   
+		StringBuffer sql4 = new StringBuffer(); 
+		Long idMovimiento;
 		boolean respuesta = false;
 		try {
 		   sql=
@@ -805,14 +807,24 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		parametrobandejaenvio.addValue("P_NIDEXPEDIENTEFK", idExpediente);
 		parametrobandejaenvio.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_DERIVADO);
 		parametrobandejaenvio.addValue("P_OFICINA_ORIGENFK",expediente.getOFICINA_ORIGENFK()); 
-		parametrobandejaenvio.addValue("P_OFICINA_DESTINOFK",expediente.getOFICINA_ORIGENFK()); 
+		parametrobandejaenvio.addValue("P_OFICINA_DESTINOFK",expediente.getOFICINA_DESTINOFK()); 
 		parametrobandejaenvio.addValue("P_DFECHAOFICINA", Fechas.fechaActual()); 
 		parametrobandejaenvio.addValue("P_VOBSERVACION", expediente.getVASUNTO()); 
 	    KeyHolder keyHolderenvio= new GeneratedKeyHolder();
 	    namedParameterJdbcTemplate.update(sql2.toString(), parametrobandejaenvio,keyHolderenvio, new String[] {"NIDMOVIMIENTOPK"});
 	    logger.info("NIDMOVIMIENTOPK++"+keyHolderenvio.getKey().longValue());
-		
-		
+	    idMovimiento = keyHolderenvio.getKey().longValue();
+	    
+	    
+	 // APAGAMOS EL MOVIMIENTO
+	    sql4.append(
+			"UPDATE "+Constantes.tablaMovimiento+"  \n"+
+			" SET  NESTADOREGISTRO = :P_NESTADOREGISTRO \n"+
+		    "WHERE NIDMOVIMIENTOPK= :P_NIDMOVIMIENTOPK");
+			MapSqlParameterSource parametros4 = new MapSqlParameterSource();
+			parametros4.addValue("P_NESTADOREGISTRO",  Constantes.estadoDesactivado);
+			parametros4.addValue("P_NIDMOVIMIENTOPK", idMovimiento);
+			namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
 		
  
 		// PROCEDEMOS A INSERTAR EL MOVIMIENTO
