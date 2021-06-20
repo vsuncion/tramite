@@ -14,7 +14,7 @@ public interface RecursoServicio {
 
 	List<Seleccion> cbTipoDocuemnto();
 	List<Seleccion> cbTupa();
-	public String numeroExpediente();
+	public String numeroExpediente(Long idoficina);
 	 Usuarios infoUsuario(String vcorreo);
 	 List<Seleccion> cbOficinasAtender(Long idoficiActual);
 	 List<Seleccion> cbAccionesAtender();
@@ -22,5 +22,5 @@ public interface RecursoServicio {
 	 EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento);
 	 List<Seleccion> cbRequisitos(Long idTupac);
 	 List<Seleccion> listaEstadoDocumentos();
-	 List<Seleccion>  cbOficinasReportes(Long idOficina);
+	 List<Seleccion>  cbOficinasReportes();
 }

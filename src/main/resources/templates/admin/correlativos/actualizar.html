@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form id="formCorrelativo" name="formCorrelativo"
+					th:action="@{/admin/mantenimiento/actualziarCorrelativo}"
+					th:object="${formCorrelativo}" method="post">
+
+                     <input type="hidden" id="NCORRELATIVOPK" name="NCORRELATIVOPK" th:field="*{NCORRELATIVOPK}">
+					<div class="card text-center">
+						<div class="card-body">
+							<h5 class="card-title">ACTUALIZAR CORRELATIVO</h5>
+
+							<div class="card text-left">
+								<div class="card-body">
+
+									<div class="form-group row">
+
+										<div class="col-sm-10">
+											<label><span>NOMBRE OFICINA :</span></label> <label
+												th:text="*{VNOMBRE}"></label>
+										</div>
+
+
+									</div>
+
+									<div class="form-group row">
+
+										<div class="col-sm-3">
+											<label><span>VALOR DEL CORRELATIVO</span></label>
+										</div>
+
+										<div class="col-sm-2 text-left">
+											<input type="number" class="form-control" id="NVALOR_ACTUAL"
+												name="NVALOR_ACTUAL" th:field="*{NVALOR_ACTUAL}" required>
+										</div>
+
+										<div class="col-sm-2">
+											<button type="submit" class="btn btn-outline-primary">
+												<i class="fas fa-search"></i> BUSCAR
+											</button>
+										</div>
+										<div class="col-sm-3"></div>
+									</div>
+
+									<div class="form-group row">
+										<blockquote class="blockquote" >
+											<p class="text-danger">Recuerde que el valor se incrementara en 1.</p>
+										</blockquote>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

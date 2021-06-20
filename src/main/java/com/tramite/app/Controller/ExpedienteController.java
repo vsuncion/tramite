@@ -3,8 +3,7 @@ package com.tramite.app.Controller;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.ArrayList; 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -427,7 +426,7 @@ public class ExpedienteController {
 		}
 
 		// OBTENEOS EL NUMERO DE EXPEDIENTE
-		String correlativoExpediente = recursoServicio.numeroExpediente();
+		String correlativoExpediente = recursoServicio.numeroExpediente(usuario.getNOFICINAFK());
 		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 		formExpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK());
 		formExpediente.setPERSONAFK(usuario.getNIDPERSONAFK());
@@ -525,7 +524,7 @@ public class ExpedienteController {
 		
 		formexpediente.setOFICINA_ORIGENFK(0L); 
 		listaReporte = expedienteServicio.listaExpedientesPorOficina(formexpediente);
-		listaOfinas = recursoServicio.cbOficinasReportes(formexpediente.getOFICINA_ORIGENFK());
+		listaOfinas = recursoServicio.cbOficinasReportes();
 		
 		 
 		
@@ -546,7 +545,7 @@ public class ExpedienteController {
 		
 		 
 		listaReporte = expedienteServicio.listaExpedientesPorOficina(formexpediente);
-		listaOfinas = recursoServicio.cbOficinasReportes(formexpediente.getOFICINA_ORIGENFK());
+		listaOfinas = recursoServicio.cbOficinasReportes();
 		
 		pagina.addObject("listaOfinas", listaOfinas);
 		pagina.addObject("listaReporte", listaReporte);

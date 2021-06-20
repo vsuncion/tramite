@@ -3,11 +3,9 @@ package com.tramite.app.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.tramite.app.Servicios.MantenimientoServicio;
-import com.tramite.app.utilitarios.Constantes;
+import com.tramite.app.Servicios.MantenimientoServicio; 
+import com.tramite.app.utilitarios.Constantes; 
+import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Feriados;
 import com.tramite.app.Entidades.Informacion;
@@ -47,6 +45,8 @@ public class MantenimientoController {
 	
 	@Autowired
 	private MantenimientoServicio  mantenimientoServicio;
+	
+	 
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
  
@@ -1591,5 +1591,59 @@ public class MantenimientoController {
 		pagina.setViewName("admin/tramite/einterno/simple");
 		return pagina;
 	}
+	
+	
+	
+	@GetMapping(value = {"/listarCorrelativos"})
+	public ModelAndView listarCorrelativos(HttpServletRequest request,HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView(); 
+		Correlativo formCorrelativo = new Correlativo();
+		List<Correlativo> listarCorrelativos = new ArrayList<Correlativo>();
+		
+		listarCorrelativos = mantenimientoServicio.listarCorrelativos(formCorrelativo);
+		
+		pagina.addObject("listarCorrelativos",listarCorrelativos);
+		pagina.addObject("formCorrelativo",formCorrelativo); 
+		pagina.setViewName("admin/correlativos/listar");
+		return pagina;
+	}
+	
+	@PostMapping(value= {"/buscarCorrelativo"})
+	public ModelAndView buscarCorrelativo(HttpServletRequest request,HttpServletResponse res,@ModelAttribute Correlativo  formCorrelativo) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Correlativo> listarCorrelativos = new ArrayList<Correlativo>();
+		
+		listarCorrelativos = mantenimientoServicio.listarCorrelativos(formCorrelativo);
+		
+		pagina.addObject("listarCorrelativos",listarCorrelativos); 
+		pagina.addObject("formCorrelativo",formCorrelativo); 
+		pagina.setViewName("admin/correlativos/listar");
+		return pagina;
+	}
+	
+	@GetMapping(value = {"/editarCorrelativo"})
+	public ModelAndView EditarCorrelativo(HttpServletRequest request,HttpServletResponse res,@RequestParam Long  idcorrelativo) {
+		ModelAndView pagina = new ModelAndView(); 
+		Correlativo formCorrelativo = new Correlativo();
+		
+		formCorrelativo = mantenimientoServicio.infoCorrelativo(idcorrelativo);
+		
+		pagina.addObject("formCorrelativo",formCorrelativo);
+		pagina.setViewName("admin/correlativos/actualizar");
+		return pagina;
+	}
+	
+	@PostMapping(value = {"/actualziarCorrelativo"})
+	public ModelAndView ActualizarCorrelativo(HttpServletRequest request,HttpServletResponse res,@ModelAttribute Correlativo formCorrelativo) {
+		ModelAndView pagina = new ModelAndView();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		mostrarmensaje = mantenimientoServicio.actualizarCorrelativo(formCorrelativo);
+		
+		
+		pagina.addObject("formCorrelativo",formCorrelativo);
+		pagina.setViewName("admin/correlativos/actualizar");
+		return pagina;
+	}
+	
 
 }

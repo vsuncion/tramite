@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento; 
 import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.TipoDocumentos;
@@ -50,15 +51,63 @@ public class RecursoDaoImpl implements RecursoDao {
 	
 	
 	@Override
-	public String numeroExpediente() {
+	public String numeroExpediente(Long idoficina) {
 		Calendar fecha = Calendar.getInstance();
-		 String sql;
-		 String letraExpediente="E";
-		 int numeroExpediente=0;
+		 StringBuffer sql = new StringBuffer();
+		 String letraExpediente="E"; 
 		 String numeroExpedienteLetra;
-		 String numeroFinalExpediente="0";
+		 String numeroFinalExpediente="";
+		 String siglaOficina="";
+		 Correlativo infoCorrelativo = new Correlativo();
 		 int anio = fecha.get(Calendar.YEAR);
 		try {
+			sql.append(
+			   "SELECT \n"+
+			   " T1.NCORRELATIVOPK,\n"+
+			   " CONVERT(NVARCHAR,T1.NVALOR_ACTUAL+1) AS VVALOR_ACTUAL, \n"+
+			   " T2.VSIGLADOCUMENTO \n"+
+			   "FROM "+Constantes.tablaCorrelativos+" T1 \n"+
+			   "INNER JOIN "+Constantes.tablaOficinas+" T2 ON T1.NOFICINAFK=T2.NIDOFICINAPK AND T1.NESTADO = :P_NESTADO  \n"+
+			   "WHERE T1.NOFICINAFK= :P_NOFICINAFK ");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NOFICINAFK", idoficina);
+			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
+			infoCorrelativo = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Correlativo.class));
+			numeroExpedienteLetra = infoCorrelativo.getVVALOR_ACTUAL();
+			siglaOficina = infoCorrelativo.getVSIGLADOCUMENTO();
+			switch(numeroExpedienteLetra.length()) {
+			 case 1:
+				 numeroFinalExpediente = letraExpediente+"00000"+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+				 break;
+			 case 2:
+				 numeroFinalExpediente = letraExpediente+"0000"+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+				 break;
+			 case 3:
+				 numeroFinalExpediente = letraExpediente+"000"+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+				 break;
+			 case 4:
+				 numeroFinalExpediente = letraExpediente+"00"+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+				 break;
+			 case 5:
+				 numeroFinalExpediente = letraExpediente+"0"+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+				 break;
+			  default:
+				  numeroFinalExpediente = letraExpediente+numeroExpedienteLetra+"-"+anio+"-"+siglaOficina;
+			}
+			
+			//ACTUALIZAMOS EL CORRELATIVO
+			StringBuffer sql2 = new StringBuffer();
+			sql2.append(
+			  "UPDATE "+Constantes.tablaCorrelativos+ " SET \n"+
+			  " NVALOR_ACTUAL = :P_NVALOR_ACTUAL \n"+
+			  "WHERE NCORRELATIVOPK= :P_NCORRELATIVOPK AND NOFICINAFK= :P_NOFICINAFK");
+			MapSqlParameterSource parametros2 = new MapSqlParameterSource();
+			parametros2.addValue("P_NVALOR_ACTUAL", Long.parseLong(numeroExpedienteLetra));
+			parametros2.addValue("P_NCORRELATIVOPK", infoCorrelativo.getNCORRELATIVOPK());
+			parametros2.addValue("P_NOFICINAFK", idoficina);
+			namedParameterJdbcTemplate.update(sql2.toString(), parametros2);
+			
+			/*
 			sql="SELECT COUNT(1)+1 FROM "+Constantes.tablaExpediente;
 			numeroExpediente=jdbcTemplate.queryForObject(sql,  Integer.class);
 			numeroExpedienteLetra = String.valueOf(numeroExpediente);
@@ -86,7 +135,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			   
 			  default :
 				  numeroFinalExpediente = letraExpediente+"-"+anio+"-"+numeroExpedienteLetra;  
-			}
+			}*/
 			
 		} catch (Exception e) {
 			logger.error("ERROR : RecursoDaoImpl numeroExpediente " + e.getMessage() + "---" + e.getClass());

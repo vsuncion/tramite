@@ -159,8 +159,10 @@
                              <!-----------------> 
                         </li>
                         
+                       
+                       <!-------
                         <li>
-                          
+  
                             <a href="#homeFeriado" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">FERIADOS</a>
                             
 	                             <ul class="collapse list-unstyled" id="homeFeriado">
@@ -176,22 +178,26 @@
                             
                         </li>
                         
+                        ---------->
                         
                         
+                        <li>
+                             <a href="#homeCorrelativos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">CORRELATIVOS</a>
+                               <ul class="collapse list-unstyled" id="homeCorrelativos">
+                                  
+                                  <li>
+                                     <a class="nav-link" th:href="@{/admin/mantenimiento/listarCorrelativos}"><span class="letras_menu_tercer_nivel"><i class="fas fa-search"></i>&nbsp;&nbsp;&nbsp;LISTAR</span></a> 
+                                  </li>
+                                  
+                               </ul>
+                        </li>
                         
                         
                         
                          <li>
                             <a class="nav-link" th:href="@{/admin/mantenimiento/listarEstadoDocumento}">ESTADO DOCUMENTO</a>
                         </li>
-                        
- 
-                        <!--  
-                         <li>
-                            <a class="nav-link" th:href="@{/admin/mantenimiento/remitente}" >CIUDADANOS</a>
-                        </li>
-                        -->
- 
+         
                         
                     </ul>
                 </li>

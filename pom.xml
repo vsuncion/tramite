@@ -23,7 +23,7 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-		<maven.test.skip>true</maven.test.skip>
+		<!-- <maven.test.skip>true</maven.test.skip> -->
 	</properties>
 	<dependencies>
 
@@ -36,13 +36,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-        <!--  -->
+        <!--  
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+		-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

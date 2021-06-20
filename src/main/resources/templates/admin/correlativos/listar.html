@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-title">CORRELATIVO OFICINA</h5>
+
+						<div class="card text-left">
+							<div class="card-body">
+
+								<form name="formCorrelativo" id="formCorrelativo" th:object="${formCorrelativo}" th:action="@{/admin/mantenimiento/buscarCorrelativo}" method="post">
+
+									<div class="form-group row">
+										<label for="CAJABUSQUEDA" class="col-sm-2 col-form-label"><span>Nombre
+												Oficina</span></label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control" id="CAJABUSQUEDA" name="CAJABUSQUEDA" th:field="*{CAJABUSQUEDA}"
+												placeholder="Ingrese Nombre Oficina">
+										</div>
+
+										<div class="col-sm-2">
+											<button type="submit" class="btn btn-outline-primary">
+												<i class="fas fa-search"></i> BUSCAR
+											</button>
+										</div>
+
+									</div>
+
+								</form>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="card">
+					<h5 class="card-header">LISTA CORRELATIVOS OFICINA</h5>
+					<div class="card-body">
+					 
+					 <table class="table table-hover" id="listar">
+					   <thead>
+					      <tr>
+					        <th scope="col">ITEM</th>
+					        <th scope="col">OFICINA</th>
+					        <th scope="col">VALOR ACTUAL</th>
+					        <th scope="col">ACTUALIZAR</th>
+					      </tr>
+					   </thead>
+					   
+					   <tbody>
+					      <tr th:each="i : ${listarCorrelativos}" style="text-align: center;">
+					        <td><span th:text="${i.NITEM}"></span></td>
+					        <td><span th:text="${i.VNOMBRE}"></span></td>
+					        <td><span th:text="${i.NVALOR_ACTUAL}"></span></td>
+					        <td><a th:href="@{/admin/mantenimiento/editarCorrelativo?idcorrelativo=} + ${i.NCORRELATIVOPK}"><i class="fas fa-edit"></i></a></td>
+					     </tr>
+					   </tbody>
+		
+					 </table>
+					
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+
+</body>
+</html>

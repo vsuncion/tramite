@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.tramite.app.Datos.MantenimientoDao;
+import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Feriados;
 import com.tramite.app.Entidades.Informacion;
@@ -974,6 +975,32 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	public Persona infoPersona(Persona persona) { 
 		return mantenimientoDao.infoPersona(persona);
+	}
+
+	@Override
+	public List<Correlativo> listarCorrelativos(Correlativo formCorrelativo) { 
+		return mantenimientoDao.listarCorrelativos(formCorrelativo);
+	}
+
+	@Override
+	public Correlativo infoCorrelativo(Long idcorrelativo) { 
+		return mantenimientoDao.infoCorrelativo(idcorrelativo);
+	}
+
+	@Override
+	public MensajeRespuesta actualizarCorrelativo(Correlativo formCorrelativo) {
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		boolean respuesta = mantenimientoDao.actualizarCorrelativo(formCorrelativo);
+		if (respuesta == true) {
+			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+
+		} else {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+		}
+
+		return mostrarmensaje; 
 	}
 
 }

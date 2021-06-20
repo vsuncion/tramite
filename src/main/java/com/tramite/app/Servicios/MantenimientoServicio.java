@@ -1,7 +1,9 @@
 package com.tramite.app.Servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Feriados;
 import com.tramite.app.Entidades.Informacion;
@@ -110,5 +112,9 @@ public interface MantenimientoServicio {
 	MensajeRespuesta  eliminarFeriado(Long idFeriado);
 	List<Feriados> listarFeriados();
 	List<Feriados> buscarFeriados(Feriados feriados);
+	
+	List<Correlativo> listarCorrelativos(Correlativo formCorrelativo);
+	Correlativo infoCorrelativo(Long idcorrelativo);
+	MensajeRespuesta actualizarCorrelativo(Correlativo formCorrelativo);
 	
 }

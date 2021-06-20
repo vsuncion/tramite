@@ -89,8 +89,8 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
-	public String numeroExpediente() {
-		return recursoDao.numeroExpediente();
+	public String numeroExpediente(Long idoficina) {
+		return recursoDao.numeroExpediente(idoficina);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
-	public List<Seleccion> cbOficinasReportes(Long idOficina) {
+	public List<Seleccion> cbOficinasReportes() {
 		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
 		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
 

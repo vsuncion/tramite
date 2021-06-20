@@ -23,8 +23,7 @@ import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.HojaRuta;
 import com.tramite.app.Entidades.MensajeRespuesta;
-import com.tramite.app.Entidades.Persona;
-import com.tramite.app.Entidades.PersonaJuridica;
+import com.tramite.app.Entidades.Persona; 
 import com.tramite.app.Entidades.PrePersona;
 import com.tramite.app.Entidades.PreRequisitoTupa;
 import com.tramite.app.Entidades.RequisitosTupac;
@@ -148,7 +147,7 @@ public class PrinicipalController {
 			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		//List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		Persona personaDupliciedad = new Persona();
 		
 
@@ -212,6 +211,7 @@ public class PrinicipalController {
 
 		pagina.setViewName("admin/persona/activar");
 		pagina.addObject("prePersona", prePersona);
+		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		return pagina;
 	}
 
@@ -320,7 +320,8 @@ public class PrinicipalController {
 		}
 
 		// OBTENEOS EL NUMERO DE EXPEDIENTE
-		String correlativoExpediente = recursoServicio.numeroExpediente();
+		Long idOficina = Constantes.OficinaMesaPartePk;
+		String correlativoExpediente = recursoServicio.numeroExpediente(idOficina);
 		formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 
 		respuesta = principalServicio.guardarExpedienteSimple(formExpediente);
@@ -417,7 +418,7 @@ public class PrinicipalController {
 		List<Seleccion> cbTipoDocumento = new ArrayList<Seleccion>();
 		List<Seleccion> cbTupa = new ArrayList<Seleccion>();
 		Persona persona = new Persona();
-		String numeroExpediente = "";
+		//String numeroExpediente = "";
 
 		cbTipoDocumentoPersona = recursoServicio.cbTipoDocumentoPersona();
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
@@ -579,7 +580,8 @@ public class PrinicipalController {
 			logger.info("========= PROCEDER A REGISTRAR EL EXPEDIENTE");
 			
 			//GRABAMOS EL EXPEDIENTE
-			String correlativoExpediente = recursoServicio.numeroExpediente();
+			Long idOficina = Constantes.OficinaMesaPartePk;
+			String correlativoExpediente = recursoServicio.numeroExpediente(idOficina);
 			formExpediente.setVCODIGO_EXPEDIENTE(correlativoExpediente);
 			
 			//GRABAMOS EL TUPA EN EXPEDIENTE

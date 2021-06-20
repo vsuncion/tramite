@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.tramite.app.Datos.MantenimientoDao;
+import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Feriados;
 import com.tramite.app.Entidades.Informacion;
@@ -166,6 +167,8 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarOficina(Oficinas oficina) {
 		boolean respuesta = false;
 		String sql = "";
+		StringBuffer sqlcorrelativo = new StringBuffer();
+		Long idOficina = 0L;
 		 try {
 			 sql=
 			   "INSERT INTO "+Constantes.tablaOficinas+"(\n"+
@@ -184,6 +187,17 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 KeyHolder keyHolder = new GeneratedKeyHolder();
 			 namedParameterJdbcTemplate.update(sql,parametros,keyHolder, new String[] {"NIDOFICINAPK"});
 			 logger.info("++"+keyHolder.getKey().longValue()); 
+			 idOficina = keyHolder.getKey().longValue();
+			 
+			 //INSERTAMOS EL CORRELATIVO DE LA OFICINA
+			 sqlcorrelativo.append(
+			    "INSERT INTO  "+Constantes.tablaCorrelativos+" (NOFICINAFK,NVALOR_ACTUAL) \n"+
+			    "VALUES(:P_NOFICINAFK, :P_NVALOR_ACTUAL)");
+			 MapSqlParameterSource parametros2 = new MapSqlParameterSource();
+			 parametros2.addValue("P_NOFICINAFK", idOficina);
+			 parametros2.addValue("P_NVALOR_ACTUAL", Constantes.valorCorrelativoInicial);
+			 namedParameterJdbcTemplate.update(sqlcorrelativo.toString(), parametros2);
+			 
 			 respuesta = true;
 		} catch (Exception e) {
 			logger.error("ERROR : MantenimientoDaoImpl guardarOficina " + e.getMessage() + "---" + e.getClass());
@@ -1941,6 +1955,79 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			logger.error("ERROR : MantenimientoDaoImpl infoPersona " + e.getMessage() + "---" + e.getClass());
 		}
 		return infoPersona;
+	}
+
+	@Override
+	public List<Correlativo> listarCorrelativos(Correlativo formCorrelativo) {
+		List<Correlativo>  lista = new ArrayList<Correlativo>();
+		StringBuffer sql = new StringBuffer();
+		 MapSqlParameterSource parametros = new MapSqlParameterSource(); 
+		try {
+			sql.append(
+				"SELECT \n" +
+				"  ROW_NUMBER() OVER ( ORDER BY T1.NCORRELATIVOPK )  AS NITEM, \n" +
+				"  T1.NCORRELATIVOPK, \n" +
+				"  T2.VNOMBRE, \n" +
+				"  T1.NVALOR_ACTUAL \n" +
+				"FROM "+Constantes.tablaCorrelativos+" T1 \n" +
+				"INNER JOIN "+Constantes.tablaOficinas+" T2 ON T1.NOFICINAFK=T2.NIDOFICINAPK AND T1.NESTADO= :P_NESTADO");
+			if(formCorrelativo.getCAJABUSQUEDA()!=null) {
+				 sql.append(" AND T2.VNOMBRE LIKE :P_VNOMBRE");
+				 parametros.addValue("P_VNOMBRE", "%"+formCorrelativo.getCAJABUSQUEDA()+"%");
+			} 
+			 parametros.addValue("P_NESTADO", Constantes.estadoActivado);
+			 lista = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Correlativo.class));
+	 
+		} catch (Exception e) {
+			logger.error("ERROR : MantenimientoDaoImpl listarCorrelativos " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public Correlativo infoCorrelativo(Long idcorrelativo) {
+		StringBuffer sql = new StringBuffer();
+		Correlativo info = new Correlativo();
+		try {
+			sql.append(
+				 "SELECT \n"+
+				 "  ROW_NUMBER() OVER ( ORDER BY T1.NCORRELATIVOPK )  AS NITEM, \n"+
+				 "  T1.NCORRELATIVOPK, \n" +
+				 "  T2.VNOMBRE, \n"+
+				 "  T1.NVALOR_ACTUAL \n"+
+				 "FROM "+Constantes.tablaCorrelativos+" T1 \n"+
+				 "INNER JOIN "+Constantes.tablaOficinas+" T2 ON T1.NOFICINAFK=T2.NIDOFICINAPK AND T1.NESTADO= :P_NESTADO \n"+
+				 "WHERE T1.NCORRELATIVOPK= :P_NCORRELATIVOPK ");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NESTADO",  Constantes.estadoActivado);
+			parametros.addValue("P_NCORRELATIVOPK", idcorrelativo); 
+			info =namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Correlativo.class));
+  
+		} catch (Exception e) {
+			logger.error("ERROR : MantenimientoDaoImpl infoCorrelativo " + e.getMessage() + "---" + e.getClass());
+		}
+		return info;
+	}
+
+	@Override
+	public boolean actualizarCorrelativo(Correlativo formCorrelativo) {
+		StringBuffer sql = new StringBuffer();
+		boolean respuesta = false;
+		try {
+			sql.append(
+				"UPDATE "+Constantes.tablaCorrelativos+" SET \n"+
+			    " NVALOR_ACTUAL = :P_NVALOR_ACTUAL \n"+
+				"WHERE NCORRELATIVOPK = :P_NCORRELATIVOPK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NVALOR_ACTUAL", formCorrelativo.getNVALOR_ACTUAL());
+			parametros.addValue("P_NCORRELATIVOPK", formCorrelativo.getNCORRELATIVOPK());
+			namedParameterJdbcTemplate.update(sql.toString(), parametros);
+			respuesta = true;
+		} catch (Exception e) {
+			respuesta = false;
+			logger.error("ERROR : MantenimientoDaoImpl actualizarCorrelativo " + e.getMessage() + "---" + e.getClass());
+		}
+		return respuesta;
 	}	
 
 }

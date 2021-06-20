@@ -865,7 +865,6 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	   			parametros3.addValue("P_NOFICINAFK",expediente.getOFICINA_DESTINOFK());
 	   			parametros3.addValue("P_NIDEXPEDIENTEPK", idExpediente);
 	   			namedParameterJdbcTemplate.update(sql3.toString(), parametros3);
-		   
  
 		
 		respuesta =true;
