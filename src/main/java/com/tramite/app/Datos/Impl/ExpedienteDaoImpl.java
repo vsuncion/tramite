@@ -46,6 +46,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		try {
 			sql.append(
 			 "SELECT  \n"+
+			 " 	 ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK DESC)  AS NITEM,  \n"+
 			 " 	 T1.NIDMOVIMIENTOPK, \n"+
 			 " 	 CONVERT(varchar,DFECHAOFICINA,22) AS VFECHA_OFICINA, \n"+
 			 " 	 CASE T2.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
@@ -173,6 +174,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMERODOCUMENTO, \n"+
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
+				"    T3.VCORREO, \n"+
 				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
@@ -183,10 +185,10 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				" FROM        "+Constantes.tablaExpediente+"       T1  \n"+
 				"  INNER JOIN "+Constantes.tablaTipoDocumentos+"   T2 ON T1.TIPO_DOCUMENTOFK=T2.NIDTIPODOCUMENTOPK  \n"+
 				"  INNER JOIN "+Constantes.tablaPersona+"          T3 ON T1.PERSONAFK=T3.NIDPERSONAPK   \n"+
-				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T1.PERSONAFK=T4.NIDPERSONAFK  \n"+
 				"  LEFT JOIN " +Constantes.tablaPersonaJuridica+"  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK  \n"+
 				"  INNER JOIN " +Constantes.tablaEstadoDocumento+" T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
-				"  LEFT JOIN " +Constantes.tablaTupac+"  		   T7 ON T1.TUPACFK=T7.TUPACPK \n"+
+				"  LEFT JOIN " +Constantes.tablaTupac+"  		   T7 ON T1.TUPACFK=T7.TUPACPK \n"+ 
 				" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
 		      MapSqlParameterSource parametros = new MapSqlParameterSource();
 		      parametros.addValue("P_NIDEXPEDIENTEPK", idexpediente);
@@ -320,8 +322,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder, new String[] {"NIDMOVIMIENTOPK"});	
 			logger.info("++"+keyHolder.getKey().longValue()); 
 	       Long idMovimientoNuevo = keyHolder.getKey().longValue();
-	       
-	       if(formexpediente.getVNOMBRE_ARCHIVO().length()>0) {
+	     
+	    	if(formexpediente.getVNOMBRE_ARCHIVO()!=null) {
 	    	   
 	    	//APAGAMOS LOS DEMAS ARCHIVOS DEL EXPEDIENTE
 	    	   sql6.append(

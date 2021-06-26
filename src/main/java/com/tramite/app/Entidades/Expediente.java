@@ -63,6 +63,7 @@ public class Expediente implements Serializable {
 	private String VTIPO_DOCUMENTOS;
 	private String VNOMBRETUPAC;
 	private Long  VREQUISITO;
+	private String VCARGO;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date DFECHAINICIO;
@@ -488,6 +489,14 @@ public class Expediente implements Serializable {
 
 	public void setDFECHAFIN(Date dFECHAFIN) {
 		DFECHAFIN = dFECHAFIN;
+	}
+
+	public String getVCARGO() {
+		return VCARGO;
+	}
+
+	public void setVCARGO(String vCARGO) {
+		VCARGO = vCARGO;
 	}
 	
 

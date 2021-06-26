@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento; 
 import com.tramite.app.Entidades.Requisitos;
@@ -158,11 +159,13 @@ public class RecursoDaoImpl implements RecursoDao {
 			    "    T3.VNOMBRE, \n"+
 			    "    T3.VAPEPATERNO, \n"+
 			    "    T3.VAPEMATERNO, \n"+
-			    "    T4.VNOMBRE AS VOFICINA \n"+
+			    "    T4.VNOMBRE AS VOFICINA, \n"+
+			    "    T5.VNOMBRECARGO AS VCARGO \n"+
 			    "  FROM "+Constantes.tablaUsuario+" T1 \n"+
 			    "  INNER JOIN  "+Constantes.tablaTrabajadores+" T2 ON T1.NTRABAJADORFK=T2.NIDTRABAJADORPK \n"+
 			    "  INNER JOIN  "+Constantes.tablaPersona+"      T3 ON T2.NIDPERSONAFK=T3.NIDPERSONAPK \n"+
 			    "  INNER JOIN  "+Constantes.tablaOficinas+"     T4 ON T1.NOFICINAFK=T4.NIDOFICINAPK \n"+
+			    "  LEFT JOIN  "+Constantes.tablaCargo+"         T5 ON T2.NCARGOFK=T5.NCARGOPK \n"+
 			    " WHERE T1.VUSUARIO= :P_VUSUARIO");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VUSUARIO", vcorreo);
@@ -238,6 +241,26 @@ public class RecursoDaoImpl implements RecursoDao {
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
 		} catch (Exception e) {
 			logger.error("ERROR : RecursoDaoImpl listaEstadoDocumentos " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+
+	@Override
+	public List<Cargo> cbCargos() {
+		StringBuffer sql = new StringBuffer();
+		List<Cargo> lista = new ArrayList<Cargo>(); 
+		try {
+			sql.append(
+				"SELECT \n"+
+				" NCARGOPK, \n"+
+				" VNOMBRECARGO \n"+
+				"FROM "+Constantes.tablaCargo+" \n"+
+				"ORDER BY VNOMBRECARGO ASC");
+			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Cargo.class));
+			
+		} catch (Exception e) {
+			logger.error("ERROR : RecursoDaoImpl listarCargos " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}

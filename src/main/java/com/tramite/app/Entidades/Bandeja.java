@@ -19,7 +19,7 @@ public class Bandeja implements Serializable {
 	private Long NIDEXPEDIENTEFK;
 	private String  VCODIGO_EXPEDIENTE;
 	private Long NIDEXPEDIENTEPK;
- 
+	private Long NITEM;
 	
 	public Bandeja() {
 	}
@@ -102,6 +102,14 @@ public class Bandeja implements Serializable {
 
 	public void setNIDEXPEDIENTEPK(Long nIDEXPEDIENTEPK) {
 		NIDEXPEDIENTEPK = nIDEXPEDIENTEPK;
+	}
+
+	public Long getNITEM() {
+		return NITEM;
+	}
+
+	public void setNITEM(Long nITEM) {
+		NITEM = nITEM;
 	}
 	
 	

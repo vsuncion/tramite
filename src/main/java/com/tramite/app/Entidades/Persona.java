@@ -57,6 +57,8 @@ public class Persona implements Serializable {
 	private Long  NITEM;
 	private String VRUC;
 	private String VRAZONSOCIAL;
+	private Long NCARGOFK;
+	private String  VNOMBRECARGO;
 	
 
 	public String getVRUC() {
@@ -437,7 +439,28 @@ public class Persona implements Serializable {
 
 
 
-	 
-	 
+	public Long getNCARGOFK() {
+		return NCARGOFK;
+	}
+
+
+
+	public void setNCARGOFK(Long nCARGOFK) {
+		NCARGOFK = nCARGOFK;
+	}
+
+
+
+	public String getVNOMBRECARGO() {
+		return VNOMBRECARGO;
+	}
+
+
+
+	public void setVNOMBRECARGO(String vNOMBRECARGO) {
+		VNOMBRECARGO = vNOMBRECARGO;
+	}
+
+  
 	 
 }

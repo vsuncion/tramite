@@ -1,10 +1,9 @@
 package com.tramite.app.Servicios;
 
 import java.util.List;
-
+ 
 import com.tramite.app.Entidades.EstadoDocumento;
-import com.tramite.app.Entidades.Oficinas;
-import com.tramite.app.Entidades.Requisitos;
+import com.tramite.app.Entidades.Oficinas; 
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.Usuarios; 
 
@@ -23,4 +22,6 @@ public interface RecursoServicio {
 	 List<Seleccion> cbRequisitos(Long idTupac);
 	 List<Seleccion> listaEstadoDocumentos();
 	 List<Seleccion>  cbOficinasReportes();
+	 List<Seleccion>  cbOCargos();
+	 
 }

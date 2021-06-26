@@ -85,10 +85,9 @@
 									<th scope="col">ELIMINAR</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr>
-									<tr th:each="i : ${listarUsuarioPersona}" >
-									<th scope="row"><span th:text="${i.NITEM}"></span></th>
+							<tbody> 
+								 <tr th:each="i : ${listarUsuarioPersona}" >
+									<td scope="row"><span th:text="${i.NITEM}"></span></td>
 									<td><span  th:text="${i.VCORREO}"></span></td>
 								    <td><span  th:text="${i.VNOMBRECOMPLETO}"></span></td>
 								    <td><span  th:text="${i.VOFICINA}"></span></td>

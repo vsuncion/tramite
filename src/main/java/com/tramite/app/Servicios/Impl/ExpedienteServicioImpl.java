@@ -45,7 +45,7 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 		
 		if (respuesta == true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTextoRecibirExpediente);
 
 		} else {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);

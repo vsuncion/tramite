@@ -306,7 +306,7 @@ public class PrinicipalController {
 		boolean respuesta = false;
 
 		// SUBIMOS EL DOCUMENTO
-		if (farchvio != null && farchvio.getSize() > 0) {
+		if (farchvio != null) {
 			Archivos archivo = new Archivos();
 
 			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
@@ -467,7 +467,7 @@ public class PrinicipalController {
        
         
 		// SUBIMOS EL DOCUMENTO
-		if (farchvio != null && farchvio.getSize() > 0) {
+		if (farchvio != null) {
 			Archivos archivo = new Archivos();
 
 			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());

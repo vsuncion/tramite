@@ -28,6 +28,7 @@ public class Constantes {
 	public static final String tablaPreRequisitosTupac="PRE_REQUISITOS_TUPAC";
 	public static final String tablaArchivosTupa="ARCHIVOS_TUPA";
 	public static final String tablaCorrelativos="CORRELATIVOS";
+	public static final String tablaCargo="CARGO";
 	
 	public static int estadoDesactivado = 0;
 	public static final String estadoDesactivadoLetras = "DESACTIVO";
@@ -101,4 +102,6 @@ public class Constantes {
 	public static final String habilitadoboton="false";
 	public static final String deshabilitadoboton="true";
 	public static final Long valorCorrelativoInicial = 0L;
+	
+	public static final String transaccionCorrectaTextoRecibirExpediente = "Se recibio el expediente, Correctamente";
 }

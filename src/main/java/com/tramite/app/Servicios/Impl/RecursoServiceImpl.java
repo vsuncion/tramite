@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.standard.expression.Each;
 
 import com.tramite.app.Datos.RecursoDao;
+import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Oficinas;
 import com.tramite.app.Entidades.Requisitos;
@@ -192,6 +193,21 @@ public class RecursoServiceImpl implements RecursoServicio {
 				listaOfinasFinal.add(item); 
 		}
 		return listaOfinasFinal;
+	}
+
+	@Override
+	public List<Seleccion> cbOCargos() {
+		List<Cargo> listarCargo = new ArrayList<Cargo>();
+		List<Seleccion> listaCargoFinal = new ArrayList<Seleccion>();
+		
+		listarCargo = recursoDao.cbCargos();
+		for (Cargo i : listarCargo) {
+			Seleccion item = new Seleccion();
+			item.setCodigo(i.getNCARGOPK());
+			item.setEtiqueta(i.getVNOMBRECARGO());
+			listaCargoFinal.add(item);
+		}
+		return listaCargoFinal;
 	}
 
 }

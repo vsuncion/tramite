@@ -145,3 +145,36 @@ function verificarMantenimiento(datos){
 	        });
 	    }
  }
+ 
+ function verificarMantenimientoRedireccinar(datos,url){
+	switch(datos.codigo) {
+	  case 0:
+		    Swal.fire({
+				  icon: 'success',
+				  title: 'Correcto',
+				  text: datos.mensaje 
+				}).then(function() {
+   					 window.location = url;
+				});
+				
+		    break;
+		    
+	    
+	  case 1:
+			   Swal.fire({
+				  icon: 'error',
+				  title: 'Ocurrio un Error',
+				  text: datos.mensaje 
+				 }).then(function() {
+   					 window.location = url;
+				});
+		       break;
+		       
+		       
+	   case 2:
+	    console.log('sin accion')
+	    break;
+	  default:
+	    console.log('..')
+	}
+ } 

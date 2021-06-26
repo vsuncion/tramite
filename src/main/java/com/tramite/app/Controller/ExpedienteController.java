@@ -385,6 +385,7 @@ public class ExpedienteController {
 		formExpediente.setVNOMBRE(usuario.getVNOMBRE());
 		formExpediente.setVAPELLIDO_PATERNO(usuario.getVAPEPATERNO());
 		formExpediente.setVAPELLIDO_MATERNO(usuario.getVAPEMATERNO());
+		formExpediente.setVCARGO(usuario.getVCARGO());
 		
 		cbTipoDocumento = recursoServicio.cbTipoDocuemnto();
 		String vnombre_oficina = usuario.getVOFICINA();

@@ -52,7 +52,7 @@
 
 								<div class="form-group col-md-4">
 									<span class="letras_expediente_externo">APELLIDO
-										MATERNO</span> <input type="text" class="form-control "
+										MATERNO</span> <input type="text" class="form-control form-control-sm"
 										th:field="*{VAPELLIDO_MATERNO}" id="VAPELLIDO_MATERNO"
 										name="VAPELLIDO_MATERNO" readonly>
 								</div>
@@ -62,9 +62,13 @@
 							<div class="form-row">
 							
 								<div class="form-group col-md-4">
-									<span class="letras_expediente_externo">OFICINA DE ORIGEN :
-										<span th:text="${vnombre_oficina}"></span>
-									</span>
+								    <span class="letras_expediente_externo">CARGO : </span>
+									<span th:text="*{VCARGO}"></span>
+								</div>
+							
+								<div class="form-group col-md-4">
+									<span class="letras_expediente_externo">OFICINA DE ORIGEN : </span>
+									<span th:text="${vnombre_oficina}"></span>
 								</div>
 								<div class="form-group col-md-4">
 									<span class="letras_expediente_externo">OFICINA DE DESTINO :
@@ -141,7 +145,7 @@
 								<div class="form-group col-md-9 text-left">
 									<span class="letras_expediente_externo">SELECCIONE
 										ARCHIVO</span> <input type="file" class="form-control-file"
-										id="varchivosubida" name="varchivosubida" required>
+										id="varchivosubida" name="varchivosubida">
 								</div>
 
 								<div class="form-group col-md-3 text-right">

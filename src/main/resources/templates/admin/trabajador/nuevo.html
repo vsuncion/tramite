@@ -115,11 +115,22 @@
 						  
 						  <div class="form-row">
 						    <div class="form-group col-md-12">
+						      <label for="NCARGOPK">CARGO</label>
+						       <select name="NCARGOFK" id="NCARGOFK" th:field="*{NCARGOFK}" class="form-control">
+						        <option th:each="i : ${cbCargo}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
+						       </select>
+						    </div>
+						  
+						    
+		 
+						  </div>
+						  
+						   <div class="form-row">
+						     <div class="form-group col-md-12">
 						      <label for="VDIRECCION">DIRECCION</label>
 						      <input  type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" id="VDIRECCION" name="VDIRECCION" th:field="*{VDIRECCION}" placeholder="Ingrese Nombre">
 						    </div>
-		 
-						  </div>
+						   </div>
 						  
 						  <div class="row">
 						  <div class="col-sm-4">

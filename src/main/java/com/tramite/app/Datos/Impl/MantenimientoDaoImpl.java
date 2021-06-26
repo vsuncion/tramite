@@ -154,7 +154,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		      "    VDESCRIPCION,  \n"+
 		      "    DFECREGISTRO,  \n"+
 		      "	   NESTADO  \n"+ 
-		      " FROM "+Constantes.tablaOficinas+" ORDER BY NIDOFICINAPK ASC");
+		      " FROM "+Constantes.tablaOficinas+" ORDER BY VNOMBRE ASC");
 			 listarOficinas=namedParameterJdbcTemplate.query(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Oficinas.class));
 		} catch (Exception e) {
 			logger.error("ERROR : MantenimientoDaoImpl listarOficinas " + e.getMessage() + "---" + e.getClass());
@@ -690,7 +690,8 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			       " VDESCRIPCION," +
 			       " NESTADO," +
 			       " DFECREGISTRO" +
-			       " FROM " +Constantes.tablaProfesion);
+			       " FROM " +Constantes.tablaProfesion + " \n"+
+			       "ORDER BY VNOMBRE ASC");
 			lista=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Profesiones.class));
 		} catch (Exception e) {
 			logger.error("ERROR : MantenimientoDaoImpl listarProfesiones " + e.getMessage() + "---" + e.getClass());
@@ -1347,11 +1348,13 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 "	  T2.NIDTRABAJADORPK,\n"+ 
 			 "    CASE T2.NESTADO WHEN 1 THEN 'ACTIVO' WHEN 0 THEN 'INACTIVO' END VESTADO, \n"+
 			 "	  T3.VNOMBRE AS VNOMBRE_PROFESION , \n"+ 
-			 "	  T4.VNOMBRE AS VNOMBRE_OFICINA \n"+ 
-			 "  FROM PERSONA T1 \n"+ 
-			 " INNER JOIN TRABAJADOR T2 ON T1.NIDPERSONAPK=T2.NIDPERSONAFK  \n"+ 
-			 " INNER JOIN PROFESION T3 ON T2.NPROFESIONFK=T3.NIDPROFESIONPK \n"+ 
-			 " INNER JOIN OFICINA T4 ON T2.NOFICINAFK=T4.NIDOFICINAPK");
+			 "	  T4.VNOMBRE AS VNOMBRE_OFICINA, \n"+ 
+			 "	  T5.VNOMBRECARGO \n"+ 
+			 "  FROM "+Constantes.tablaPersona+" T1 \n"+ 
+			 " INNER JOIN "+Constantes.tablaTrabajadores+" T2 ON T1.NIDPERSONAPK=T2.NIDPERSONAFK  \n"+ 
+			 " INNER JOIN "+Constantes.tablaProfesion+"    T3 ON T2.NPROFESIONFK=T3.NIDPROFESIONPK \n"+ 
+			 " INNER JOIN "+Constantes.tablaOficinas+"     T4 ON T2.NOFICINAFK=T4.NIDOFICINAPK \n"+
+			 " LEFT JOIN "+Constantes.tablaCargo+"         T5 ON T2.NCARGOFK=T5.NCARGOPK");
 			listaPersonas = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Persona.class));
 		} catch (Exception e) {
 			logger.error("ERROR : MantenimientoDaoImpl listarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
@@ -1423,12 +1426,13 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	          "	  T1.VNUMERODOC,     \n"+
 	          "	  T1.VDIRECCION,     \n"+
 	          "	  T1.VCORREO,        \n"+
-	          "	  T1.VTELEFONO,        \n" +
+	          "	  T1.VTELEFONO,        \n"+
 	          "	  T2.NIDPERSONAFK,    \n"+
 			  "	  T2.NPROFESIONFK,    \n"+
 			  "	  T2.NOFICINAFK,       \n"+
 			  "	  T1.NIDPERSONAPK,     \n"+
-			  "	  T2.NESTADO,  \n"+
+			  "	  T2.NESTADO,  			\n"+
+			  "	  T2.NCARGOFK,  		\n"+
 			  "	  T2.NIDTRABAJADORPK  \n"+
 			  "  FROM "+Constantes.tablaPersona+" T1 INNER JOIN "+Constantes.tablaTrabajadores+" T2 ON T1.NIDPERSONAPK=T2.NIDPERSONAFK \n"+
 			  " WHERE T2.NIDTRABAJADORPK= :P_NIDTRABAJADORPK");
@@ -1485,17 +1489,20 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				"	 NIDPERSONAFK,  \n"+
 				"	 NPROFESIONFK,  \n"+
 			    "	 NOFICINAFK,  \n"+
+			    "	 NCARGOFK,  \n"+
 				"	 DFECINGRESO)  \n"+
 				" VALUES( \n"+
 				"	 :P_NIDPERSONAFK,  \n"+
 				"	 :P_NPROFESIONFK,  \n"+
 			    "	 :P_NOFICINAFK,  \n"+
+			    "	 :P_NCARGOFK,  \n"+
 				"	 :P_DFECINGRESO)  \n";
 			KeyHolder keyHolder2 = new GeneratedKeyHolder(); 
 			MapSqlParameterSource parametros2 = new MapSqlParameterSource(); 
 			parametros2.addValue("P_NIDPERSONAFK" , idPersona);
 			parametros2.addValue("P_NPROFESIONFK" , persona.getNPROFESIONFK());
 			parametros2.addValue("P_NOFICINAFK" , persona.getNOFICINAFK());
+			parametros2.addValue("P_NCARGOFK" , persona.getNCARGOFK());
 			parametros2.addValue("P_DFECINGRESO" , Fechas.fechaActual());
 			namedParameterJdbcTemplate.update(sql, parametros2,keyHolder2, new String[] {"NIDTRABAJADORPK"}); 
 			logger.info("++"+keyHolder2.getKey().longValue());
@@ -1542,9 +1549,10 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			
 			sql1.append(
 			  " UPDATE "+Constantes.tablaTrabajadores+" SET "+
-			  "   NPROFESIONFK= :P_NPROFESIONFK, \n"+
-			  "   NOFICINAFK= :P_NOFICINAFK, \n"+
-			  "   NESTADO= :P_NESTADO \n"+
+			  "   NPROFESIONFK = :P_NPROFESIONFK, \n"+
+			  "   NOFICINAFK   = :P_NOFICINAFK, \n"+
+			  "   NCARGOFK     = :P_NCARGOFK, \n"+
+			  "   NESTADO      = :P_NESTADO \n"+
 			  "  WHERE   NIDTRABAJADORPK= :P_NIDTRABAJADORPK");
 			
 			MapSqlParameterSource parametros2 = new MapSqlParameterSource();
@@ -1552,6 +1560,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros2.addValue("P_NPROFESIONFK", persona.getNPROFESIONFK());
 			parametros2.addValue("P_NESTADO", persona.getNESTADO());
 			parametros2.addValue("P_NOFICINAFK", persona.getNOFICINAFK());
+			parametros2.addValue("P_NCARGOFK" , persona.getNCARGOFK());
 			namedParameterJdbcTemplate.update(sql1.toString(), parametros2);
 			
 			

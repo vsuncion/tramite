@@ -32,14 +32,14 @@
 
 									 <div class="form-group row">
 									    <label for="staticEmail" class="col-sm-1 col-form-label">TIPO</label>
-									    <div class="col-sm-4 text-left">
+									    <div class="col-sm-3 text-left">
 									       <select id="NCBTIPOCRITERIO" name="NCBTIPOCRITERIO" th:field="*{NCBTIPOCRITERIO}" class="form-control"> 
 										      <option th:each="i : ${cbCriterioBusqueda}" th:value="${i.codigo}" th:text="${i.etiqueta}"></option>
 										      </select>
 									    </div>
 									    
 									    <label for="CAJABUSQUEDA" class="col-sm-1 text-right col-form-label">VALOR</label>
-									    <div class="col-sm-4 text-left">
+									    <div class="col-sm-3 text-left">
 									      <input  type="text"  onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" id="CAJABUSQUEDA" name="CAJABUSQUEDA" th:field="*{CAJABUSQUEDA}" placeholder="Ingrese Criterio Busqueda">
 									    </div>
 									    
@@ -48,6 +48,13 @@
 												<i class="fas fa-search"></i> BUSCAR
 											</button>
 									     </div>
+									     
+									     
+									      <div class="col-sm-2 text-right">
+											 <a class="btn btn-outline-primary" th:href="@{/admin/mantenimiento/nuevoTranbajador}" 
+												role="button"><i class="far fa-file"></i> NUEVO</a>  
+											</div>
+									       
 									    
 									  </div>
 
@@ -71,7 +78,7 @@
 									<th scope="col">TIPO</th>
 									<th scope="col">NUMERO</th>
 									<!--  <th scope="col">INGRESO</th> -->
-									<th scope="col">PRFESION</th>
+									<th scope="col">CARGO</th>
 									<th scope="col">OFICINA</th>
 									<th scope="col">ESTADO</th>
 									<th scope="col">ACTUALIZAR</th>
@@ -86,7 +93,7 @@
 								    <td><span  th:text="${i.VTIPO_DOC_REGISTRO}"></span></td>
 								    <td><span  th:text="${i.VNUMERODOC}"></span></td>
 								   <!-- <td><span  th:text="${i.DFECINGRESO}"></span></td> -->
-								    <td><span  th:text="${i.VNOMBRE_PROFESION}"></span></td>
+								    <td><span  th:text="${i.VNOMBRECARGO}"></span></td>
 								    <td><span  th:text="${i.VNOMBRE_OFICINA}"></span></td>
 								    <td><span  th:text="${i.VESTADO}"></span></td> 
 								    <td><a th:href="@{/admin/mantenimiento/editarTrabajadorPersona?IDTRABAJADOR=} + ${i.NIDTRABAJADORPK}+'&IDPERSONA='+${i.NIDPERSONAPK}" class="btn btn-outline-primary" role="button"><i class="fas fa-edit"></i></a></td>

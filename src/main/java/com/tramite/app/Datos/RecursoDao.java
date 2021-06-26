@@ -3,6 +3,7 @@ package com.tramite.app.Datos;
  
 import java.util.List;
 
+import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Requisitos; 
 import com.tramite.app.Entidades.TipoDocumentos;
@@ -16,4 +17,6 @@ public interface RecursoDao {
 	 EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento);
 	 List<Requisitos> cbRequisitos(Long idTupac);
 	 List<EstadoDocumento> listaEstadoDocumentos();
+	 
+	 List<Cargo> cbCargos();
 }

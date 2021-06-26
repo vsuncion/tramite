@@ -53,6 +53,7 @@ public class Usuarios implements Serializable {
 	private String vnombre_persona; 
 	private Long nidpersonapk;
 	private String fullname;
+	private String  VCARGO;
 	
 	 
 
@@ -288,6 +289,14 @@ public class Usuarios implements Serializable {
 
 	public void setNIDPERSONAFK(Long nIDPERSONAFK) {
 		NIDPERSONAFK = nIDPERSONAFK;
+	}
+
+	public String getVCARGO() {
+		return VCARGO;
+	}
+
+	public void setVCARGO(String vCARGO) {
+		VCARGO = vCARGO;
 	}
 
 	 

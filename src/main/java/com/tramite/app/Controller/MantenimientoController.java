@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import com.tramite.app.Servicios.MantenimientoServicio; 
+import com.tramite.app.Servicios.MantenimientoServicio;
+import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes; 
 import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
@@ -46,7 +48,11 @@ public class MantenimientoController {
 	@Autowired
 	private MantenimientoServicio  mantenimientoServicio;
 	
-	 
+	@Autowired
+	private RecursoServicio  recursoServicio;
+	
+	@Value("${urlTramite}")
+	private String urlTramite;
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
  
@@ -99,11 +105,13 @@ public class MantenimientoController {
 		List<Seleccion> cbOficinas = new ArrayList<Seleccion>();
 		List<Seleccion> cbProfesiones = new ArrayList<Seleccion>();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbCargo = new ArrayList<Seleccion>();
 		
 
 		cbOficinas = mantenimientoServicio.listarOficinasCombo();
 		cbProfesiones = mantenimientoServicio.cbProfesiones();
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
+		cbCargo = recursoServicio.cbOCargos();
 		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
 		
 		logger.info("======================= INFO  tranbajador================");
@@ -112,6 +120,7 @@ public class MantenimientoController {
 		pagina.addObject("cbOficinas", cbOficinas);
 		pagina.addObject("cbProfesiones", cbProfesiones);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
+		pagina.addObject("cbCargo", cbCargo);
 		pagina.setViewName("admin/trabajador/nuevo");
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		return pagina;
@@ -177,6 +186,7 @@ public class MantenimientoController {
 		List<Seleccion> cbProfesiones = new ArrayList<Seleccion>();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		List<Seleccion> listaEstadosRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbCargo = new ArrayList<Seleccion>();
 		ModelAndView pagina = new ModelAndView();
 		
 		formPersona = mantenimientoServicio.buscarTrabajadorPersonaPorId(IDTRABAJADOR);
@@ -185,6 +195,7 @@ public class MantenimientoController {
 		cbProfesiones = mantenimientoServicio.cbProfesiones();
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 		listaEstadosRegistro = mantenimientoServicio.listarEstadosRegistro();
+		cbCargo = recursoServicio.cbOCargos();
 		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
 		
 		logger.info("======================= INFO  tranbajador================");
@@ -194,8 +205,9 @@ public class MantenimientoController {
 		pagina.addObject("cbProfesiones", cbProfesiones);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("cbEstados", listaEstadosRegistro);
+		pagina.addObject("cbCargo", cbCargo);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
-		
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -206,12 +218,14 @@ public class MantenimientoController {
 		List<Seleccion> cbProfesiones = new ArrayList<Seleccion>();
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		List<Seleccion> listaEstadosRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbCargo = new ArrayList<Seleccion>();
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		
 		cbOficinas = mantenimientoServicio.listarOficinasCombo();
 		cbProfesiones = mantenimientoServicio.cbProfesiones();
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
+		cbCargo = recursoServicio.cbOCargos();
 		listaEstadosRegistro = mantenimientoServicio.listarEstadosRegistro();
 		
 		if (null != errors && errors.getErrorCount() > 0) {
@@ -222,7 +236,8 @@ public class MantenimientoController {
 			pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 			pagina.addObject("cbEstados", listaEstadosRegistro);
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
-			
+			pagina.addObject("cbCargo", cbCargo);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
 		
@@ -237,6 +252,8 @@ public class MantenimientoController {
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("cbCargo", cbCargo);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -393,6 +410,7 @@ public class MantenimientoController {
 		informacion = mantenimientoServicio.informacionMunicipalidad();
 		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
 		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("info", informacion);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.setViewName("admin/informacion/actualizar");
@@ -408,9 +426,11 @@ public class MantenimientoController {
 		mostrarmensaje = mantenimientoServicio.actualizarinformacionMunicipalidad(info);
 		
 		ModelAndView pagina = new ModelAndView();
+		
 		pagina.setViewName("admin/informacion/actualizar");
 		pagina.addObject("info", info);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina; 
 	}
 	
@@ -461,6 +481,7 @@ public class MantenimientoController {
 		pagina.addObject("oficinas", oficina);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("cbOficinas", listaSeleccion);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -492,6 +513,7 @@ public class MantenimientoController {
 		pagina.addObject("oficinas", formOficina);
 		pagina.addObject("cbOficinas", listaSeleccion);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 		 
 	}
@@ -516,6 +538,7 @@ public class MantenimientoController {
 		pagina.addObject("cbOficinas", cbOficinas); 
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -539,6 +562,7 @@ public class MantenimientoController {
 			 pagina.addObject("oficinas", formOficina);
 			 pagina.addObject("cbOficinas", listaSeleccion);
 			 pagina.addObject("mostrarmensaje",mostrarmensaje);
+			 pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		 }
 		
@@ -551,6 +575,7 @@ public class MantenimientoController {
 		pagina.addObject("cbOficinas", listaSeleccion); 
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -664,7 +689,7 @@ public class MantenimientoController {
 		pagina.addObject("profesiones",formProfesion); 
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
-		
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -684,6 +709,7 @@ public class MantenimientoController {
 			pagina.addObject("profesiones",formProfesion); 
 			pagina.addObject("cbEstados", listaEstadosRegistro);
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
  
@@ -693,6 +719,7 @@ public class MantenimientoController {
 		pagina.addObject("profesiones",formProfesion); 
 		pagina.addObject("cbEstados", listaEstadosRegistro); 
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 		
 	}
@@ -1170,6 +1197,7 @@ public class MantenimientoController {
 		pagina.addObject("tipoDocumentos", tipoDocumentos);
 		pagina.setViewName("admin/tipodocumento/nueva");
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;	
 	}
 	
@@ -1197,6 +1225,7 @@ public class MantenimientoController {
 			pagina.addObject("tipoDocumentos", tipoDocumentos);
 			pagina.setViewName("admin/tipodocumento/nueva");
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
 		
@@ -1206,6 +1235,7 @@ public class MantenimientoController {
 		pagina.setViewName("admin/tipodocumento/nueva");
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("tipoDocumentos", tipoDocumentos);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;	
 	}
 	
@@ -1246,6 +1276,7 @@ public class MantenimientoController {
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.setViewName("admin/tipodocumento/actualizar");
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -1264,6 +1295,7 @@ public class MantenimientoController {
 			pagina.addObject("cbEstados", listaEstadosRegistro);
 			pagina.setViewName("admin/tipodocumento/actualizar");
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
  
@@ -1275,6 +1307,7 @@ public class MantenimientoController {
 		pagina.addObject("tipoDocumentos", tipoDocumentos);
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;	
 	}
 	
@@ -1625,9 +1658,13 @@ public class MantenimientoController {
 	public ModelAndView EditarCorrelativo(HttpServletRequest request,HttpServletResponse res,@RequestParam Long  idcorrelativo) {
 		ModelAndView pagina = new ModelAndView(); 
 		Correlativo formCorrelativo = new Correlativo();
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		
 		formCorrelativo = mantenimientoServicio.infoCorrelativo(idcorrelativo);
+		mostrarmensaje.setCodigo(Constantes.transaccionSinAccion);
 		
+		pagina.addObject("urltramite",urlTramite);
+		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("formCorrelativo",formCorrelativo);
 		pagina.setViewName("admin/correlativos/actualizar");
 		return pagina;
@@ -1639,7 +1676,8 @@ public class MantenimientoController {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		mostrarmensaje = mantenimientoServicio.actualizarCorrelativo(formCorrelativo);
 		
-		
+		pagina.addObject("urltramite",urlTramite);
+		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("formCorrelativo",formCorrelativo);
 		pagina.setViewName("admin/correlativos/actualizar");
 		return pagina;

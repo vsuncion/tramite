@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import com.tramite.app.Servicios.FijaServicio;
-import com.tramite.app.utilitarios.Constantes;
+import com.tramite.app.Servicios.FijaServicio; 
 
 @Service
 public class FijaServicioImpl implements FijaServicio {
@@ -34,10 +32,20 @@ public class FijaServicioImpl implements FijaServicio {
 	@Override
 	public String cuerpoCorreo(String nombreSolicitante, String codigoValidacion) {
 		 String xcontenido = null;
+		 
+		 /*
 		 xcontenido ="<html><body>";
 		 xcontenido+="<p style=margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;line-height:107%;font-size:15px;font-family:'Calibri',sans-serif;'><span style='font-size: 12px; font-family: Arial, Helvetica, sans-serif;'>Estimados(a):</span></p>";
 		 xcontenido+="<p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;line-height:107%;font-size:15px;font-family:'Calibri',sans-serif;'><span style='font-family: Arial, Helvetica, sans-serif;'><span style='font-size: 12px;'>El siguiente correo es para confirmar su registro en el siguiente enlace : "+urlConfirmacionRegistro.concat(codigoValidacion)+"</span></span></p>";
 		 xcontenido+="</ul></body></html>";
+		 */
+		 xcontenido ="<html><body>";
+		 xcontenido+="<br><p><strong>Estimado(a) usuario(a).</strong> Por favor confirme su registro en el sistema de <br>";
+		 xcontenido+="la Municipalidad Provincial de Chumbivilcas, haciendo clic en el siguiente link: "+urlConfirmacionRegistro.concat(codigoValidacion)+"</p><br>";
+		 xcontenido+="<p><strong>Muchas gracias.</strong></p><br>";
+		 xcontenido+="<p><strong>Equipo T&eacute;cnico de OTI</strong><br /><strong>MP Chumbivilcas</strong>";
+		 xcontenido+="</body></html>";
+		 
 		 
 		return xcontenido;
 	}
