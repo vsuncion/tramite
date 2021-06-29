@@ -276,8 +276,9 @@ public class ExpedienteController {
 		listaHoja = expedienteServicio.infoHojaRutaIdExpediente(idexpediente);
 		
 		String[] vcodigoexpediente = infoExpediente.getVCODIGO_EXPEDIENTE().split("-");
-		String anio = vcodigoexpediente[1];
-		String vcodigoexp  = vcodigoexpediente[2];
+		String vcodigoexp  = vcodigoexpediente[1];
+		String anio = vcodigoexpediente[2];
+		
 		
 		//String anio =    infoExpediente.getVCODIGO_EXPEDIENTE().substring(2, 6);
 		
@@ -302,7 +303,7 @@ public class ExpedienteController {
 		
 		try {
 			
-			infoExpediente = expedienteServicio.infoExpedienteCodigo(anio, codigoexpediente);
+			infoExpediente = expedienteServicio.infoExpedienteCodigoInterno(anio, codigoexpediente);
 			if(infoExpediente!=null) {
 				listaHojaRuta = expedienteServicio.infoHojaRuta(anio,codigoexpediente);
 				if(listaHojaRuta.size()>0) {

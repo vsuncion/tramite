@@ -32,4 +32,5 @@ public interface ExpedienteDao {
 	List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento);
 	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
 	List<Expediente>  listarExpedientesInterno(Expediente formexpediente);
+	Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente);
 }

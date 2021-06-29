@@ -1026,5 +1026,46 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		return lista;
 	}
 
+	@Override
+	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) {
+		StringBuffer sql = new StringBuffer();
+		Expediente info = new Expediente();
+		try {
+			sql.append(
+				"SELECT  \n"+
+				"    T1.NIDEXPEDIENTEPK, \n"+
+				"    T1.VCODIGO_EXPEDIENTE, \n"+
+				"    T2.VNOMBRE, \n"+
+				"    T1.VNUMERODOCUMENTO, \n"+
+				"    T1.VNUMEROFOLIO, \n"+
+				"    T1.VASUNTO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
+				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
+				"    CASE T1.NTIPOPERSONA WHEN 1 THEN T3.VDIRECCION  \n"+
+				"    WHEN 2 THEN T5.VDIRECCION  END   VDIRECCION_SOLICITANTE, \n"+ 
+				"    T1.VNOMBRE_ARCHIVO,    \n"+
+				"    T1.VUBICACION_ARCHIVO, \n"+
+				"    T1.VEXTENSION \n"+
+				" FROM        "+Constantes.tablaExpediente+"       T1  \n"+
+				"  INNER JOIN "+Constantes.tablaTipoDocumentos+"   T2 ON T1.TIPO_DOCUMENTOFK=T2.NIDTIPODOCUMENTOPK  \n"+
+				"  INNER JOIN "+Constantes.tablaPersona+"          T3 ON T1.PERSONAFK=T3.NIDPERSONAPK   \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
+				"  LEFT JOIN " +Constantes.tablaPersonaJuridica+"  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK  \n"+
+				" INNER JOIN " +Constantes.tablaEstadoDocumento+"  T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
+				 " WHERE  SUBSTRING(T1.VCODIGO_EXPEDIENTE,10,4)= :P_ANIO \n"+
+			     "  AND   SUBSTRING(T1.VCODIGO_EXPEDIENTE,3,6)= :P_VCODIGO_EXPEDIENTE ");
+			 MapSqlParameterSource parametros = new MapSqlParameterSource();
+			 parametros.addValue("P_ANIO", anio);
+			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente);   
+		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+		} catch (Exception e) {
+			logger.error("ERROR : ExpedienteDaoImpl infoExpedienteCodigo " + e.getMessage() + "---" + e.getClass());
+			 
+		}
+		return info;
+	}
+
 	 
 }

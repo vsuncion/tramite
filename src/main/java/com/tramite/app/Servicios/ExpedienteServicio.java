@@ -49,4 +49,6 @@ public interface ExpedienteServicio {
 	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
 	
 	List<Expediente>  listarExpedientesInterno(Expediente formexpediente);
+	
+	Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente);
 }

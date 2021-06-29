@@ -161,6 +161,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	public List<Expediente> listarExpedientesInterno(Expediente formexpediente) { 
 		return expedienteDao.listarExpedientesInterno(formexpediente);
 	}
+
+	@Override
+	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) { 
+		return expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+	}
   
 
 }
