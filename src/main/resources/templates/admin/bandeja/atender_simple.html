@@ -89,7 +89,7 @@
 							<div class="form-group col-md-4">
 								<a class="btn btn-outline-primary" target="_blank"
 									th:href="@{/admin/expediente/descargarprincipal?idexpediente=} + *{NIDEXPEDIENTEPK}"
-									role="button">DESCARGAR DOCUMENTO PRINCIPAL</a>
+									role="button" th:if="${formExpediente.VNOMBRE_ARCHIVO!=null}">DESCARGAR DOCUMENTO PRINCIPAL</a>
 							</div>
 
 						</div>
