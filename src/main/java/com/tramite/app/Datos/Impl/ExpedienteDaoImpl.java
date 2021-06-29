@@ -509,8 +509,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			     "  LEFT  JOIN "+Constantes.tablaOficinas+"        T4 ON T1.OFICINA_DESTINOFK=T4.NIDOFICINAPK \n"+
 			     "  INNER JOIN "+Constantes.tablaEstadoDocumento+" T5 ON T1.NESTADODOCUMENTOFK=T5.IDESTADOCUMENTOPK \n"+
 			     "  INNER JOIN "+Constantes.tablaTipoDocumentos+"  T6 ON T6.NIDTIPODOCUMENTOPK=T2.TIPO_DOCUMENTOFK \n"+
-			     " WHERE  SUBSTRING(VCODIGO_EXPEDIENTE,3,4)= :P_ANIO \n"+
-			     "  AND   SUBSTRING(VCODIGO_EXPEDIENTE,8,LEN(VCODIGO_EXPEDIENTE))= :P_VCODIGO_EXPEDIENTE  \n"+
+			     " WHERE  SUBSTRING(VCODIGO_EXPEDIENTE,10,4)= :P_ANIO \n"+
+			     "  AND   SUBSTRING(VCODIGO_EXPEDIENTE,3,6)= :P_VCODIGO_EXPEDIENTE  \n"+
 			     "  AND T1.NELIMINADO= :P_NELIMINADO ORDER BY T1.NIDMOVIMIENTOPK ASC");
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_ANIO", anio);
@@ -551,11 +551,13 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"  LEFT JOIN " +Constantes.tablaPersonaNatural+"   T4 ON T3.NIDPERSONAPK=T4.NIDPERSONAFK  \n"+
 				"  LEFT JOIN " +Constantes.tablaPersonaJuridica+"  T5 ON T3.NIDPERSONAPK=T5.NIDPERSONAFK  \n"+
 				" INNER JOIN " +Constantes.tablaEstadoDocumento+"  T6 ON T1.NESTADODOCUMENTOFK=T6.IDESTADOCUMENTOPK \n"+
-				 " WHERE  SUBSTRING(T1.VCODIGO_EXPEDIENTE,3,4)= :P_ANIO \n"+
-			     "  AND   SUBSTRING(T1.VCODIGO_EXPEDIENTE,8,LEN(VCODIGO_EXPEDIENTE))= :P_VCODIGO_EXPEDIENTE");
+				 " WHERE  SUBSTRING(T1.VCODIGO_EXPEDIENTE,10,4)= :P_ANIO \n"+
+			     "  AND   SUBSTRING(T1.VCODIGO_EXPEDIENTE,3,6)= :P_VCODIGO_EXPEDIENTE \n"+
+				 "  AND   T1.NORIGEN = :P_NORIGEN");
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_ANIO", anio);
 			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
+			 parametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO); 
 		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
 		} catch (Exception e) {
 			logger.error("ERROR : ExpedienteDaoImpl infoExpedienteCodigo " + e.getMessage() + "---" + e.getClass());
@@ -740,7 +742,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		     "   VNUMERODOCUMENTO,  \n"+
 		     "   VNUMEROFOLIO,  \n"+
 		     "   VASUNTO,  \n"+
-		    // "   DFECHADOCUMENTO,  \n"+
+		     "   NORIGEN,  \n"+
 		     "   VNOMBRE_ARCHIVO,  \n"+
 		     "   VUBICACION_ARCHIVO,  \n"+
 		     "   VEXTENSION,  \n"+
@@ -756,7 +758,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		     "   :P_VNUMERODOCUMENTO,  \n"+
 		     "   :P_VNUMEROFOLIO,  \n"+
 		     "   :P_VASUNTO,  \n"+
-		    // "   :P_DFECHADOCUMENTO,  \n"+
+		     "   :P_NORIGEN,  \n"+
 		     "   :P_VNOMBRE_ARCHIVO,  \n"+
 		     "   :P_VUBICACION_ARCHIVO,  \n"+
 		     "   :P_VEXTENSION,  \n"+
@@ -772,7 +774,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		parametros.addValue("P_VNUMERODOCUMENTO", expediente.getVNUMERODOCUMENTO());
 		parametros.addValue("P_VNUMEROFOLIO", expediente.getVNUMEROFOLIO());
 		parametros.addValue("P_VASUNTO", expediente.getVASUNTO());
-		//parametros.addValue("P_DFECHADOCUMENTO", expediente.getDFECHADOCUMENTO());
+		parametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_INTERNO);
 		parametros.addValue("P_VNOMBRE_ARCHIVO", expediente.getVNOMBRE_ARCHIVO());
 		parametros.addValue("P_VUBICACION_ARCHIVO", expediente.getVUBICACION_ARCHIVO());
 		parametros.addValue("P_VEXTENSION", expediente.getVEXTENSION());
@@ -978,6 +980,48 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			
 		} catch (Exception e) {
 			logger.error("ERROR : ExpedienteDaoImpl listaExpedientesPorOficina " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+	@Override
+	public List<Expediente> listarExpedientesInterno(Expediente formexpediente) {
+		StringBuffer sql = new StringBuffer();
+		List<Expediente> lista = new ArrayList<Expediente>();
+		try {
+			sql.append(
+			    "SELECT  \n"+
+			    "  ROW_NUMBER() OVER ( ORDER BY T1.NIDEXPEDIENTEPK )  AS NITEM, \n"+
+			    "  T1.NIDEXPEDIENTEPK, 	\n"+ 
+			    "  CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+ 
+				"  T1.VCODIGO_EXPEDIENTE,	\n"+
+				"  T2.VNOMBRE AS VTIPO_DOCUMENTOS, \n"+
+				"  T4.VNOMBRE AS VNOMBRE_OFICINA_ORIGEN, \n"+
+				"  T3.VNOMBRE AS ESTADODOCUMENTO, \n"+
+				"  T1.VASUNTO  \n"+
+				"FROM "+Constantes.tablaExpediente+" T1 \n"+
+				"INNER JOIN "+Constantes.tablaTipoDocumentos+"  T2 ON T1.TIPO_DOCUMENTOFK=T2.NIDTIPODOCUMENTOPK \n"+
+				"INNER JOIN "+Constantes.tablaEstadoDocumento+" T3 ON T1.NESTADODOCUMENTOFK=T3.IDESTADOCUMENTOPK \n"+
+				"INNER JOIN "+Constantes.tablaOficinas+" T4 ON T1.NOFICINAFK=T4.NIDOFICINAPK \n");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_OFICINA_ORIGENFK", formexpediente.getOFICINA_ORIGENFK());
+			if(formexpediente.getNANIO()>0 && formexpediente.getVCODIGO_EXPEDIENTE()!=null) {
+				parametros.addValue("P_ANIO", String.valueOf(formexpediente.getNANIO()));
+				parametros.addValue("P_VCODIGO_EXPEDIENTE", "%"+formexpediente.getVCODIGO_EXPEDIENTE()+"%");
+				sql.append(
+					  "WHERE T1.NIDEXPEDIENTEPK IN ( \n"+
+					  " SELECT DISTINCT NIDEXPEDIENTEFK FROM "+Constantes.tablaMovimiento+" WHERE OFICINA_ORIGENFK= :P_OFICINA_ORIGENFK) \n"+
+					  "AND SUBSTRING(T1.VCODIGO_EXPEDIENTE,10,4)= :P_ANIO AND SUBSTRING(T1.VCODIGO_EXPEDIENTE,3,6) LIKE :P_VCODIGO_EXPEDIENTE");
+			}else {
+				sql.append(
+					"WHERE T1.NIDEXPEDIENTEPK IN ( \n"+
+					" SELECT DISTINCT NIDEXPEDIENTEFK FROM "+Constantes.tablaMovimiento+" WHERE OFICINA_ORIGENFK= :P_OFICINA_ORIGENFK)");	
+			}
+			
+			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+			
+		} catch (Exception e) {
+			logger.error("ERROR : ExpedienteDaoImpl listarExpedientesInterno " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}

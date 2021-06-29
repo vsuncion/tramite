@@ -84,6 +84,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	public MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		boolean respuesta = false;
+ 
 		respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
 		if(respuesta==true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
@@ -185,6 +186,11 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		}
 		
 		return mostrarmensaje;
+	}
+
+	@Override
+	public PrePersona buscarPrepersona(PrePersona prePersona) { 
+		return principalDao.buscarPrepersona(prePersona);
 	}
 
 	 

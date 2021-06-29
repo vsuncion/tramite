@@ -156,6 +156,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	public List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente) { 
 		return expedienteDao.listaExpedientesPorOficina(formexpediente);
 	}
+
+	@Override
+	public List<Expediente> listarExpedientesInterno(Expediente formexpediente) { 
+		return expedienteDao.listarExpedientesInterno(formexpediente);
+	}
   
 
 }

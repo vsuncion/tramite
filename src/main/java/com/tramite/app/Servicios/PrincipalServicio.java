@@ -29,5 +29,5 @@ public interface PrincipalServicio {
 	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
 	List<RequisitosTupac> listaRequerimientosTupac(Long idtupac);
 	MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona);  
-	
+	PrePersona buscarPrepersona(PrePersona prePersona);
 }

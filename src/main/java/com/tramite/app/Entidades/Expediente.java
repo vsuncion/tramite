@@ -64,6 +64,9 @@ public class Expediente implements Serializable {
 	private String VNOMBRETUPAC;
 	private Long  VREQUISITO;
 	private String VCARGO;
+	private int NANIO;
+	private Long  NITEM;
+	private String VNOMBRE_OFICINA_ORIGEN;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date DFECHAINICIO;
@@ -497,6 +500,30 @@ public class Expediente implements Serializable {
 
 	public void setVCARGO(String vCARGO) {
 		VCARGO = vCARGO;
+	}
+
+	public int getNANIO() {
+		return NANIO;
+	}
+
+	public void setNANIO(int nANIO) {
+		NANIO = nANIO;
+	}
+
+	public Long getNITEM() {
+		return NITEM;
+	}
+
+	public void setNITEM(Long nITEM) {
+		NITEM = nITEM;
+	}
+
+	public String getVNOMBRE_OFICINA_ORIGEN() {
+		return VNOMBRE_OFICINA_ORIGEN;
+	}
+
+	public void setVNOMBRE_OFICINA_ORIGEN(String vNOMBRE_OFICINA_ORIGEN) {
+		VNOMBRE_OFICINA_ORIGEN = vNOMBRE_OFICINA_ORIGEN;
 	}
 	
 

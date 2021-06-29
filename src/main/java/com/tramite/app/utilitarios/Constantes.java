@@ -99,9 +99,12 @@ public class Constantes {
   	
 	public static final String MENSAJE_DUPLICIDAD_PERSONA="LA PERSONA SE ENCUENTRA DUPLICADA CON NUMERO DE DOCUMENTO $VNUMERO$";
 	public static final String MENSAJE_BUSCAR_EXPEDIENTE="NO SE ENCONTRARON RESULTADOS";
+	public static final String MENSAJE_DUPLICIDAD_PREPERSONA="LA PERSONA YA FUE REGISTRADA"; 
 	public static final String habilitadoboton="false";
 	public static final String deshabilitadoboton="true";
 	public static final Long valorCorrelativoInicial = 0L;
 	
 	public static final String transaccionCorrectaTextoRecibirExpediente = "Se recibio el expediente, Correctamente";
+	public static final int ORIGEN_TIPO_INTERNO = 1;
+	public static final int ORIGEN_TIPO_EXTERNO = 2;
 }

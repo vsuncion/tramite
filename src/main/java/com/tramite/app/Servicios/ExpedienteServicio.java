@@ -47,4 +47,6 @@ public interface ExpedienteServicio {
 	List<ReporteExpediente> listaExpedientesPorEstadoDocuemnto(Long idEstadoDocumento);
 	
 	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
+	
+	List<Expediente>  listarExpedientesInterno(Expediente formexpediente);
 }

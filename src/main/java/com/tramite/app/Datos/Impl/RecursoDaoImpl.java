@@ -55,7 +55,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public String numeroExpediente(Long idoficina) {
 		Calendar fecha = Calendar.getInstance();
 		 StringBuffer sql = new StringBuffer();
-		 String letraExpediente="E"; 
+		 String letraExpediente="E-"; 
 		 String numeroExpedienteLetra;
 		 String numeroFinalExpediente="";
 		 String siglaOficina="";

@@ -142,6 +142,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		String sqlInserccionPersona = "";
 		String sqlInserccionPersonaNatural = "";
 		String sqlInserccionPersonaJuridica = "";
+		StringBuffer sqlActualizarEstadoPrepersona= new StringBuffer();
 		Long idPersona = 0L;
 		try {
 			sqlConsultar.append(
@@ -242,7 +243,14 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			}
 			
 			// SI TODO OK - ACTUALIZAMOS EL CODIGO DE VALIDACION
-			 
+			sqlActualizarEstadoPrepersona.append(
+					"UPDATE "+Constantes.tablaPrePersona+" SET \n"+
+			        " NESTADO = :P_NESTADO \n"+
+					"WHERE VCODIGOACTIVACION= :P_VCODIGOACTIVACION");
+			 MapSqlParameterSource parametrosactprepersona = new MapSqlParameterSource();
+			 parametrosactprepersona.addValue("P_NESTADO", Constantes.estadoActivado);
+			 parametrosactprepersona.addValue("P_VCODIGOACTIVACION", codigoActivacion);
+			 namedParameterJdbcTemplate.update(sqlActualizarEstadoPrepersona.toString(), parametrosactprepersona);
 			respuesta = true;
 			
 		} catch (Exception e) { 
@@ -313,7 +321,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		     "   VNUMERODOCUMENTO,  \n"+
 		     "   VNUMEROFOLIO,  \n"+
 		     "   VASUNTO,  \n"+
-		    // "   DFECHADOCUMENTO,  \n"+
+		     "   NORIGEN,  \n"+
 		     "   VNOMBRE_ARCHIVO,  \n"+
 		     "   VUBICACION_ARCHIVO,  \n"+
 		     "   VEXTENSION,  \n"+
@@ -329,7 +337,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		     "   :P_VNUMERODOCUMENTO,  \n"+
 		     "   :P_VNUMEROFOLIO,  \n"+
 		     "   :P_VASUNTO,  \n"+
-		    // "   :P_DFECHADOCUMENTO,  \n"+
+		     "   :P_NORIGEN,  \n"+
 		     "   :P_VNOMBRE_ARCHIVO,  \n"+
 		     "   :P_VUBICACION_ARCHIVO,  \n"+
 		     "   :P_VEXTENSION,  \n"+
@@ -345,7 +353,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		parametros.addValue("P_VNUMERODOCUMENTO", expediente.getVNUMERODOCUMENTO());
 		parametros.addValue("P_VNUMEROFOLIO", expediente.getVNUMEROFOLIO());
 		parametros.addValue("P_VASUNTO", expediente.getVASUNTO());
-		//parametros.addValue("P_DFECHADOCUMENTO", expediente.getDFECHADOCUMENTO());
+		parametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO);
 		parametros.addValue("P_VNOMBRE_ARCHIVO", expediente.getVNOMBRE_ARCHIVO());
 		parametros.addValue("P_VUBICACION_ARCHIVO", expediente.getVUBICACION_ARCHIVO());
 		parametros.addValue("P_VEXTENSION", expediente.getVEXTENSION());
@@ -686,6 +694,39 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			logger.error("ERRORX : PrincipalDaoImpl buscarPersonaJuridicaDuplicada " + e.getMessage() + "---" + e.getClass());
 		}
 		return personaJuridica;
+	}
+
+	@Override
+	public PrePersona buscarPrepersona(PrePersona prePersona) {
+		StringBuffer sql = new StringBuffer();
+		PrePersona infoPrePersona = new PrePersona();
+		try {
+			sql.append(
+			   " SELECT "+
+			   "	NIDPREPERSONAPK, \n"+
+			   "    NTIPO_PERSONA, \n"+
+			   "    VRUC, \n"+
+			   "    VRAZON_SOCIAL, \n"+
+			   "    VNOMBRE, \n"+
+			   "    VAPEPATERNO, \n"+
+			   "    VAPEMATERNO, \n"+
+			   "    NTIPODOCFK, \n"+
+			   "    VNUMERODOC, \n"+
+			   "    VDIRECCION, \n"+
+			   "    VCORREO, \n"+
+			   "    VTELEFONO, \n"+
+			   "    NESTADO, \n"+
+			   "    VCODIGOACTIVACION FROM "+Constantes.tablaPrePersona+" \n"+
+			   " WHERE  VCODIGOACTIVACION= :P_VCODIGOACTIVACION AND NESTADO= :P_NESTADO");
+				MapSqlParameterSource parametrosConsulta = new MapSqlParameterSource();
+				parametrosConsulta.addValue("P_VCODIGOACTIVACION", prePersona.getVCODIGOACTIVACION());
+				parametrosConsulta.addValue("P_NESTADO", Constantes.estadoDesactivado);
+				infoPrePersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametrosConsulta,BeanPropertyRowMapper.newInstance(PrePersona.class));
+		 
+		} catch (Exception e) {
+			logger.error("ERROR : PrincipalDaoImpl buscarPrepersona " + e.getMessage() + "---" + e.getClass());
+		}
+		return infoPrePersona;
 	}
 
 }

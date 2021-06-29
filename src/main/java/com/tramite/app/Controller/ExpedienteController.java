@@ -619,5 +619,72 @@ public class ExpedienteController {
 		}
 		
 	}
+	
+	
+	@GetMapping(value = {"/listarexpinterno"})
+	public ModelAndView listarExpedienteInterno(HttpServletRequest request, HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView();
+		Expediente formexpediente = new Expediente();
+		List<Expediente> listaExpedientes = new ArrayList<Expediente>();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		formexpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK());
+		
+		listaExpedientes = expedienteServicio.listarExpedientesInterno(formexpediente);
+		
+		
+		pagina.addObject("listaExpedientes",listaExpedientes);
+		pagina.addObject("formexpediente",formexpediente);
+		pagina.setViewName("admin/expediente/interno/listado");
+		return pagina;
+	}
+	
+	
+	@PostMapping(value = {"/buscarexpedientesinterno"})
+	public ModelAndView buscarExpedienteInterno(@ModelAttribute Expediente formexpediente) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Expediente> listaExpedientes = new ArrayList<Expediente>();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		formexpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK());
+		
+		listaExpedientes = expedienteServicio.listarExpedientesInterno(formexpediente);
+		
+		pagina.addObject("listaExpedientes",listaExpedientes);
+		pagina.addObject("formexpediente",formexpediente);
+		pagina.setViewName("admin/expediente/interno/listado");
+		return pagina;
+	}
+	
+	@GetMapping(value = {"/listahojarutainterno"})
+	public ModelAndView listarHojaRutaInterno(HttpServletRequest request, HttpServletResponse res,@RequestParam Long idexpediente) {
+		ModelAndView pagina = new ModelAndView();	
+		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();
+		Expediente infoExpediente = new Expediente();
+		HojaRuta formHojaRuta = new HojaRuta();
+		
+		infoExpediente = expedienteServicio.infoExpedienteId(idexpediente);
+		
+		listaHoja = expedienteServicio.infoHojaRutaIdExpediente(idexpediente);
+		
+		String[] vcodigoexpediente = infoExpediente.getVCODIGO_EXPEDIENTE().split("-");
+		String vcodigoexp  = vcodigoexpediente[1];
+		String anio = vcodigoexpediente[2];
+		//String anio =    infoExpediente.getVCODIGO_EXPEDIENTE().substring(2, 6);
+		
+		pagina.addObject("anio",anio);
+		pagina.addObject("vcodigoexp",vcodigoexp); 
+		pagina.addObject("formHojaRuta",formHojaRuta);
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.addObject("listaHoja",listaHoja); 
+		pagina.setViewName("admin/expediente/interno/hojaruta");
+		return pagina;
+ 
+		
+	}
   
 }

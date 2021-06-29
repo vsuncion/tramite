@@ -203,12 +203,21 @@ public class PrinicipalController {
 	public ModelAndView confirmacionRegistro(HttpServletRequest request, HttpServletResponse res,
 			@RequestParam String codigo) {
 		ModelAndView pagina = new ModelAndView();
-		PrePersona prePersona = new PrePersona();
+		PrePersona prePersona = new PrePersona(); 
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		prePersona.setVCODIGOACTIVACION(codigo);
-		mostrarmensaje = principalServicio.confirmacionCodigoActivacion(prePersona.getVCODIGOACTIVACION());
-
+		
+		//PREGUNTAMOS SI YA FUE ACTIVADO
+		prePersona = principalServicio.buscarPrepersona(prePersona);
+		
+		if(prePersona.getVNUMERODOC()!=null) {
+			mostrarmensaje = principalServicio.confirmacionCodigoActivacion(prePersona.getVCODIGOACTIVACION());	
+		}else {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PREPERSONA);
+		}
+ 
 		pagina.setViewName("admin/persona/activar");
 		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("mostrarmensaje", mostrarmensaje);

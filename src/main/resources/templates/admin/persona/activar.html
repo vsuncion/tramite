@@ -23,13 +23,21 @@
 				<form action="#" th:object="${prePersona}">
 
 
-					<div class="card border-primary mb-3" >
+					<div class="card border-primary mb-3" th:if="${mostrarmensaje.codigo==0}">
 						<div class="card-header">SISTEMA DE TRAMITE DOCUMENTARIO</div>
 						<div class="card-body text-primary">
 							<h5 class="card-title">CODIGO ACTIVADO</h5>
 							<p class="card-text">Su codigo fue activado con exito.</p>
 							<input type="text" name="VCODIGOACTIVACION"
 								id="VCODIGOACTIVACION" th:field=*{VCODIGOACTIVACION} readonly>
+						</div>
+					</div>
+					
+					
+					<div class="card border-primary mb-3" th:if="${mostrarmensaje.codigo==1}">
+					    <div class="card-header">SISTEMA DE TRAMITE DOCUMENTARIO</div>
+						<div class="card-body text-primary">
+							<h5 class="card-title" th:text="${mostrarmensaje.mensaje}"> </h5>
 						</div>
 					</div>
 
