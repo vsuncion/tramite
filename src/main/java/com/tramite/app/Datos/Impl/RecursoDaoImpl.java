@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.Correlativo;
-import com.tramite.app.Entidades.EstadoDocumento; 
+import com.tramite.app.Entidades.EstadoDocumento;
+import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Usuarios;
@@ -152,6 +153,7 @@ public class RecursoDaoImpl implements RecursoDao {
 		try {
 			sql.append(
 				"  SELECT \n"+
+				"    T1.NIDUSUARIOPK, \n"+
 			    "    T1.NTRABAJADORFK, \n"+
 			    "    T1.NOFICINAFK, \n"+
 			    "    T1.VUSUARIO, \n"+
@@ -261,6 +263,30 @@ public class RecursoDaoImpl implements RecursoDao {
 			
 		} catch (Exception e) {
 			logger.error("ERROR : RecursoDaoImpl listarCargos " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
+	}
+
+
+	@Override
+	public List<Persona> listaUsuariosOficina(Long idOficina) {
+		StringBuffer sql = new StringBuffer();
+		List<Persona> lista = new ArrayList<Persona>();
+		try {
+			sql.append(
+				"SELECT \n"+
+			    " T1.NIDUSUARIOPK AS NUSUREGISTRA, \n" +
+			    " CONCAT(T4.VAPEPATERNO,' ',T4.VAPEMATERNO,',',T4.VNOMBRE) AS NOMBRE_COMPLETO \n" +
+			    "FROM " +Constantes.tablaUsuario+" T1 \n" +
+			    " INNER JOIN "+Constantes.tablaUsuarioPerfil+" T2 ON T1.NIDUSUARIOPK=T2.NUSUARIOFK AND T1.NESTADO=1 AND T2.NESTADO=1 \n" +
+			    " INNER JOIN "+Constantes.tablaTrabajadores+"  T3 ON T1.NTRABAJADORFK=T3.NIDTRABAJADORPK AND T3.NESTADO=1 \n" +
+			    " INNER JOIN "+Constantes.tablaPersona+"       T4 ON T3.NIDPERSONAFK=T4.NIDPERSONAPK \n" +
+			    "WHERE T1.NOFICINAFK= :P_NOFICINAFK AND T2.NPERFILFK!=1");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NOFICINAFK", idOficina);
+			lista=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Persona.class));
+		} catch (Exception e) {
+			logger.error("ERROR : RecursoDaoImpl listaUsuariosOficina " + e.getMessage() + "---" + e.getClass());
 		}
 		return lista;
 	}

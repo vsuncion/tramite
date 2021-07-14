@@ -160,7 +160,7 @@
                         </li>
                         
                        
-                       <!-------
+                        
                         <li>
   
                             <a href="#homeFeriado" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">FERIADOS</a>
@@ -177,8 +177,7 @@
 			                    </ul>
                             
                         </li>
-                        
-                        ---------->
+                     
                         
                         
                         <li>
@@ -269,15 +268,21 @@
                 
                 
             
-                <li sec:authorize="hasRole('ROLE_SEGUIMIENTO_TRAMITE')">
+                <li sec:authorize="hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO')">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >TRAMITE DOCUMENTARIO</a>
                     
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-		   			    <li>
-                         <a class="nav-link" th:href="@{/admin/expediente/listarexpinterno}">BUSQUEDA EXPEDIENTE</a> 
-                        </li>
+		   			    
                         <li>
                          <a class="nav-link" th:href="@{/admin/expediente/registroexpc}">INGRESO EXPEDIENTE</a> 
+                        </li>
+                        
+                        <li>
+                         <a class="nav-link" th:href="@{/admin/expediente/listarexpinterno}">BUSQUEDA EXPEDIENTE</a> 
+                        </li>
+                        
+                        <li>
+                         <a class="nav-link" th:href="@{/admin/expediente/rptexpinterno}">REPORTE EXPEDIENTES</a> 
                         </li>
                         
                     </ul>

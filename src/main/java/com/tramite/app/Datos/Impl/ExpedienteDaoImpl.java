@@ -3,7 +3,6 @@ package com.tramite.app.Datos.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +13,19 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import com.tramite.app.Datos.ExpedienteDao;
 import com.tramite.app.Entidades.ArchivoMovimiento;
 import com.tramite.app.Entidades.ArchivoTupac;
 import com.tramite.app.Entidades.Bandeja;
 import com.tramite.app.Entidades.Expediente;
-import com.tramite.app.Entidades.HojaRuta;
-import com.tramite.app.Entidades.MensajeRespuesta;
+import com.tramite.app.Entidades.HojaRuta; 
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.Entidades.ReporteExpediente;
 import com.tramite.app.Entidades.Usuarios;
 import com.tramite.app.utilitarios.Constantes;
 import com.tramite.app.utilitarios.Fechas;
+
+import javafx.scene.Parent;
 
 @Repository
 public class ExpedienteDaoImpl implements ExpedienteDao {
@@ -48,7 +47,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 "SELECT  \n"+
 			 " 	 ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK DESC)  AS NITEM,  \n"+
 			 " 	 T1.NIDMOVIMIENTOPK, \n"+
-			 " 	 CONVERT(varchar,DFECHAOFICINA,22) AS VFECHA_OFICINA, \n"+
+			 " 	 CONVERT(varchar,DFECHAOFICINA,120) AS VFECHA_OFICINA, \n"+
 			 " 	 CASE T2.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 			 " 	 WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+
 			 " 	 CONCAT(SUBSTRING(T2.VASUNTO,0,15),'...') AS VASUNTO, \n"+
@@ -57,7 +56,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 T6.VNOMBRE AS VESTADO_DOC, \n"+
 			 " 	 T1.NIDEXPEDIENTEFK, \n"+
 			 " 	 T2.VCODIGO_EXPEDIENTE, \n"+
-			 " 	 T2.NIDEXPEDIENTEPK \n"+
+			 " 	 T2.NIDEXPEDIENTEPK, \n"+
+			 " 	 T2.VCOLOR \n"+
 			 " FROM "+Constantes.tablaMovimiento+"              T1 \n"+
 			 " 	 INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
 			 " 	 INNER JOIN "+Constantes.tablaPersona+"         T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+
@@ -92,13 +92,41 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	}
 
 	@Override
-	public boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente) {
+	public boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente,Long idUsuario) {
+		String  sqlverificar ="";
+		StringBuffer sqlverificarActualiza = new StringBuffer();
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sql2 = new StringBuffer();
 		StringBuffer sql3 = new StringBuffer();
 		boolean respuesta = false;
-		
+		int cantidad = 0;
 		try {
+			
+			//VERIFICAMOS SI EL EXPEDIENTE PROBIENE EXTERNO Y ES DE MESA DE PARTE Y ES DE MESA DE PARTE Y NO TIENE USUARIO
+			sqlverificar="SELECT COUNT(1)   FROM "+Constantes.tablaExpediente+" \n"+
+			    "WHERE NORIGEN= :P_NORIGEN  AND NOFICINAORIGENFK IS NULL AND NUSUREGISTRA IS NULL \n"+
+				"AND NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK  AND NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK";
+			MapSqlParameterSource preparametros = new MapSqlParameterSource();
+			preparametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO);
+			preparametros.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_PENDIENTE);
+			preparametros.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+			cantidad = namedParameterJdbcTemplate.queryForObject(sqlverificar, preparametros,Integer.class);
+			
+			if(cantidad>0) {
+			  // ACTUALIZAMOS EL REGISTRO
+				sqlverificarActualiza.append(
+				    "UPDATE "+Constantes.tablaExpediente+" SET \n"+
+				    " NOFICINAORIGENFK= :P_NOFICINAORIGENFK ,NUSUREGISTRA= :P_NUSUREGISTRA \n"+
+				    "WHERE NORIGEN= :P_NORIGEN AND NOFICINAORIGENFK IS NULL AND NUSUREGISTRA IS NULL \n"+
+				    "AND NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK AND NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
+				MapSqlParameterSource preparametrosAct = new MapSqlParameterSource();
+				preparametrosAct.addValue("P_NOFICINAORIGENFK", idOficina);
+				preparametrosAct.addValue("P_NUSUREGISTRA", idUsuario);
+				preparametrosAct.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO);
+				preparametrosAct.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_PENDIENTE);
+				preparametrosAct.addValue("P_NIDEXPEDIENTEPK", idExpediente);
+				namedParameterJdbcTemplate.update(sqlverificarActualiza.toString(), preparametrosAct);
+			}
 			
 			//INSERTAMOS EL NUEVO MANTENIMIENTO 
 			sql.append(
@@ -175,7 +203,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
 				"    T3.VCORREO, \n"+
-				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
@@ -212,7 +240,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			"   T3.VNOMBRE AS VESTADO_DOCUMENTO, \n"+
 			"   T1.VOBSERVACION, \n"+
 			"   T1.OFICINA_ORIGENFK, \n"+ 
-			"   CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			"   CONVERT(varchar,T1.DFECHAOFICINA,103) AS VFECHAOFICINA, \n"+
 			"   T1.NESTADODOCUMENTOFK, \n"+
 			"   T4.VNOMBRE_ARCHIVO, \n"+
 			"   T4.VUBICACION_ARCHIVO, \n"+
@@ -497,11 +525,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				 "SELECT \n"+
 			     "    ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK )  AS NITEM,  \n"+
 			     "    T6.VNOMBRE AS TIPO_DOCUMENTO, \n"+
-			     "    CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			     "    CONVERT(varchar,T1.DFECHAOFICINA,103) AS VFECHAOFICINA, \n"+
 			     "    T3.VNOMBRE AS OFICINA_ORIGEN, \n"+
 			     "    T4.VNOMBRE AS OFICINA_DESTINO, \n"+
 			     "    T5.VNOMBRE AS ESTADO_DOCUMENTO, \n"+
-			     "    CONVERT(varchar,T1.DFECHARECEPCION,22) AS VFECHARECEPCION, \n"+
+			     "    CONVERT(varchar,T1.DFECHARECEPCION,103) AS VFECHARECEPCION, \n"+
 			     "    T1.VOBSERVACION \n"+
 			     " FROM "+Constantes.tablaMovimiento+"             T1  \n"+
 			     "  INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK  \n"+ 
@@ -536,7 +564,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMERODOCUMENTO, \n"+
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
-				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
@@ -575,11 +603,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				 "SELECT \n"+
 			     "    ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK )  AS NITEM,  \n"+
 			     "    T6.VNOMBRE AS TIPO_DOCUMENTO, \n"+
-			     "    CONVERT(varchar,T1.DFECHAOFICINA,22) AS VFECHAOFICINA, \n"+
+			     "    CONVERT(varchar,T1.DFECHAOFICINA,103) AS VFECHAOFICINA, \n"+
 			     "    T3.VNOMBRE AS OFICINA_ORIGEN, \n"+
 			     "    T4.VNOMBRE AS OFICINA_DESTINO, \n"+
 			     "    T5.VNOMBRE AS ESTADO_DOCUMENTO, \n"+
-			     "    CONVERT(varchar,T1.DFECHARECEPCION,22) AS VFECHARECEPCION, \n"+
+			     "    CONVERT(varchar,T1.DFECHARECEPCION,103) AS VFECHARECEPCION, \n"+
 			     "    T1.VOBSERVACION \n"+
 			     " FROM "+Constantes.tablaMovimiento+"             T1  \n"+
 			     "  INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK  \n"+ 
@@ -614,7 +642,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMERODOCUMENTO, \n"+
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
-				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
@@ -749,9 +777,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		     "   TUPACFK,  \n"+
 		     "   NTIPOPERSONA,  \n"+
 		     "   PERSONAFK,  \n"+
-		    // "   DFECHATERMINO,  \n"+
+		     "   DFECHADOCUMENTO,  \n"+
 		     "   NDIASPLAZO,  \n"+
-		     "   NESTADODOCUMENTOFK )"+
+		     "   NESTADODOCUMENTOFK, \n"+
+		     "   NUSUREGISTRA, \n"+
+		     "   NOFICINAORIGENFK) \n"+
 		     " VALUES ( \n"+
 		     "   :P_VCODIGO_EXPEDIENTE,  \n"+
 		     "   :P_TIPO_DOCUMENTOFK,  \n"+
@@ -765,9 +795,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		     "   :P_TUPACFK,  \n"+
 		     "   :P_NTIPOPERSONA,  \n"+
 		     "   :P_PERSONAFK,  \n"+
-		    // "   :P_DFECHATERMINO,  \n"+
+		     "   :P_DFECHADOCUMENTO,  \n"+
 		     "   :P_NDIASPLAZO,  \n"+
-		     "   :P_NESTADODOCUMENTOFK )";
+		     "   :P_NESTADODOCUMENTOFK, \n"+
+		     "   :P_NUSUREGISTRA, \n"+
+		     "   :P_NOFICINAORIGENFK)";
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
 		parametros.addValue("P_VCODIGO_EXPEDIENTE", expediente.getVCODIGO_EXPEDIENTE());
 		parametros.addValue("P_TIPO_DOCUMENTOFK", expediente.getTIPO_DOCUMENTOFK());
@@ -781,10 +813,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 		parametros.addValue("P_TUPACFK", expediente.getTUPACFK());
 		parametros.addValue("P_NTIPOPERSONA", expediente.getNTIPOPERSONA());
 		parametros.addValue("P_PERSONAFK", expediente.getPERSONAFK());
-		//parametros.addValue("P_DFECHATERMINO", expediente.getdf);
+		parametros.addValue("P_DFECHADOCUMENTO", Fechas.convertStringToDate(expediente.getVFECHADOCUMENTO()));
 		parametros.addValue("P_NDIASPLAZO", Constantes.estadoDesactivado);
 		parametros.addValue("P_NESTADODOCUMENTOFK", Constantes.ESTADO_DOCUMENTO_PENDIENTE );
-		
+		parametros.addValue("P_NUSUREGISTRA", expediente.getNUSUREGISTRA());
+		parametros.addValue("P_NOFICINAORIGENFK", expediente.getOFICINA_ORIGENFK());
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(sql.toString(),parametros, keyHolder,new String[] {"NIDEXPEDIENTEPK"} );        
 		idExpediente =  keyHolder.getKey().longValue();  	  
@@ -993,7 +1026,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			    "SELECT  \n"+
 			    "  ROW_NUMBER() OVER ( ORDER BY T1.NIDEXPEDIENTEPK )  AS NITEM, \n"+
 			    "  T1.NIDEXPEDIENTEPK, 	\n"+ 
-			    "  CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+ 
+			    "  CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+ 
 				"  T1.VCODIGO_EXPEDIENTE,	\n"+
 				"  T2.VNOMBRE AS VTIPO_DOCUMENTOS, \n"+
 				"  T4.VNOMBRE AS VNOMBRE_OFICINA_ORIGEN, \n"+
@@ -1039,7 +1072,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				"    T1.VNUMERODOCUMENTO, \n"+
 				"    T1.VNUMEROFOLIO, \n"+
 				"    T1.VASUNTO, \n"+
-				"    CONVERT(varchar,T1.DFECREGISTRO,22) AS VDFECREGISTRO, \n"+
+				"    CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+
 				"    T6.VNOMBRE AS ESTADODOCUMENTO, \n"+
 				"    CASE T1.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 				"    WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+ 
@@ -1065,6 +1098,48 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 
 		}
 		return info;
+	}
+
+	@Override
+	public List<Expediente> listarExpedientesInternoUsuario(Expediente formexpediente) {
+		StringBuffer sql = new StringBuffer();
+		List<Expediente> lista = new ArrayList<Expediente>();
+		try {
+			sql.append(
+				"SELECT \n"+
+				" T1.NIDEXPEDIENTEPK, \n"+
+				" ROW_NUMBER() OVER ( ORDER BY T1.NIDEXPEDIENTEPK )  AS NITEM, \n"+
+				" CONVERT(varchar,T1.DFECREGISTRO,103) AS VDFECREGISTRO, \n"+
+				" T1.VCODIGO_EXPEDIENTE, \n"+ 
+				" T1.VASUNTO, \n"+ 
+				" CONCAT(T4.VAPEPATERNO,' ',T4.VAPEMATERNO,',',T4.VNOMBRE) AS USUARIO_OFICINA, \n"+
+				" T5.VNOMBRE AS VNOMBRE_OFICINA_ACTUAL, \n"+
+				" T6.VNOMBRE AS VNOMBRE_OFICINA_ORIGEN \n"+
+				" FROM "+Constantes.tablaExpediente+" T1 \n"+
+				" INNER JOIN "+Constantes.tablaUsuario+" T2 ON T1.NUSUREGISTRA=T2.NIDUSUARIOPK AND T2.NESTADO=1 \n"+
+				" INNER JOIN "+Constantes.tablaTrabajadores+" T3 ON T2.NTRABAJADORFK=T3.NIDTRABAJADORPK AND T3.NESTADO=1 \n"+
+				" INNER JOIN "+Constantes.tablaPersona+" T4 ON T3.NIDPERSONAFK=T4.NIDPERSONAPK \n"+
+				" LEFT JOIN "+Constantes.tablaOficinas+" T5 ON T1.NOFICINAFK=T5.NIDOFICINAPK \n" +
+				" LEFT JOIN "+Constantes.tablaOficinas+" T6 ON T1.NOFICINAORIGENFK=T6.NIDOFICINAPK AND T6.NESTADO=1 \n" +
+				"WHERE T1.NOFICINAORIGENFK= :P_NOFICINAORIGENFK");
+			MapSqlParameterSource parametros = new MapSqlParameterSource();
+			parametros.addValue("P_NOFICINAORIGENFK", formexpediente.getOFICINA_ORIGENFK());
+			if(formexpediente.getNUSUREGISTRA()>0) {
+				sql.append(" AND T1.NUSUREGISTRA= :P_NUSUREGISTRA");
+				parametros.addValue("P_NUSUREGISTRA", formexpediente.getNUSUREGISTRA());
+			}
+			
+			if(formexpediente.getDFECHAINICIO()!=null && formexpediente.getDFECHAFIN()!=null) {
+				sql.append(" AND CONVERT(date,T1.DFECREGISTRO) BETWEEN :P_FECHAINICIO AND :P_FECHAFIN ");
+				parametros.addValue("P_FECHAINICIO", formexpediente.getDFECHAINICIO());
+				parametros.addValue("P_FECHAFIN", formexpediente.getDFECHAFIN());
+			}
+			lista = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+
+		} catch (Exception e) {
+			logger.error("ERROR : ExpedienteDaoImpl listarExpedientesInternoUsuario " + e.getMessage() + "---" + e.getClass());
+		}
+		return lista;
 	}
 
 	 

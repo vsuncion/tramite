@@ -14,7 +14,7 @@ import com.tramite.app.Entidades.Usuarios;
 public interface ExpedienteDao {
 
 	List<Bandeja> listarBandeja(Long oficina,Long estadodocumento);
-	boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente);
+	boolean recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente,Long idUsuario);
 	Expediente infoExpediente(Long idexpediente);
 	MovimientoExpediente infoMovimiento(Long idexpediente,Long idmovimiento);
 	boolean responderExpediente(Expediente formexpediente);
@@ -33,4 +33,5 @@ public interface ExpedienteDao {
 	List<ReporteExpediente> listaExpedientesPorOficina(Expediente formexpediente);
 	List<Expediente>  listarExpedientesInterno(Expediente formexpediente);
 	Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente);
+	List<Expediente>  listarExpedientesInternoUsuario(Expediente formexpediente);
 }

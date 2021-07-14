@@ -125,7 +125,7 @@ public class ExpedienteController {
 
 		Long idoficina = usuario.getNOFICINAFK();
 		
-		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento,idoficina,infoMovimiento.getNIDEXPEDIENTEFK());
+		mostrarmensaje = expedienteServicio.recibirExpediente(idmovimiento,idoficina,infoMovimiento.getNIDEXPEDIENTEFK(),usuario.getNIDUSUARIOPK());
 		/*
 		listaBandeja = expedienteServicio.listarBandeja(idoficina, Constantes.ESTADO_DOCUMENTO_RECIBIDO);
 		oficina = recursoServicio.infoOficina(idoficina);
@@ -189,6 +189,13 @@ public class ExpedienteController {
 			@RequestParam("varchivosubida") MultipartFile farchvio) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
+		Usuarios usuario = new Usuarios();
+
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		formExpediente.setNUSUREGISTRA(usuario.getNIDUSUARIOPK());
 
 		// SUBIMOS EL DOCUMENTO
 		if (farchvio != null && farchvio.getSize() > 0) {
@@ -412,6 +419,9 @@ public class ExpedienteController {
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();
 		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		
+		formExpediente.setNUSUREGISTRA(usuario.getNIDUSUARIOPK());
 		
 		// SUBIMOS EL DOCUMENTO
 		if (farchvio != null && farchvio.getSize() > 0) {
@@ -686,6 +696,109 @@ public class ExpedienteController {
 		return pagina;
  
 		
+	}
+	
+	@GetMapping(value = {"/rptexpinterno"})
+	public ModelAndView rptExpedienteOficina(HttpServletRequest request, HttpServletResponse res) {
+		ModelAndView pagina = new ModelAndView(); 
+		List<Seleccion> listarUsuariosOficina = new ArrayList<Seleccion>();
+		Expediente infoExpediente = new Expediente();
+        List<Expediente> listaExpedientes = new ArrayList<Expediente>();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		//LISTAMOS LOS USUARIOS DE LA OFICINA
+		listarUsuariosOficina = recursoServicio.cbUsuariosOficina(usuario.getNOFICINAFK());
+		
+		
+		
+		pagina.addObject("listaUsuarios",listarUsuariosOficina);
+		pagina.addObject("listaExpedientes",listaExpedientes);
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.setViewName("admin/expediente/interno/rptexpediente");
+		return pagina;
+	}
+	
+	
+	@PostMapping(value = {"/buscarexpedientesinternoreporte"})
+	public ModelAndView buscarExpedientesOficina(HttpServletRequest request, HttpServletResponse res,@ModelAttribute Expediente infoExpediente) {
+		ModelAndView pagina = new ModelAndView();
+		List<Seleccion> listarUsuariosOficina = new ArrayList<Seleccion>();
+		 List<Expediente> listaExpedientes = new ArrayList<Expediente>();
+		
+		Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		Usuarios usuario = new Usuarios();
+		usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		infoExpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK());
+		
+		//LISTAMOS LOS USUARIOS DE LA OFICINA
+		listarUsuariosOficina = recursoServicio.cbUsuariosOficina(usuario.getNOFICINAFK());
+		
+		//LISTAMOS TODOS LOS EXPEDIENTES DE LA OFICINA
+		listaExpedientes = expedienteServicio.listarExpedientesInternoUsuario(infoExpediente);
+		
+		pagina.addObject("listaUsuarios",listarUsuariosOficina);
+		pagina.addObject("listaExpedientes",listaExpedientes);
+		pagina.addObject("infoExpediente",infoExpediente);
+		pagina.setViewName("admin/expediente/interno/rptexpediente");
+		return pagina;
+	}
+	
+	@GetMapping(value = {"buscarexpedientesinternoreporte/buscarexpedientesinternorptexportar"})
+	public void buscarExpedientesOficinaExportar(HttpServletRequest request, HttpServletResponse res,
+			@RequestParam(required = false,defaultValue = "") String vusuario,
+			@RequestParam(required = false,defaultValue = "") String vfechainicio,
+			@RequestParam(required = false,defaultValue = "") String vfechafin) {
+		
+		 Expediente infoExpediente = new Expediente();
+		 List<Expediente> listaExpedientes = new ArrayList<Expediente>();
+		 XSSFWorkbook libro = new XSSFWorkbook();
+		 
+		 Authentication autch = SecurityContextHolder.getContext().getAuthentication(); 
+		 Usuarios usuario = new Usuarios();
+		 usuario = recursoServicio.infoUsuario(autch.getName());
+		
+		 infoExpediente.setOFICINA_ORIGENFK(usuario.getNOFICINAFK()); 
+		
+		try {
+			
+			 if(vusuario.trim().length()>0) {
+				 infoExpediente.setNUSUREGISTRA(Long.valueOf(vusuario)); 
+			 }else {
+				 infoExpediente.setNUSUREGISTRA(0L); 
+			 }
+			 
+			 if(vfechainicio.trim().length()>0 && vfechafin.trim().length()>0) {
+				 infoExpediente.setDFECHAINICIO(Fechas.convertStringToDate(vfechainicio));
+				 infoExpediente.setDFECHAFIN(Fechas.convertStringToDate(vfechafin));
+			 }
+			
+			 //LISTAMOS TODOS LOS EXPEDIENTES DE LA OFICINA
+			 listaExpedientes = expedienteServicio.listarExpedientesInternoUsuario(infoExpediente);
+			 
+			 if(listaExpedientes.size()>0) {
+				 generarExcel.buscarexpedientesinternorptexportar(libro, listaExpedientes);
+				 String nombreReporte = "Expediente_Oficina_" + listaExpedientes.get(0).getVNOMBRE_OFICINA_ORIGEN()+".xlsx";
+				 res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+				 res.setHeader("Content-Disposition", "attachment; filename=" + nombreReporte);
+				 
+				 ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+				 libro.write(outByteStream);
+				 byte[] outArray = outByteStream.toByteArray();
+				 OutputStream outStream = res.getOutputStream();
+				 outStream.write(outArray);
+				 outStream.flush();
+				 
+			 }
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		 
 	}
   
 }

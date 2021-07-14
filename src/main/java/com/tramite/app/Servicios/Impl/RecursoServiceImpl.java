@@ -1,24 +1,21 @@
 package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.List; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.thymeleaf.standard.expression.Each;
-
+import org.springframework.stereotype.Service;  
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.EstadoDocumento;
 import com.tramite.app.Entidades.Oficinas;
+import com.tramite.app.Entidades.Persona;
 import com.tramite.app.Entidades.Requisitos;
 import com.tramite.app.Entidades.Seleccion;
 import com.tramite.app.Entidades.TipoDocumentos;
 import com.tramite.app.Entidades.Tupac;
-import com.tramite.app.Entidades.Usuarios;
-import com.tramite.app.Servicios.FijaServicio;
+import com.tramite.app.Entidades.Usuarios; 
 import com.tramite.app.Servicios.MantenimientoServicio;
 import com.tramite.app.Servicios.RecursoServicio;
 import com.tramite.app.utilitarios.Constantes;
@@ -208,6 +205,23 @@ public class RecursoServiceImpl implements RecursoServicio {
 			listaCargoFinal.add(item);
 		}
 		return listaCargoFinal;
+	}
+
+	@Override
+	public List<Seleccion> cbUsuariosOficina(Long idOficina) {
+		List<Persona> listarUsuariosOficina = new ArrayList<Persona>();
+		List<Seleccion> listarUsuariosOficinaFinal = new ArrayList<Seleccion>();
+		
+		listarUsuariosOficina = recursoDao.listaUsuariosOficina(idOficina);
+		for (Persona i : listarUsuariosOficina) {
+			Seleccion item = new Seleccion();
+			item.setCodigo(i.getNUSUREGISTRA());
+			item.setEtiqueta(i.getNOMBRE_COMPLETO());
+			listarUsuariosOficinaFinal.add(item);
+		}
+		
+		
+		return listarUsuariosOficinaFinal;
 	}
 
 }

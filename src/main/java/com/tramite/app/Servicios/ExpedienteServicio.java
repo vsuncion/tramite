@@ -16,7 +16,7 @@ public interface ExpedienteServicio {
 
 	List<Bandeja> listarBandeja(Long oficina, Long estadodocumento);
 
-	MensajeRespuesta recibirExpediente(Long idMovimiento, Long idOficina, Long idExpediente);
+	MensajeRespuesta recibirExpediente(Long idMovimiento, Long idOficina, Long idExpediente,Long idUsuario);
 
 	Expediente infoExpediente(Long idexpediente);
 
@@ -51,4 +51,6 @@ public interface ExpedienteServicio {
 	List<Expediente>  listarExpedientesInterno(Expediente formexpediente);
 	
 	Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente);
+	
+	List<Expediente>  listarExpedientesInternoUsuario(Expediente formexpediente);
 }

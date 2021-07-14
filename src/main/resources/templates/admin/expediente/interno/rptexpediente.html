@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- CABECERA  PLANTILLA-->
+<head th:replace="loyout/plantilla :: html_cabecera">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<!-- MENU PLANTILLA -->
+		<nav th:replace="loyout/plantilla :: html_menu"></nav>
+
+		<!-- CONTENIDO PLANTILLA -->
+		<div id="content">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"
+				th:replace="loyout/plantilla :: html_submenu"></nav>
+
+			<!-- CONTENIDO EDITABLE INICIO-->
+			<div class="rows">
+
+				<form
+					th:action="@{/admin/expediente/buscarexpedientesinternoreporte}"
+					method="post" name="infoExpediente" id="infoExpediente"
+					th:object="${infoExpediente}">
+
+
+					<div class="card text-center">
+						<div class="card-body">
+							<h5 class="card-title">BUSQUEDA EXPEDIENTES</h5>
+
+							<div class="card text-left">
+								<div class="card-body">
+
+									<div class="form-group row">
+
+										<div class="col-sm-4 text-center">
+											<label><span class="letras_expediente_externo">USUARIOS
+													OFICINA</span></label> <select class="form-control form-control-sm"
+												id="NUSUREGISTRA" name="NUSUREGISTRA"
+												th:field="*{NUSUREGISTRA}">
+												<option value="0">-- SELECCIONE --</option>
+												<option th:each="i : ${listaUsuarios}"
+													th:text="${i.etiqueta}" th:value="${i.codigo}"></option>
+											</select>
+
+										</div>
+
+										<div class="col-sm-3 text-center">
+											<label for="DFECHAINICIO"><span
+												class="letras_expediente_externo">FECHA INICIO</span></label> <input
+												id="DFECHAINICIO" name="DFECHAINICIO" type="date"
+												th:field="*{DFECHAINICIO}" max="3000-12-31" min="1000-01-01"
+												class="form-control">
+										</div>
+
+										<div class="col-sm-3 text-center">
+											<label for="DFECHAFIN"><span
+												class="letras_expediente_externo">FECHA FIN</span></label> <input
+												id="DFECHAFIN" name="DFECHAFIN" type="date"
+												th:field="*{DFECHAFIN}" max="3000-12-31" min="1000-01-01"
+												class="form-control">
+										</div>
+
+										<div class="col-sm-2 align-baseline">
+											<br>
+											<button type="submit" class="btn btn-outline-primary">
+												<i class="fas fa-search"></i> BUSCAR
+											</button>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="rows" th:if="${#lists.size(listaExpedientes)}">
+						<div class="col-sm-12 text-right">
+							<button type="button" class="btn btn-dark" title="Exportal Excel"
+								name="btnexportar" id="btnexportar">
+								<i class="fas fa-file-excel"></i> Exportar Excel
+							</button>
+						</div>
+					</div>
+					<div class="card">
+						<h5 class="card-header">LISTA EXPEDIENTES</h5>
+						<div class="card-body">
+							<table class="table table-hover" id="listar">
+								<thead>
+									<tr class="text-center">
+										<th scope="col">ITEM</th>
+										<th scope="col">FECHA REGISTRO</th>
+										<th scope="col">EXPEDIENTE</th>
+										<th scope="col">ASUNTO</th>
+										<th scope="col">USUARIO</th>
+										<th scope="col">OFICINA ORIGEN</th>
+										<th scope="col">OFICINA ACTUAL</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr th:each="i : ${listaExpedientes}"
+										style="text-align: center;">
+										<td><span th:text="${i.NITEM}"></span></td>
+										<td><span th:text="${i.VDFECREGISTRO}"></span></td>
+										<td><span th:text="${i.VCODIGO_EXPEDIENTE}"></span></td>
+										<td><span th:text="${i.VASUNTO}"></span></td>
+										<td><span th:text="${i.USUARIO_OFICINA}"></span></td>
+										<td><span th:text="${i.VNOMBRE_OFICINA_ORIGEN}"></span></td>
+										<td><span th:text="${i.VNOMBRE_OFICINA_ACTUAL}"></span></td>
+										<td></td>
+									</tr>
+								</tbody>
+
+							</table>
+
+						</div>
+					</div>
+
+
+
+				</form>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<div th:replace="loyout/plantilla :: html_scrip"></div>
+    <script th:inline="javascript">
+ 
+	$("#btnexportar").click(function(){
+		var vusuario =$("#NUSUREGISTRA").val();
+		var DFECHAINICIO =$("#DFECHAINICIO").val();
+		var DFECHAFIN =$("#DFECHAFIN").val();
+		var parametros ="?tipo=rpt";
+		if(vusuario>0){
+			parametros=parametros+"&vusuario="+vusuario;
+		}
+		
+		if(DFECHAINICIO.length>0 && DFECHAFIN.length>0){
+			parametros=parametros+"&vfechainicio="+DFECHAINICIO+"&vfechafin="+DFECHAFIN;
+		}
+		//alert(parametros); 
+		var win = window.open(window.location+'/buscarexpedientesinternorptexportar'+parametros, '_blank');
+		});
+	</script>
+
+</body>
+</html>

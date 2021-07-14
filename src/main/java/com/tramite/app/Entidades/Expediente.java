@@ -62,15 +62,17 @@ public class Expediente implements Serializable {
 	private Long IDPREEXPEDIENTEPK;
 	private String VTIPO_DOCUMENTOS;
 	private String VNOMBRETUPAC;
-	private Long  VREQUISITO;
+	private Long VREQUISITO;
 	private String VCARGO;
 	private int NANIO;
-	private Long  NITEM;
+	private Long NITEM;
 	private String VNOMBRE_OFICINA_ORIGEN;
-	
+	private String VNOMBRE_OFICINA_ACTUAL;
+	private String USUARIO_OFICINA;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date DFECHAINICIO;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date DFECHAFIN;
 
@@ -185,8 +187,6 @@ public class Expediente implements Serializable {
 	public void setTUPACFK(Long tUPACFK) {
 		TUPACFK = tUPACFK;
 	}
-
-	 
 
 	public Long getNTIPOPERSONA() {
 		return NTIPOPERSONA;
@@ -307,8 +307,6 @@ public class Expediente implements Serializable {
 	public void setNIDPERSONAPK(Long nIDPERSONAPK) {
 		NIDPERSONAPK = nIDPERSONAPK;
 	}
-
-	 
 
 	public Long getTIPODOCUMENTOBUSCAR() {
 		return TIPODOCUMENTOBUSCAR;
@@ -525,6 +523,21 @@ public class Expediente implements Serializable {
 	public void setVNOMBRE_OFICINA_ORIGEN(String vNOMBRE_OFICINA_ORIGEN) {
 		VNOMBRE_OFICINA_ORIGEN = vNOMBRE_OFICINA_ORIGEN;
 	}
-	
+
+	public String getUSUARIO_OFICINA() {
+		return USUARIO_OFICINA;
+	}
+
+	public void setUSUARIO_OFICINA(String uSUARIO_OFICINA) {
+		USUARIO_OFICINA = uSUARIO_OFICINA;
+	}
+
+	public String getVNOMBRE_OFICINA_ACTUAL() {
+		return VNOMBRE_OFICINA_ACTUAL;
+	}
+
+	public void setVNOMBRE_OFICINA_ACTUAL(String vNOMBRE_OFICINA_ACTUAL) {
+		VNOMBRE_OFICINA_ACTUAL = vNOMBRE_OFICINA_ACTUAL;
+	}
 
 }

@@ -23,5 +23,6 @@ public interface RecursoServicio {
 	 List<Seleccion> listaEstadoDocumentos();
 	 List<Seleccion>  cbOficinasReportes();
 	 List<Seleccion>  cbOCargos();
+	 List<Seleccion>  cbUsuariosOficina(Long idOficina);
 	 
 }

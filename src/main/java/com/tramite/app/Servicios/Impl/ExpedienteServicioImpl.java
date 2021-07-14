@@ -37,11 +37,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 	@Override
 	@Transactional
-	public MensajeRespuesta recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente) {
+	public MensajeRespuesta recibirExpediente(Long idMovimiento,Long idOficina,Long idExpediente,Long idUsuario) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		
-		respuesta = expedienteDao.recibirExpediente(idMovimiento,idOficina,idExpediente);
+		respuesta = expedienteDao.recibirExpediente(idMovimiento,idOficina,idExpediente,idUsuario);
 		
 		if (respuesta == true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
@@ -166,6 +166,12 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) { 
 		return expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
 	}
-  
+
+	@Override
+	public List<Expediente> listarExpedientesInternoUsuario(Expediente formexpediente) {
+		return expedienteDao.listarExpedientesInternoUsuario(formexpediente);
+	}
+
+	 
 
 }
