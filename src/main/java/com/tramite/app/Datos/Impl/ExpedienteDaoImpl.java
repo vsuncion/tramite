@@ -48,6 +48,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 ROW_NUMBER() OVER ( ORDER BY T1.NIDMOVIMIENTOPK DESC)  AS NITEM,  \n"+
 			 " 	 T1.NIDMOVIMIENTOPK, \n"+
 			 " 	 CONVERT(varchar,DFECHAOFICINA,120) AS VFECHA_OFICINA, \n"+
+			 " 	 CONVERT(varchar,T2.DFECREGISTRO,120) AS VFECHA_REGISTRO, \n"+
 			 " 	 CASE T2.NTIPOPERSONA WHEN 1 THEN CONCAT(T3.VAPEPATERNO,' ',T3.VAPEMATERNO,','+T3.VNOMBRE)  \n"+
 			 " 	 WHEN 2 THEN T5.VRAZONSOCIAL  END   VREMITENTE, \n"+
 			 " 	 CONCAT(SUBSTRING(T2.VASUNTO,0,15),'...') AS VASUNTO, \n"+
@@ -57,7 +58,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 T1.NIDEXPEDIENTEFK, \n"+
 			 " 	 T2.VCODIGO_EXPEDIENTE, \n"+
 			 " 	 T2.NIDEXPEDIENTEPK, \n"+
-			 " 	 T2.VCOLOR \n"+
+			 " 	 T2.VCOLOR \n"+ 
 			 " FROM "+Constantes.tablaMovimiento+"              T1 \n"+
 			 " 	 INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
 			 " 	 INNER JOIN "+Constantes.tablaPersona+"         T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+

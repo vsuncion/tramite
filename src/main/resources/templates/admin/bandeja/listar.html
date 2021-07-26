@@ -48,6 +48,7 @@
 									<th scope="col">ITEM</th>
 									<th scope="col">EXPEDIENTE</th>
 									<th scope="col">FECHA OFICINA</th>
+									<th scope="col">FECHA REGISTRO</th>
 									<th scope="col">REMITENTE</th>
 									<th scope="col">ASUNTO</th>
 									<th scope="col">OFIC ORIGEN</th>
@@ -63,10 +64,14 @@
 								</tr>
 							</thead>
 							<tbody>
-							   <tr th:each="i : ${listaBandeja}"   class="cuerpo_letras_grilla" >
-							     <th scope="row" ><span th:text="${i.NITEM}"></span></th>
+							
+							   <tr th:each="i : ${listaBandeja}"   class="cuerpo_letras_grilla"  th:style="'background-color:'+ ${i.VCOLOR}+ ';'">
+							    
+							    <!-- <td  th:style="${i.NCOLOR == 3 ? 'background-color: red;' : 'background-color: yellow;'}" ><span th:text="${i.NITEM}"></span></td> --> 
+							     <td><span th:text="${i.NITEM}"></span></td>
 							     <td><span  th:text="${i.VCODIGO_EXPEDIENTE}"></span></td>
 							     <td><span  th:text="${i.VFECHA_OFICINA}"></span></td>
+							     <td><span  th:text="${i.VFECHA_REGISTRO}"></span></td>
 							     <td><span  th:text="${i.VREMITENTE}"></span></td>
 							     <td><span  th:text="${i.VASUNTO}"></span></td>
 							     <td><span  th:text="${i.VOFICINA_ORIGEN}"></span></td>

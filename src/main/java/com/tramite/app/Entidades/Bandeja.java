@@ -20,15 +20,10 @@ public class Bandeja implements Serializable {
 	private String  VCODIGO_EXPEDIENTE;
 	private Long NIDEXPEDIENTEPK;
 	private Long NITEM;
+	private int  NCOLOR;
 	private String  VCOLOR;
-	
-	public String getVCOLOR() {
-		return VCOLOR;
-	}
-
-	public void setVCOLOR(String vCOLOR) {
-		VCOLOR = vCOLOR;
-	}
+	private String VFECHA_REGISTRO;
+	 
 
 	public Bandeja() {
 	}
@@ -120,5 +115,31 @@ public class Bandeja implements Serializable {
 	public void setNITEM(Long nITEM) {
 		NITEM = nITEM;
 	}
+
+	public int getNCOLOR() {
+		return NCOLOR;
+	}
+
+	public void setNCOLOR(int nCOLOR) {
+		NCOLOR = nCOLOR;
+	}
+
+	public String getVCOLOR() {
+		return VCOLOR;
+	}
+
+	public void setVCOLOR(String vCOLOR) {
+		VCOLOR = vCOLOR;
+	}
+
+	public String getVFECHA_REGISTRO() {
+		return VFECHA_REGISTRO;
+	}
+
+	public void setVFECHA_REGISTRO(String vFECHA_REGISTRO) {
+		VFECHA_REGISTRO = vFECHA_REGISTRO;
+	}
+	
+	
  	
 }
