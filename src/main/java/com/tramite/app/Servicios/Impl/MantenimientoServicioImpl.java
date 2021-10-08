@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.tramite.app.Datos.MantenimientoDao; 
 import com.tramite.app.Entidades.Correlativo;
@@ -42,6 +43,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	private BCryptPasswordEncoder encriptar;
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Trabajadores> listarTrabajadores() {
 		List<Trabajadores> lista = new ArrayList<Trabajadores>();
 		lista = mantenimientoDao.listarTrabajadores();
@@ -49,19 +51,26 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Informacion informacionMunicipalidad() {
 		Informacion informacion = new Informacion();
-		informacion = mantenimientoDao.informacionMunicipalidad();
+		try {
+			informacion = mantenimientoDao.informacionMunicipalidad();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		return informacion;
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Oficinas> listarOficinas() {
 		return mantenimientoDao.listarOficinas();
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarOficina(Oficinas oficina) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -82,11 +91,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Oficinas> buscarOficinas(Oficinas oficinas) {
 		return mantenimientoDao.buscarOficinas(oficinas);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listarOficinasCombo() {
 		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
 		List<Seleccion> listaSeleccion = new ArrayList<Seleccion>();
@@ -104,12 +115,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Oficinas buscarOficina(Long id) {
 		return mantenimientoDao.buscarOficinaId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarOficina(Oficinas oficina) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -130,7 +142,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarOficina(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -150,6 +162,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listarEstadosRegistro() {
 		List<Seleccion> cbEstadosRegistro = new ArrayList<Seleccion>();
 		int[] listaEstados = Constantes.listaEstadoRegistro;
@@ -170,12 +183,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<TipoDocumentos> listarTipoDocumento() {
 		return mantenimientoDao.listarTipoDocumento();
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -195,12 +209,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<TipoDocumentos> buscarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		return mantenimientoDao.buscarTipoDocumentos(tipoDocumentos);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarTipoDocumento(TipoDocumentos tipoDocumentos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -220,7 +235,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarTipoDocumento(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -240,27 +255,31 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public TipoDocumentos buscarTipoDocumentoId(Long id) {
 		return mantenimientoDao.buscarTipoDocumentoId(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<TipoTramite> listarTipoTramite() {
 		return mantenimientoDao.listarTipoTramite();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<TipoTramite> buscarTipoTramite(TipoTramite tipoTramite) {
 		return mantenimientoDao.buscarTipoTramite(tipoTramite);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public TipoTramite buscarTipoTramiteId(Long id) {
 		return mantenimientoDao.buscarTipoTramiteId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarTipoTramite(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -280,7 +299,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarTipoTramite(TipoTramite tipoTramite) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -300,7 +319,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarTipoTramite(TipoTramite tipoTramite) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -320,32 +339,37 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<EstadoDocumento> listarEstadoDocumento() {
 		return mantenimientoDao.listarEstadoDocumento();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<EstadoDocumento> buscarEstadoDocumento(EstadoDocumento estadoDocumento) {
 		return mantenimientoDao.buscarEstadoDocumento(estadoDocumento);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Profesiones> listarProfesiones() {
 		return mantenimientoDao.listarProfesiones();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Profesiones> buscarProfesiones(Profesiones profesiones) {
 		return mantenimientoDao.buscarProfesiones(profesiones);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Profesiones buscarProfesionesId(Long id) {
 		return mantenimientoDao.buscarProfesionesId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarProfesiones(Profesiones profesiones) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -365,7 +389,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarProfesiones(Profesiones profesiones) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -385,7 +409,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarProfesiones(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -405,12 +429,18 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarinformacionMunicipalidad(Informacion informacion) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+		try {
+			respuesta = mantenimientoDao.actualizarinformacionMunicipalidad(informacion);
+		} catch (Exception e) {
+			respuesta = false;
+			logger.info("======================= "+this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
+		}
 
-		respuesta = mantenimientoDao.actualizarinformacionMunicipalidad(informacion);
+		
 		if (respuesta == true) {
 			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
 			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
@@ -424,16 +454,19 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Requisitos> listarRequisitos() {
 		return mantenimientoDao.listarRequisitos();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Requisitos> buscarRequisitos(Requisitos requisitos) {
 		return mantenimientoDao.buscarRequisitos(requisitos);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Requisitos buscarRequisitosId(Long id) {
 		return mantenimientoDao.buscarRequisitosId(id);
 	}
@@ -499,22 +532,25 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Tupac> listarTupac() {
 		return mantenimientoDao.listarTupac();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Tupac> buscarTupac(Tupac tupac) {
 		return mantenimientoDao.buscarTupac(tupac);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Tupac buscarTupacPorId(Long id) {
 		return mantenimientoDao.buscarTupacPorId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarTupac(Tupac tupac) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -534,7 +570,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarTupac(Tupac tupac) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -554,7 +590,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -574,6 +610,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listarTipoDiasCombo() {
 		List<Seleccion> cbTipoDias = new ArrayList<Seleccion>();
 		int[] listaTipoDias = Constantes.listaTipoDias;
@@ -595,11 +632,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<RequisitosTupac> listarRequisitosTupacPorIdTupac(Long id) {
 		return mantenimientoDao.listarRequisitosTupacPorIdTupac(id);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarRequisitosTupac(RequisitosTupac requisitosTupac) {
 		RequisitosTupac verificacionRequisitosTupac = new RequisitosTupac();
 		MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
@@ -629,6 +668,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listarRequisitosTupac() {
 		List<Requisitos> listaRequisitos = new ArrayList<Requisitos>();
 		List<Seleccion> listaRequisitosTupac = new ArrayList<Seleccion>();
@@ -648,7 +688,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional 
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class) 
 	public MensajeRespuesta activarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -668,7 +708,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -688,6 +728,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbProfesiones() {
 		List<Profesiones> listaProfesiones = new ArrayList<Profesiones>();
 		List<Seleccion> cbProfesion = new ArrayList<Seleccion>();
@@ -703,6 +744,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbTipoDocumentoRegistro() {
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		int[] listaTipoDocumentoRegistro = Constantes.listaTipoDocumentoRegistro;
@@ -724,22 +766,25 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Persona> listarTrabajadorPersona() {
 		return mantenimientoDao.listarTrabajadorPersona();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Persona> buscarTrabajadorPersona(Persona persona) {
 		return mantenimientoDao.buscarTrabajadorPersona(persona);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Persona buscarTrabajadorPersonaPorId(Long id) {
 		return mantenimientoDao.buscarTrabajadorPersonaPorId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -759,7 +804,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -779,7 +824,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarTrabajadorPersona(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
@@ -799,6 +844,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbCriteriosBusquedaTrabajador() {
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		String[] listaTipoDocumentoRegistro = Constantes.listaBusquedaTrabajador;
@@ -826,22 +872,25 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Usuarios> listarUsuarioPersona() {
 		return mantenimientoDao.listarUsuarioPersona();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Usuarios> buscarUsuarioPersona(Usuarios usuarios) {
 		return mantenimientoDao.buscarUsuarioPersona(usuarios);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Usuarios buscarUsuarioPersonaPorId(Long id) {
 		return mantenimientoDao.buscarUsuarioPersonaPorId(id);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarUsuarioPersona(Usuarios usuarios) {
 		usuarios.setVCLAVE(encriptar.encode(usuarios.getVCLAVE()));
 
@@ -863,7 +912,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarUsuarioPersona(Usuarios usuarios) {
 
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -888,6 +937,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listarPerfiles() {
 		List<Perfiles> listarPerfiles = new ArrayList<Perfiles>();
 		List<Seleccion> cbPerfiles = new ArrayList<Seleccion>();
@@ -905,7 +955,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarUsuarioPersona(Long idUsuario, Long idUsuarioPerfil) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -924,6 +974,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarFeriado(Feriados feriados) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -944,6 +995,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta eliminarFeriado(Long idFeriado) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -962,31 +1014,37 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Feriados> listarFeriados() {
 		return mantenimientoDao.listarFeriados();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Feriados> buscarFeriados(Feriados feriados) {
 		return mantenimientoDao.buscarFeriados(feriados);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Persona infoPersona(Persona persona) { 
 		return mantenimientoDao.infoPersona(persona);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Correlativo> listarCorrelativos(Correlativo formCorrelativo) { 
 		return mantenimientoDao.listarCorrelativos(formCorrelativo);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Correlativo infoCorrelativo(Long idcorrelativo) { 
 		return mantenimientoDao.infoCorrelativo(idcorrelativo);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarCorrelativo(Correlativo formCorrelativo) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = mantenimientoDao.actualizarCorrelativo(formCorrelativo);

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.tramite.app.Servicios.FijaServicio; 
 
 @Service
@@ -30,6 +32,7 @@ public class FijaServicioImpl implements FijaServicio {
 	private String urlConfirmacionRegistro;
 	
 	@Override
+	@Transactional(readOnly = true)
 	public String cuerpoCorreo(String nombreSolicitante, String codigoValidacion) {
 		 String xcontenido = null;
 		 
@@ -52,6 +55,7 @@ public class FijaServicioImpl implements FijaServicio {
 	
 	
 	@Override
+	@Transactional(readOnly = true)
 	public void enviarCorreo(String correoDestino,String cuerpo) {
 		 MimeMessage message = javaMailSender.createMimeMessage();
 		 try {

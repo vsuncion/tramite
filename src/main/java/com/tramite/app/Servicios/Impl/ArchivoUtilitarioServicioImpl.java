@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile; 
 import com.tramite.app.Entidades.Archivos;
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
@@ -27,6 +28,7 @@ public class ArchivoUtilitarioServicioImpl implements ArchivoUtilitarioServicio 
 
 
 	@Override
+	@Transactional(readOnly = true)
 	public Archivos cargarArchivo(MultipartFile file, String nombreArchivo) {
 		Archivos archivo = new Archivos();
 		String estadoCopiado = "";
@@ -69,6 +71,7 @@ public class ArchivoUtilitarioServicioImpl implements ArchivoUtilitarioServicio 
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public String copiar(MultipartFile archivo, String nomArchivo, String rutaRaiz) {
 		String ruta_guardar =rutaRaiz+ ConstantesArchivos.getObtenerRutaCarpetas() +  nomArchivo;
 

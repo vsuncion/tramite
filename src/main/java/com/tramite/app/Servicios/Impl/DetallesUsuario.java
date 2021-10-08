@@ -31,28 +31,37 @@ public class DetallesUsuario implements UserDetailsService {
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Usuarios usuario = new Usuarios();
-		
-		usuario = seguridadDao.InformacionUsuarios(username);
-		
-		if(usuario == null) {
-			logger.info("ERROR NO EXISTE EL SUSUARIO");
-			throw new UsernameNotFoundException("Usuario no existe");
-		}
-		
 		List<GrantedAuthority> perfiles = new ArrayList<GrantedAuthority>();
 		List<UsuarioPerfil> listaPerfiles = new ArrayList<UsuarioPerfil>();
 		
-		listaPerfiles = seguridadDao.perfilesUsuario(username);
-		
-		if(listaPerfiles.isEmpty()) {
-			logger.info("NO TIENE ROLES");
-			throw new UsernameNotFoundException("roles no existe");
+		try {
+			
+			usuario = seguridadDao.InformacionUsuarios(username);
+			
+			if(usuario == null) {
+				logger.info("ERROR NO EXISTE EL SUSUARIO");
+				throw new UsernameNotFoundException("Usuario no existe");
+			}
+			
+			
+			
+			listaPerfiles = seguridadDao.perfilesUsuario(username);
+			
+			if(listaPerfiles.isEmpty()) {
+				logger.info("NO TIENE ROLES");
+				throw new UsernameNotFoundException("roles no existe");
+			}
+			
+			for (UsuarioPerfil i : listaPerfiles) {
+				perfiles.add(new SimpleGrantedAuthority(i.getRol()));
+				logger.info("==="+i.getRol());
+			}
+			
+		} catch (Exception e) {
+			logger.error("ERROR : DetallesUsuario loadUserByUsername " + e.getMessage() + "---" + e.getClass());
 		}
 		
-		for (UsuarioPerfil i : listaPerfiles) {
-			perfiles.add(new SimpleGrantedAuthority(i.getRol()));
-			logger.info("==="+i.getRol());
-		}
+
 		
 		return new User(usuario.getUsername(), usuario.getPassword(), perfiles);
 	}

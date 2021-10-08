@@ -22,7 +22,7 @@ public interface ExpedienteServicio {
 
 	MovimientoExpediente infoMovimiento(Long idexpediente, Long idmovimiento);
 
-	MensajeRespuesta responderExpediente(Expediente formExpediente);
+	MensajeRespuesta responderExpediente(Expediente formExpediente) throws Exception;
 
 	ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina, String nombrearchivo);
 

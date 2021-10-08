@@ -50,7 +50,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 		}
 		return usuario;*/
 		
-		try {
+		 
 			sql.append(
 			   "SELECT                      \n"+
 			   "   T2.VUSUARIO AS username,     \n"+
@@ -70,9 +70,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 			parametros.addValue("P_VUSUARIO", name);
 			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			usuario = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
-		} catch (Exception e) {
-			logger.error("ERROR : SeguridadDaoImpl " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return usuario;
 	}
 
@@ -80,7 +78,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 	public List<UsuarioPerfil> perfilesUsuario(String name) {
 		List<UsuarioPerfil>  lista = new ArrayList<UsuarioPerfil>();
 		StringBuilder sql = new StringBuilder();
-		try {
+	 
 			sql.append(
 			  " SELECT \n"+
 			  "  T2.VUSUARIO AS username,T3.VNOMBRE AS rol \n"+
@@ -91,10 +89,7 @@ public class SeguridadDaoImpl implements SeguridadDao {
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_VUSUARIO", name);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(UsuarioPerfil.class));
-			  
-		} catch (Exception e) {
-			logger.error("ERROR : SeguridadDaoImpl " + e.getMessage() + "---" + e.getClass());
-		}
+ 	 
 		return lista;
 	}
 

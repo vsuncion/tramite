@@ -50,7 +50,7 @@ import com.tramite.app.utilitarios.GenerarExcel;
 
 @Controller
 @RequestMapping("/admin/expediente")
-@PreAuthorize("hasAnyRole('ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO','ROLE_REPORTES')")
+@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO','ROLE_REPORTES')")
 public class ExpedienteController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -68,6 +68,9 @@ public class ExpedienteController {
 
 	@Value("${rutaArchivo}")
 	private String rutaRaiz;
+	
+	@Value("${urlTramite}")
+	private String urlTramite;
 
 	@GetMapping(value = { "/listarBandeja" })
 	public ModelAndView listarBandeja(HttpServletRequest request, HttpServletResponse res,
@@ -186,35 +189,47 @@ public class ExpedienteController {
 	@PostMapping(value = { "/grabarAtenderTramiteSimple" })
 	public ModelAndView grabarAtenderTramiteSimple(@ModelAttribute Expediente formExpediente,
 			HttpServletRequest request, HttpServletResponse res,
-			@RequestParam("varchivosubida") MultipartFile farchvio) {
+			@RequestParam("varchivosubida") MultipartFile farchvio) throws Exception {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();
-
-		usuario = recursoServicio.infoUsuario(autch.getName());
 		
-		formExpediente.setNUSUREGISTRA(usuario.getNIDUSUARIOPK());
+		try {
+			
+			usuario = recursoServicio.infoUsuario(autch.getName());
+			
+			formExpediente.setNUSUREGISTRA(usuario.getNIDUSUARIOPK());
 
-		// SUBIMOS EL DOCUMENTO
-		if (farchvio != null && farchvio.getSize() > 0) {
-			Archivos archivo = new Archivos();
+			// SUBIMOS EL DOCUMENTO
+			if (farchvio != null && farchvio.getSize() > 0) {
+				Archivos archivo = new Archivos();
 
-			archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
+				archivo = archivoUtilitarioServicio.cargarArchivo(farchvio, ConstantesArchivos.getCorrelativoArchivo());
 
-			if (archivo.isVerificarCarga() == true) {
-				logger.info("ingresi el archivo");
-				formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
-				formExpediente.setVNOMBRE_ARCHIVO(archivo.getNombre());
-				formExpediente.setVEXTENSION(archivo.getExtension());
+				if (archivo.isVerificarCarga() == true) {
+					logger.info("ingresi el archivo");
+					formExpediente.setVUBICACION_ARCHIVO(archivo.getRuta());
+					formExpediente.setVNOMBRE_ARCHIVO(archivo.getNombre());
+					formExpediente.setVEXTENSION(archivo.getExtension());
+				}
 			}
+
+			 
+			mostrarmensaje = expedienteServicio.responderExpediente(formExpediente);
+			
+			pagina.addObject("mostrarmensaje", mostrarmensaje);
+			pagina.setViewName("admin/bandeja/confirmacion");
+			 
+		} catch (Exception e) {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto+e.getMessage());
+			pagina.addObject("mostrarmensaje", mostrarmensaje);
+			pagina.setViewName("admin/bandeja/confirmacion");
+			 
 		}
 
-		mostrarmensaje = expedienteServicio.responderExpediente(formExpediente);
-		
-		pagina.addObject("mostrarmensaje", mostrarmensaje);
-		pagina.setViewName("admin/bandeja/confirmacion");
 		return pagina;
 	}
 
@@ -462,6 +477,7 @@ public class ExpedienteController {
 		usuario = recursoServicio.infoUsuario(autch.getName());
 		formusuario.setVUSUARIO(usuario.getUsername());
 		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("formusuario",formusuario); 
 		pagina.setViewName("admin/usuario/cambioclave");
 		return pagina;	
@@ -477,11 +493,20 @@ public class ExpedienteController {
 		Usuarios usuario = new Usuarios();
 		usuario = recursoServicio.infoUsuario(autch.getName());
 		
-		formusuario.setVUSUARIO(usuario.getVUSUARIO());
+		formusuario.setVUSUARIO(usuario.getUsername());
 		respuesta = expedienteServicio.actualizarClave(formusuario);
 		
+		if(respuesta==true) {
+			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		}else {
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+		}
 		
 		formusuario.setVCLAVE("");
+		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("formusuario",formusuario); 
 		pagina.addObject("mostrarmensaje", mostrarmensaje);
 		pagina.setViewName("admin/usuario/cambioclave");

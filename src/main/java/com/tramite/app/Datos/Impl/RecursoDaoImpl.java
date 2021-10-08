@@ -36,7 +36,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public List<TipoDocumentos> listarTipoDocuemnto() {
 		StringBuffer sql = new StringBuffer();
 		List<TipoDocumentos> lista = new ArrayList<TipoDocumentos>();
-		try {
+		
 			sql.append(
 			  "SELECT "+
 			  "  NIDTIPODOCUMENTOPK, \n"+
@@ -45,9 +45,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			  "  VDESCRIPCION        \n"+
 			  "  FROM "+Constantes.tablaTipoDocumentos);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl listarTipoDocuemnto " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return lista;
 	}
 	
@@ -62,7 +60,7 @@ public class RecursoDaoImpl implements RecursoDao {
 		 String siglaOficina="";
 		 Correlativo infoCorrelativo = new Correlativo();
 		 int anio = fecha.get(Calendar.YEAR);
-		try {
+		
 			sql.append(
 			   "SELECT \n"+
 			   " T1.NCORRELATIVOPK,\n"+
@@ -138,10 +136,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			  default :
 				  numeroFinalExpediente = letraExpediente+"-"+anio+"-"+numeroExpedienteLetra;  
 			}*/
-			
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl numeroExpediente " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return numeroFinalExpediente;
 	}
 
@@ -150,13 +145,13 @@ public class RecursoDaoImpl implements RecursoDao {
 	public Usuarios infoUsuario(String vcorreo) {
 		StringBuffer sql = new StringBuffer();
 		Usuarios usuarios = new Usuarios();
-		try {
+		
 			sql.append(
 				"  SELECT \n"+
 				"    T1.NIDUSUARIOPK, \n"+
 			    "    T1.NTRABAJADORFK, \n"+
 			    "    T1.NOFICINAFK, \n"+
-			    "    T1.VUSUARIO, \n"+
+			    "    T1.VUSUARIO AS username, \n"+
 			    "    T2.NIDPERSONAFK, \n"+
 			    "    T3.VNOMBRE, \n"+
 			    "    T3.VAPEPATERNO, \n"+
@@ -172,10 +167,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VUSUARIO", vcorreo);
 			usuarios = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
-				     
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl infoUsuario " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return usuarios;
 	}
 
@@ -184,7 +176,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) {
 		StringBuffer sql = new StringBuffer();
 		EstadoDocumento info = new EstadoDocumento();
-		try {
+		
 			sql.append(
 					"SELECT "+
 					"  ROW_NUMBER() OVER (ORDER BY IDESTADOCUMENTOPK) AS NITEM ,  \n"+
@@ -198,9 +190,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_IDESTADOCUMENTOPK", idEstadoDocumento);
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl infoEstadoDocumento " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return info;
 	}
 
@@ -209,7 +199,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public List<Requisitos> cbRequisitos(Long idTupac) {
 		List<Requisitos> lista = new ArrayList<Requisitos>();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 				"SELECT \n"+
 				"  T2.REQUISITOSTUPACPK, \n"+
@@ -221,10 +211,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			  parametros.addValue("P_TUPACFK", idTupac);
 			  parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			  lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
-			  
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl cbRequisitos " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
@@ -233,7 +220,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public List<EstadoDocumento> listaEstadoDocumentos() {
 		StringBuffer sql = new StringBuffer();
 		List<EstadoDocumento>  lista = new ArrayList<EstadoDocumento>();
-		try {
+		
 			sql.append(
 			   "SELECT \n"+ 
 			   "  IDESTADOCUMENTOPK, \n"+
@@ -241,9 +228,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			   " FROM "+Constantes.tablaEstadoDocumento+" \n"+
 			   " ESTADO_DOCUMENTO ORDER BY VNOMBRE");
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl listaEstadoDocumentos " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -252,7 +237,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public List<Cargo> cbCargos() {
 		StringBuffer sql = new StringBuffer();
 		List<Cargo> lista = new ArrayList<Cargo>(); 
-		try {
+		
 			sql.append(
 				"SELECT \n"+
 				" NCARGOPK, \n"+
@@ -260,10 +245,7 @@ public class RecursoDaoImpl implements RecursoDao {
 				"FROM "+Constantes.tablaCargo+" \n"+
 				"ORDER BY VNOMBRECARGO ASC");
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Cargo.class));
-			
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl listarCargos " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -272,7 +254,7 @@ public class RecursoDaoImpl implements RecursoDao {
 	public List<Persona> listaUsuariosOficina(Long idOficina) {
 		StringBuffer sql = new StringBuffer();
 		List<Persona> lista = new ArrayList<Persona>();
-		try {
+		
 			sql.append(
 				"SELECT \n"+
 			    " T1.NIDUSUARIOPK AS NUSUREGISTRA, \n" +
@@ -285,9 +267,7 @@ public class RecursoDaoImpl implements RecursoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NOFICINAFK", idOficina);
 			lista=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Persona.class));
-		} catch (Exception e) {
-			logger.error("ERROR : RecursoDaoImpl listaUsuariosOficina " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
  

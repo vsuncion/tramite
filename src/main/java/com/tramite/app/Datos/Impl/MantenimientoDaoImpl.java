@@ -11,10 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository; 
 import com.tramite.app.Datos.MantenimientoDao;
 import com.tramite.app.Entidades.Correlativo;
 import com.tramite.app.Entidades.EstadoDocumento;
@@ -49,55 +46,42 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Trabajadores> listarTrabajadores() {
 		StringBuilder stringBuilder = new StringBuilder();
 		List<Trabajadores> lsTrabajadores = new ArrayList<Trabajadores>();
-		try {
+		
 			stringBuilder.append("SELECT * FROM "+Constantes.tablaTrabajadores);
 			lsTrabajadores = namedParameterJdbcTemplate.query(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Trabajadores.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarTrabajadores " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lsTrabajadores;
 	}
 
 	@Override
 	public List<Trabajadores> buscarPorNombre(String criterio) {
 		final StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append("");
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarPorNombre " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return null;
 	}
 	  
 		       
-	@Override
-	@Transactional
+	@Override 
 	public boolean registrarTrabajador(Trabajadores trabajador) { 
 		 boolean respuesta=false;
-		try {
 		 
-		} catch (Exception e) {
-			logger.error("ERROR :MantenimientoDaoImpl  registrarTrabajador " + e.getMessage() + "---" + e.getClass());
-			 respuesta=false;
-		}
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public Trabajadores actualizarTrabajador(Trabajadores trabajador) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Trabajadores nuevoTrabajador = new Trabajadores();
-		try {
+		
 			
 			// INSERTAMOS 
 			stringBuilder.append("");
 			
 			// CONSULTAMOS
 			
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarTrabajador " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return nuevoTrabajador;
 	}
 
@@ -105,12 +89,9 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean eliminarTrabajador(Long codigo) {
 		StringBuilder stringBuilder = new StringBuilder();
 		 boolean respuesta=false;
-		try {
+		
 			stringBuilder.append("");
-		} catch (Exception e) {
-			respuesta=false;
-			logger.error("ERROR : MantenimientoDaoImpl eliminarTrabajador  " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return respuesta;
 	}
 
@@ -119,7 +100,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuilder stringBuilder = new StringBuilder();
 		 Informacion  informacion = new Informacion();
 		
-		 try {
+		 
 			 stringBuilder.append(
 				  " SELECT "+
 			      "   RAZONSOCIAL,  \n"+
@@ -133,9 +114,6 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	              " FROM "+Constantes.tablaInformacion);
 			 informacion=jdbcTemplate.queryForObject(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Informacion.class));
 			 
-		} catch (Exception e) {
-			logger.error("ERROR :  MantenimientoDaoImpl informacionMunicipalidad " + e.getMessage() + "XX---" + e.getClass());
-		}
 		return informacion;
 	}
 
@@ -143,7 +121,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Oficinas> listarOficinas() {
 		StringBuilder stringBuilder = new StringBuilder();
 		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
-		 try {
+		 
 			 stringBuilder.append(
 			  " SELECT "+
 			  "    ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
@@ -156,20 +134,17 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		      "	   NESTADO  \n"+ 
 		      " FROM "+Constantes.tablaOficinas+" ORDER BY VNOMBRE ASC");
 			 listarOficinas=namedParameterJdbcTemplate.query(stringBuilder.toString(),BeanPropertyRowMapper.newInstance(Oficinas.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarOficinas " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return listarOficinas;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean guardarOficina(Oficinas oficina) {
 		boolean respuesta = false;
 		String sql = "";
 		StringBuffer sqlcorrelativo = new StringBuffer();
 		Long idOficina = 0L;
-		 try {
+		 
 			 sql=
 			   "INSERT INTO "+Constantes.tablaOficinas+"(\n"+
 			      "VNOMBRE,  \n"+
@@ -199,10 +174,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sqlcorrelativo.toString(), parametros2);
 			 
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarOficina " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+		 
 		return respuesta;
 	}
 
@@ -211,7 +183,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		final StringBuffer sql = new StringBuffer();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
 		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
-		 try {
+		 
 			 sql.append(
 			  "SELECT "+
 			  "   ROW_NUMBER() OVER (ORDER BY NIDOFICINAPK) AS NITEM ,  \n"+
@@ -229,9 +201,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 } 
 			 
 			 listarOficinas=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Oficinas.class));
-		} catch (Exception e) {
-			logger.error("ERROR :  MantenimientoDaoImpl buscarOficinas " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return listarOficinas;
 	}
 
@@ -240,7 +210,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		final StringBuffer sql = new StringBuffer();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
 		 Oficinas  oficina = new Oficinas();
-		try {
+		
 			 sql.append(
 			  " SELECT "+
 		      "   NIDOFICINAPK,  \n"+
@@ -254,20 +224,16 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		      " FROM "+Constantes.tablaOficinas+" WHERE NIDOFICINAPK=:codigo");
 			 parametros.addValue("codigo", id);
 			 oficina = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Oficinas.class));
-			
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarOficinaId " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return oficina;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean actualizarOficina(Oficinas oficina) {
 		boolean respuesta =false; 
 		final StringBuffer sql = new StringBuffer();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
-		try {
+		
 			sql.append(
 				"UPDATE "+Constantes.tablaOficinas+
 				 " SET   VNOMBRE		 = :P_VNOMBRE,          \n"+
@@ -289,21 +255,16 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("CAUSA: MantenimientoDaoImpl actualizarOficina " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
-			respuesta =false; 
-		}
+		 
 		return respuesta;
 	}
 
-	@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED,readOnly = false,timeout =100,rollbackFor = Exception.class)
 	@Override
 	public boolean eliminarOficina(Long id) {
-		
 		boolean respuesta =false; 
 		final StringBuffer sql = new StringBuffer();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
-		try {
+		
 			sql.append(
 					"UPDATE "+Constantes.tablaOficinas+
 					 " SET   NESTADO		 = :P_NESTADO,     \n"+ 
@@ -314,10 +275,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_DFECELIMINA",  Fechas.fechaActual());
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta =true;
-		} catch (Exception e) {
-			logger.error("CAUSA: MantenimientoDaoImpl eliminarOficina " + e.getCause() + " DETALLE: " + e.getMessage() + " TRACE: " + e.getStackTrace());
-			respuesta =false; 
-		}
+		 
 		return respuesta;
 	}
 
@@ -325,7 +283,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<TipoDocumentos> listarTipoDocumento() {
 		final StringBuffer sql = new StringBuffer();
 		 List<TipoDocumentos> listaTipoDocumento = new ArrayList<TipoDocumentos>();
-		try {
+		
 			sql.append(
 				"SELECT \n"+
 				   "ROW_NUMBER() OVER (ORDER BY NIDTIPODOCUMENTOPK) AS NITEM ,  \n"+
@@ -337,18 +295,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			       "DFECREGISTRO \n"+
 			    " FROM "+Constantes.tablaTipoDocumentos);
 			listaTipoDocumento = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarTipoDocumento " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return listaTipoDocumento;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean guardarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		boolean respuesta = false;
 		String sql = "";
-		 try {
+		 
 			     sql = 
 						"INSERT INTO "+Constantes.tablaTipoDocumentos+"(\n"+
 					     "  VNOMBRE, \n"+
@@ -363,10 +318,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 					namedParameterJdbcTemplate.update(sql, parametros,keyHolder, new String[] {"NIDTIPODOCUMENTOPK"});
 					logger.info("=== CODIGO ="+keyHolder.getKey().longValue());
 					respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarTipoDocumentos " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -374,7 +326,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<TipoDocumentos> buscarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		List<TipoDocumentos> buscarTipoDocumentos = new ArrayList<TipoDocumentos>();
 		StringBuffer sql = new StringBuffer(); 
-		try {
+		
 			sql.append(
 					"SELECT \n"+
 					  " ROW_NUMBER() OVER (ORDER BY NIDTIPODOCUMENTOPK) AS NITEM ,  \n"+
@@ -393,9 +345,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			}
 			
 			buscarTipoDocumentos = namedParameterJdbcTemplate.query(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTipoDocumentos " + e.getMessage() + "---" + e.getClass()); 
-		}
+	 
 		return buscarTipoDocumentos;
 	}
 
@@ -403,7 +353,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean actualizarTipoDocumento(TipoDocumentos tipoDocumentos) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			 sql.append(
 					  "UPDATE \n"+
 				      "  "+Constantes.tablaTipoDocumentos+" SET \n"+ 
@@ -423,10 +373,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarTipoDocumento " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -434,7 +381,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean eliminarTipoDocumento(Long id) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		 try {
+		 
 			 sql.append(
 				  "UPDATE \n"+
 			      "  "+Constantes.tablaTipoDocumentos+" SET \n"+
@@ -446,10 +393,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_NESTADO", Constantes.estadoDesactivado);
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl eliminarTipoDocumento " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -457,7 +401,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public TipoDocumentos buscarTipoDocumentoId(Long id) {
 		StringBuffer sql = new StringBuffer();
 		 TipoDocumentos tipoDocumentos = new TipoDocumentos();
-		 try {
+		 
 			 sql.append(
 						"SELECT \n"+
 					       "NIDTIPODOCUMENTOPK, \n"+
@@ -471,10 +415,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 MapSqlParameterSource parametros = new MapSqlParameterSource();
 		 parametros.addValue("P_NIDTIPODOCUMENTOPK", id);
 		 tipoDocumentos=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,  BeanPropertyRowMapper.newInstance(TipoDocumentos.class));
-			 
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTipoDocumentoId " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return tipoDocumentos;
 	}
 
@@ -482,7 +423,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<TipoTramite> listarTipoTramite() {
 		StringBuffer sql = new StringBuffer();
 		List<TipoTramite> listar = new ArrayList<TipoTramite>();
-		try {
+		
 			sql.append(
 				"SELECT "+
 				" ROW_NUMBER() OVER (ORDER BY IDTIPOTRAMITEPK) AS NITEM ,  \n"+
@@ -494,10 +435,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			    " FROM "+Constantes.tablaTipoTramite
 		        );
 			listar = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(TipoTramite.class));
-			
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarTipoTramite " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return listar;
 	}
 
@@ -505,7 +443,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<TipoTramite> buscarTipoTramite(TipoTramite tipoTramite) {
 		List<TipoTramite> listarTipoTramite = new ArrayList<TipoTramite>();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 					"SELECT "+
 					" ROW_NUMBER() OVER (ORDER BY IDTIPOTRAMITEPK) AS NITEM ,  \n"+
@@ -524,9 +462,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 }
 			 
 			 listarTipoTramite = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(TipoTramite.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTipoTramite " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return listarTipoTramite;
 	}
 
@@ -534,7 +470,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public TipoTramite buscarTipoTramiteId(Long id) {
 		StringBuffer sql = new StringBuffer();
 		TipoTramite tipoTramite = new TipoTramite();
-		 try {
+		 
 			 sql.append(
 					"SELECT "+
 				    "    IDTIPOTRAMITEPK, \n" + 
@@ -548,20 +484,17 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				MapSqlParameterSource parametros = new MapSqlParameterSource();
 				parametros.addValue("P_IDTIPOTRAMITEPK", id);
 				tipoTramite = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(TipoTramite.class));
-			
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTipoTramiteId " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		 
 		return  tipoTramite;
 	}
 
-	@Transactional
+	 
 	@Override
 	public boolean eliminarTipoTramite(Long id) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 			  "UPDATE "+Constantes.tablaTipoTramite+" SET \n"+
 		      "  NESTADO="+Constantes.estadoDesactivado+" \n"+
@@ -570,19 +503,16 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_IDTIPOTRAMITEPK", id);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl eliminarTipoTramite " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
-	@Transactional
+	 
 	@Override
 	public boolean actualizarTipoTramite(TipoTramite tipoTramite) {
 		String sql ="";
 		boolean respuesta = false;
-		 try {
+		 
 			 sql =
 			   "UPDATE "+Constantes.tablaTipoTramite+" SET \n"+
 			   "  VNOMBRE      = :P_VNOMBRE, \n" + 
@@ -598,19 +528,16 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual()); 
 			 namedParameterJdbcTemplate.update(sql, parametros); 
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarTipoTramite " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
-	@Transactional
+	 
 	@Override
 	public boolean guardarTipoTramite(TipoTramite tipoTramite) {
 		boolean respuesta = false;
 		String sql ="";
-		try {
+		
 			sql=
 			   " INSERT INTO "+Constantes.tablaTipoTramite+" ( \n"+
 			   "   VNOMBRE, \n" + 
@@ -622,10 +549,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder , new String[] {"IDTIPOTRAMITEPK"});
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarTipoTramite " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -633,7 +557,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<EstadoDocumento> listarEstadoDocumento() {
 		StringBuffer sql = new StringBuffer();
 		List<EstadoDocumento>  lista = new ArrayList<EstadoDocumento>();
-		try {
+		
 			sql.append(
 				"SELECT "+
 				"  ROW_NUMBER() OVER (ORDER BY IDESTADOCUMENTOPK) AS NITEM ,  \n"+
@@ -644,9 +568,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			    "  DFECREGISTRO "+
 			    " FROM "+Constantes.tablaEstadoDocumento);
 			lista = namedParameterJdbcTemplate.query(sql.toString(),BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarEstadoDocumento " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -654,7 +576,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<EstadoDocumento> buscarEstadoDocumento(EstadoDocumento estadoDocumento) {
 		StringBuffer sql = new StringBuffer();
 		List<EstadoDocumento>  lista = new ArrayList<EstadoDocumento>();
-		try {
+		
 			sql.append(
 				"SELECT "+
 				" ROW_NUMBER() OVER (ORDER BY IDESTADOCUMENTOPK) AS NITEM ,  \n"+
@@ -671,9 +593,8 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				parametros.addValue("P_VNOMBRE","%"+estadoDocumento.getCAJABUSQUEDA()+"%");
 			}
 			lista = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(EstadoDocumento.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarEstadoDocumento " + e.getMessage() + "---" + e.getClass());
-		}
+		
+	 
 		return lista;
 	}
 
@@ -681,7 +602,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Profesiones> listarProfesiones() {
 		StringBuffer sql = new StringBuffer();
 		List<Profesiones> lista = new ArrayList<Profesiones>();
-		try {
+		
 			sql.append(
 				"SELECT "+
 					" ROW_NUMBER() OVER (ORDER BY NIDPROFESIONPK) AS NITEM ,  \n"+
@@ -693,9 +614,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			       " FROM " +Constantes.tablaProfesion + " \n"+
 			       "ORDER BY VNOMBRE ASC");
 			lista=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Profesiones.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarProfesiones " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
@@ -704,7 +623,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuffer sql =new StringBuffer();
 		List<Profesiones> lista = new ArrayList<Profesiones>();
 		
-		try {
+		
 			sql.append(
 					" SELECT "+
 				    " ROW_NUMBER() OVER (ORDER BY NIDPROFESIONPK) AS NITEM ,  \n"+
@@ -721,9 +640,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				parametros.addValue("P_VNOMBRE", "%"+profesiones.getCAJABUSQUEDA()+"%");
 			}
 			lista=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Profesiones.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarProfesiones " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
@@ -731,7 +648,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Profesiones buscarProfesionesId(Long id) {
 		StringBuffer sql =new StringBuffer();
 		Profesiones profesiones = new Profesiones();
-		 try {
+		 
 			 sql.append(
 						" SELECT "+
 					    "   NIDPROFESIONPK," +
@@ -744,9 +661,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				MapSqlParameterSource parametros = new MapSqlParameterSource();
 				parametros.addValue("P_NIDPROFESIONPK", id);
 				profesiones = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Profesiones.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarProfesionesId " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return profesiones;
 	}
 
@@ -754,7 +669,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarProfesiones(Profesiones profesiones) {
 		boolean respuesta = false;
 		String sql ="";
-		 try {
+		 
 			 sql=
 			  "INSERT INTO "+Constantes.tablaProfesion+" ( \n"+
 			  "  VNOMBRE, \n"+
@@ -767,10 +682,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql, parametros,keyHolder, new String[] {"NIDPROFESIONPK"} );
 			 logger.info("==="+keyHolder.getKey().longValue());
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarProfesiones " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -778,7 +690,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean actualizarProfesiones(Profesiones profesiones) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 				" UPDATE "+Constantes.tablaProfesion+" SET \n"+
 			    "    VNOMBRE = :P_VNOMBRE, \n"+
@@ -792,10 +704,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NESTADO", profesiones.getNESTADO());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarProfesiones " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -803,7 +712,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean eliminarProfesiones(Long id) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 				" UPDATE "+Constantes.tablaProfesion+" SET \n"+
 			    "    NESTADO = :P_NESTADO"+ 
@@ -813,10 +722,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NESTADO",Constantes.estadoDesactivado);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-	 } catch (Exception e) {
-		logger.error("ERROR : MantenimientoDaoImpl eliminarProfesiones " + e.getMessage() + "---" + e.getClass());
-		respuesta = false;
-	  }
+ 
 		return respuesta;
 	}
 
@@ -824,7 +730,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean actualizarinformacionMunicipalidad(Informacion informacion) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		 try {
+		 
 			sql.append(
 			   " UPDATE "+Constantes.tablaInformacion+" SET \n"+
 			   "   RAZONSOCIAL = :P_RAZONSOCIAL,  \n"+
@@ -846,10 +752,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_TELEFONO", informacion.getTELEFONO());
 	          namedParameterJdbcTemplate.update(sql.toString(), parametros);
 	          respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarinformacionMunicipalidad " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -857,7 +760,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Requisitos> listarRequisitos() {
 		StringBuffer sql = new StringBuffer();
 		 List<Requisitos> lista = new ArrayList<Requisitos>();
-		 try {
+		 
 			 sql.append(
 				 " SELECT "+
 				 "   ROW_NUMBER() OVER (ORDER BY REQUISITOSTUPACPK) AS NITEM ,  \n"+
@@ -873,11 +776,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 "   NUSUELIMINA \n"+
 				 " FROM "+Constantes.tablaRequisitos);
 			 lista= namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Requisitos.class));
-			 
-			    
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarRequisitos " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -885,7 +784,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Requisitos> buscarRequisitos(Requisitos requisitos) {
 		StringBuffer sql = new StringBuffer();
 		 List<Requisitos> lista = new ArrayList<Requisitos>();
-		 try {
+		 
 			 sql.append(
 					 " SELECT \n"+
 					 "    ROW_NUMBER() OVER (ORDER BY REQUISITOSTUPACPK) AS NITEM ,  \n"+
@@ -908,10 +807,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 parametros.addValue("P_VNOMBRE","%"+requisitos.getCAJABUSQUEDA()+"%");
 			 }
 			 lista=namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Requisitos.class));
-			 
-			} catch (Exception e) {
-				logger.error("ERROR : MantenimientoDaoImpl buscarRequisitos " + e.getMessage() + "---" + e.getClass());
-			}
+	 
 		return lista;
 	}
 
@@ -919,7 +815,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Requisitos buscarRequisitosId(Long id) {
 		StringBuffer sql = new StringBuffer();
 		Requisitos requisitos = new Requisitos();
-		 try {
+		 
 			 
 			 sql.append(
 					 " SELECT "+
@@ -938,10 +834,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_REQUISITOSTUPACPK", id);
 			 requisitos=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Requisitos.class));
-				
-			} catch (Exception e) {
-				logger.error("ERROR : MantenimientoDaoImpl buscarRequisitosId " + e.getMessage() + "---" + e.getClass());
-			}
+ 
 		return requisitos;
 	}
 
@@ -949,7 +842,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarRequisitos(Requisitos requisitos) {
 		boolean respuesta = false;
 		String sql ="";
-		 try {
+		 
 			 sql=" INSERT INTO "+Constantes.tablaRequisitos+" ( \n"+ 
 				 "    VNOMBRE, \n"+
 				 "    VDESCRIPCION) \n"+  
@@ -961,10 +854,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 namedParameterJdbcTemplate.update(sql, parametros,keyHolder, new String[] {"NIDOFICINAPK"}); 
 			 respuesta = true; 
 			 logger.info("++"+keyHolder.getKey().longValue());
-			} catch (Exception e) {
-				logger.error("ERROR : MantenimientoDaoImpl guardarRequisitos " + e.getMessage() + "---" + e.getClass());
-				respuesta = false; 
-			}
+ 
 		return respuesta;
 	}
 
@@ -972,7 +862,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean actualizarRequisitos(Requisitos requisitos) {
 		boolean respuesta = false;
 		StringBuffer sql = new StringBuffer();
-		 try {
+		 
 			 sql.append(
 					 " UPDATE "+Constantes.tablaRequisitos+" SET \n"+ 
 					 "    VNOMBRE = :P_VNOMBRE, \n"+
@@ -989,10 +879,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
-			} catch (Exception e) {
-				logger.error("ERROR : MantenimientoDaoImpl actualizarRequisitos " + e.getMessage() + "---" + e.getClass());
-				respuesta = false;
-			}
+ 
 		return respuesta;
 	}
 
@@ -1000,7 +887,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean eliminarRequisitos(Long id) {
 		boolean respuesta = false;
 		StringBuffer sql = new StringBuffer();
-		 try {
+		 
 			 sql.append(
 					 " UPDATE "+Constantes.tablaRequisitos+" SET \n"+  
 					 "    NESTADO = :P_NESTADO, \n"+
@@ -1013,10 +900,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 
 			 namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			 respuesta = true;
-			} catch (Exception e) {
-				logger.error("ERROR : MantenimientoDaoImpl eliminarRequisitos" + e.getMessage() + "---" + e.getClass());
-				respuesta = false;
-			}
+ 
 		return respuesta;
 	}
 
@@ -1024,7 +908,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Tupac> listarTupac() {
 		StringBuffer sql = new StringBuffer();
 		List<Tupac> lista = new ArrayList<Tupac>();
-		try {
+		
 			sql.append(
 			   " SELECT T1.TUPACPK AS TUPACPK,"+ 
 			   "    ROW_NUMBER() OVER (ORDER BY T1.TUPACPK) AS NITEM ,  \n"+
@@ -1040,11 +924,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			);
 
 			lista=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Tupac.class));
-  
-  
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -1052,7 +932,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Tupac> buscarTupac(Tupac tupac) {
 		StringBuffer sql = new StringBuffer();
 		List<Tupac> lista = new ArrayList<Tupac>();
-		try {
+		
 			sql.append(
 			   " SELECT \n"+
 			   "    ROW_NUMBER() OVER (ORDER BY T1.TUPACPK) AS NITEM ,  \n"+
@@ -1072,10 +952,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
             }
             
             lista=namedParameterJdbcTemplate.query(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Tupac.class));
-  
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -1084,7 +961,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuffer sql = new StringBuffer();
 		 Tupac  tupac = new Tupac(); 
 		 
-		try {
+		
 			sql.append(
 				   " SELECT T1.TUPACPK AS TUPACPK,"+ 
 				   " 	T1.VNOMBRE AS VNOMBRE,"+ 
@@ -1100,10 +977,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();  
              parametros.addValue("P_TUPACPK",id);
             tupac=namedParameterJdbcTemplate.queryForObject(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Tupac.class));
-            
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTupacPorId " + e.getMessage() + "---" + e.getClass()); 
-		}
+  
 		return tupac;
 	}
 
@@ -1111,7 +985,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarTupac(Tupac tupac) {
 		String sql ="";
 		boolean respuesta = false;
-		try {
+		
 			 sql =
 				"INSERT INTO "+Constantes.tablaTupac+" ( \n"+
 				"	 VNOMBRE, 		\n" +
@@ -1135,19 +1009,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql, parametros,keyHolder,new String[] {"TUPACPK"});
 			respuesta =true;
 			logger.info("++"+keyHolder.getKey().longValue());
-		} catch (Exception e) {
-			logger.error("ERROR :MantenimientoDaoImpl guardarTupac " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean actualizarTupac(Tupac tupac) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 			   " UPDATE "+Constantes.tablaTupac+" SET \n"+
 			   "    VNOMBRE      = :P_VNOMBRE, 	  \n" +
@@ -1169,19 +1039,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl actualizarTupac " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean eliminarTupac(Long id) {
 		boolean respuesta = false;
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 			  " UPDATE "+Constantes.tablaTupac+" SET \n"+
 			  "    NESTADO          = :P_NESTADO, \n" +
@@ -1193,10 +1059,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta =true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl eliminarTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
@@ -1204,7 +1067,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<RequisitosTupac> listarRequisitosTupacPorIdTupac(Long id) {
 		StringBuffer sql = new StringBuffer();
 		List<RequisitosTupac> lista = new ArrayList<RequisitosTupac>();
-		try {
+		
 			 sql.append(
 			   " SELECT "+
 			   "    ROW_NUMBER() OVER (ORDER BY T1.NREQTUPACPK) AS NITEM ,  \n"+
@@ -1220,18 +1083,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 MapSqlParameterSource parametros = new MapSqlParameterSource();
 			 parametros.addValue("P_TUPACFK", id);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(RequisitosTupac.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarRequisitosTupacPorIdTupac " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean guardarRequisitosTupac(RequisitosTupac requisitosTupac) {
 		String sql ="";
 		boolean respuesta = false;
-		try {
+		
 			sql=
 			  " INSERT INTO "+Constantes.tablaRequisitosTupac+" ( \n"+
 			  "   TUPACFK, \n"+
@@ -1244,19 +1104,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql, parametros,keyHolder, new String[] {"NREQTUPACPK"});
 			logger.info("++"+keyHolder.getKey().longValue());	
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl guardarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean activarRequisitosTupac(Long id) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 			   " UPDATE "+Constantes.tablaRequisitosTupac+" SET \n"+
 			   "    NESTADO= :P_NESTADO, \n" +
@@ -1268,19 +1124,15 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl activarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean eliminarRequisitosTupac(Long id) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 			   " UPDATE "+Constantes.tablaRequisitosTupac+" SET \n"+
 			   "    NESTADO= :P_NESTADO, \n" +
@@ -1292,10 +1144,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_DFECMODIFICA", Fechas.fechaActual());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl eliminarRequisitosTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
@@ -1304,7 +1153,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		 StringBuffer sql = new StringBuffer();
 		 RequisitosTupac requisitosTupac = new  RequisitosTupac();
 		 List<RequisitosTupac> listaRequisitosTupac = new  ArrayList<RequisitosTupac>();
-		 try {
+		 
 			 sql.append(
 					   " SELECT "+
 					   "    T1.NREQTUPACPK, \n"+
@@ -1325,10 +1174,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 if(listaRequisitosTupac.size()>0) {
 				 requisitosTupac = listaRequisitosTupac.get(0);
 			 }
-			 
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarPorTupacRequisitos " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return requisitosTupac;
 	}
 
@@ -1336,7 +1182,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Persona> listarTrabajadorPersona() {
 		List<Persona>  listaPersonas = new ArrayList<Persona>();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 			 " SELECT \n"+ 
 			 "    ROW_NUMBER() OVER (ORDER BY T1.NIDPERSONAPK) AS NITEM ,  \n"+
@@ -1356,9 +1202,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 " INNER JOIN "+Constantes.tablaOficinas+"     T4 ON T2.NOFICINAFK=T4.NIDOFICINAPK \n"+
 			 " LEFT JOIN "+Constantes.tablaCargo+"         T5 ON T2.NCARGOFK=T5.NCARGOPK");
 			listaPersonas = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Persona.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return listaPersonas;
 	}
 
@@ -1366,7 +1210,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Persona> buscarTrabajadorPersona(Persona persona) {
 		List<Persona>  listaPersonas = new ArrayList<Persona>();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 					 " SELECT \n"+ 
 					 " ROW_NUMBER() OVER (ORDER BY T1.NIDPERSONAPK) AS NITEM ,  \n"+
@@ -1406,9 +1250,8 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		        	 }
 		 
 					listaPersonas = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Persona.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
-		}
+		
+	 
 		return listaPersonas;
 	}
 
@@ -1416,7 +1259,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Persona buscarTrabajadorPersonaPorId(Long id) {
 		Persona persona = new Persona();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 			  " SELECT "+
 		      "	  T1.VNOMBRE,	      \n"+
@@ -1439,21 +1282,17 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NIDTRABAJADORPK", id);
 			persona=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
-	  
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarTrabajadorPersonaPorId " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return persona;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean guardarTrabajadorPersona(Persona persona) {
 		String sql=""; 
 		Long idPersona;
 		boolean respuesta = false;
 		
-		try {
+		
 			sql="INSERT INTO "+Constantes.tablaPersona+" ( \n"+
 		        "	 VNOMBRE,	  \n"+
 		        "	 VAPEPATERNO,  \n"+
@@ -1507,15 +1346,11 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql, parametros2,keyHolder2, new String[] {"NIDTRABAJADORPK"}); 
 			logger.info("++"+keyHolder2.getKey().longValue());
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl guardarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean actualizarTrabajadorPersona(Persona persona) {
 		
 		boolean respuesta = false;
@@ -1523,7 +1358,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuffer sql1 =  new StringBuffer();
 		StringBuffer sql2 =  new StringBuffer();
 		
-		try {
+		
 			sql.append(
 				" UPDATE "+Constantes.tablaPersona+" SET \n" +
 			    "	  VNOMBRE        = :P_VNOMBRE,     \n"+
@@ -1576,10 +1411,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql2.toString(), parametros3);
 			
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl actualizarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
@@ -1588,7 +1420,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		boolean respuesta = false;
 		StringBuffer sql = new StringBuffer();
 				
-		try {
+		
 			sql.append(
 			  " UPDATE "+Constantes.tablaTrabajadores+" SET "+
 			  "   NESTADO= :P_NESTADO \n"+ 
@@ -1598,10 +1430,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NESTADO", Constantes.estadoDesactivado);
 			namedParameterJdbcTemplate.update(sql.toString(),parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR :MantenimientoDaoImpl  eliminarTrabajadorPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
@@ -1609,7 +1438,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Usuarios> listarUsuarioPersona() {
 		List<Usuarios> lsUsuarioPersona = new ArrayList<Usuarios>();
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 			 " SELECT \n"+ 
 			 "    ROW_NUMBER() OVER ( ORDER BY T1.NIDTRABAJADORPK )  AS NITEM, \n"+
@@ -1627,9 +1456,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 " LEFT JOIN OFICINA T5 ON T3.NOFICINAFK=T5.NIDOFICINAPK \n"+
 			 " LEFT JOIN PERFIL T6 ON T4.NPERFILFK=T6.NIDPERFILPK \n");
 			lsUsuarioPersona=namedParameterJdbcTemplate.query(sql.toString(),BeanPropertyRowMapper.newInstance(Usuarios.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lsUsuarioPersona;
 	}
 
@@ -1638,7 +1465,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		List<Usuarios> lsUsuarioPersona = new ArrayList<Usuarios>();
 		StringBuffer sql = new StringBuffer();
 	 
-			try {
+			
 				sql.append(
 				 " SELECT \n"+ 
 				 "     ROW_NUMBER() OVER ( ORDER BY T1.NIDTRABAJADORPK )  AS NITEM, \n"+
@@ -1676,9 +1503,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	        	 }
 				
 				 lsUsuarioPersona=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lsUsuarioPersona;
 	}
 
@@ -1686,7 +1511,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Usuarios buscarUsuarioPersonaPorId(Long id) {
 		StringBuffer sql = new StringBuffer();
 		Usuarios usuarios = new Usuarios();
-		try {
+		
 			sql.append(
 			" SELECT \n"+
 			"      ROW_NUMBER() OVER ( ORDER BY T1.NIDTRABAJADORPK )  AS NITEM,\n"+
@@ -1710,9 +1535,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NIDUSUARIOPK", id);
 			usuarios=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Usuarios.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarUsuarioPersonaPorId " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return usuarios;
 	}
 
@@ -1720,7 +1543,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarUsuarioPersona(Usuarios usuarios) {
 		boolean respuesta = false;
 		Long idUsuario ;		 
-		try {
+		
 			String sql = 
 					" INSERT INTO "+Constantes.tablaUsuario+" ( \n"+
 				    "   NTRABAJADORFK, \n"+
@@ -1756,10 +1579,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 namedParameterJdbcTemplate.update(sql, parametros2, keyHolder2 , new String[] {"NIDUSUAPERFILPK"} );
 				 logger.info("++"+keyHolder2.getKey().longValue()); 
 				respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarUsuarioPersona" + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -1768,7 +1588,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		boolean respuesta = false;
 		StringBuffer sqlUsuario = new StringBuffer();
 		StringBuffer sqlUsuarioPerfil = new StringBuffer();
-		try {
+		
 			sqlUsuario.append(
 			" UPDATE "+Constantes.tablaUsuario+" SET \n"+
 			"   NOFICINAFK   = :P_NOFICINAFK, \n"+
@@ -1799,10 +1619,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros2.addValue("P_NIDUSUAPERFILPK", usuarios.getNIDUSUAPERFILFK());
 			namedParameterJdbcTemplate.update(sqlUsuarioPerfil.toString(), parametros2);
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl actualizarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -1812,7 +1629,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		StringBuffer sqlUsuario =new StringBuffer();
 		StringBuffer sqlUsuarioPerfil =new StringBuffer();
 		
-		try {
+		
 			sqlUsuario.append("UPDATE "+Constantes.tablaUsuario+" SET NESTADO= :P_NESTADO WHERE NIDUSUARIOPK= :P_NIDUSUARIOPK");
 			MapSqlParameterSource parametros= new MapSqlParameterSource();
 			parametros.addValue("P_NESTADO", Constantes.estadoDesactivado);
@@ -1825,10 +1642,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros2.addValue("P_NIDUSUAPERFILPK", idUsuarioPerfil);
 			namedParameterJdbcTemplate.update(sqlUsuarioPerfil.toString(), parametros2);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl eliminarUsuarioPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return respuesta;
 	}
 
@@ -1836,7 +1650,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Perfiles> listarPerfiles() {
 		List<Perfiles> lsPerfiles = new ArrayList<Perfiles>();
 		StringBuffer sql = new StringBuffer();
-		 try {
+		 
 			 sql.append(
 			   " SELECT \n"+
 			   " ROW_NUMBER() OVER (ORDER BY NIDPERFILPK) AS NITEM ,  \n"+
@@ -1846,9 +1660,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			   " 	NESTADO \n" +
 			   " FROM "+Constantes.tablaPerfil);
 			 lsPerfiles=namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Perfiles.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarPerfiles " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lsPerfiles;
 	}
 
@@ -1856,7 +1668,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean guardarFeriado(Feriados feriados) {
 		String sql = "";
 		boolean respuesta = false;
-		try {
+		
 			sql=" INSERT INTO "+Constantes.tablaFeriados+" ( \n"+
 		        "   DFERIADO, \n"+
 		        "   VDESCRIPCION ) \n"+
@@ -1870,10 +1682,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			namedParameterJdbcTemplate.update(sql, parametros,keyHolder,new String[] {"NIDFERIADOPK"});
 			 logger.info("++"+keyHolder.getKey().longValue()); 
 			 respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl guardarFeriado " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -1881,7 +1690,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean eliminarFeriado(Long idFeriado) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 				"UPDATE "+Constantes.tablaFeriados+
 				" SET NESTADO = :P_NESTADO \n"+
@@ -1891,10 +1700,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NESTADO", Constantes.estadoDesactivado);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl eliminarFeriado " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+ 
 		return respuesta;
 	}
 
@@ -1902,7 +1708,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Feriados> listarFeriados() {
 		StringBuffer sql = new StringBuffer();
 		List<Feriados> lista = new ArrayList<Feriados>();
-		try {
+		
 			sql.append(
 			  " SELECT \n"+
 			  "	 ROW_NUMBER() OVER ( ORDER BY NIDFERIADOPK )  AS NITEM, \n"+
@@ -1913,9 +1719,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			  " FROM "+Constantes.tablaFeriados+" \n"+ 
 			  " ORDER BY NIDFERIADOPK DESC");
 			lista = namedParameterJdbcTemplate.query(sql.toString(), BeanPropertyRowMapper.newInstance(Feriados.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarFeriados " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -1923,7 +1727,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public List<Feriados> buscarFeriados(Feriados feriados) {
 		StringBuffer sql = new StringBuffer();
 		List<Feriados> lista = new ArrayList<Feriados>();
-		try {
+		
 			sql.append(
 			  " SELECT \n"+
 			  "	 ROW_NUMBER() OVER ( ORDER BY NIDFERIADOPK )  AS NITEM, \n"+
@@ -1937,9 +1741,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VDESCRIPCION", "%"+feriados.getCAJABUSQUEDA()+"%");
 			lista = namedParameterJdbcTemplate.query(sql.toString(),parametros, BeanPropertyRowMapper.newInstance(Feriados.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl buscarFeriados " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
@@ -1947,7 +1749,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Persona infoPersona(Persona persona) {
 		StringBuffer sql = new StringBuffer();
 		Persona infoPersona = new Persona();
-		try {
+		
 			sql.append(
 				"SELECT              \n"+
 				" T2.VNOMBRE,        \n"+
@@ -1960,9 +1762,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VNUMERODOC", persona.getVNUMERODOC());
 			infoPersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl infoPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return infoPersona;
 	}
 
@@ -1971,7 +1771,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 		List<Correlativo>  lista = new ArrayList<Correlativo>();
 		StringBuffer sql = new StringBuffer();
 		 MapSqlParameterSource parametros = new MapSqlParameterSource(); 
-		try {
+		
 			sql.append(
 				"SELECT \n" +
 				"  ROW_NUMBER() OVER ( ORDER BY T1.NCORRELATIVOPK )  AS NITEM, \n" +
@@ -1987,9 +1787,6 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			 parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			 lista = namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Correlativo.class));
 	 
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl listarCorrelativos " + e.getMessage() + "---" + e.getClass());
-		}
 		return lista;
 	}
 
@@ -1997,7 +1794,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public Correlativo infoCorrelativo(Long idcorrelativo) {
 		StringBuffer sql = new StringBuffer();
 		Correlativo info = new Correlativo();
-		try {
+		
 			sql.append(
 				 "SELECT \n"+
 				 "  ROW_NUMBER() OVER ( ORDER BY T1.NCORRELATIVOPK )  AS NITEM, \n"+
@@ -2012,9 +1809,6 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NCORRELATIVOPK", idcorrelativo); 
 			info =namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Correlativo.class));
   
-		} catch (Exception e) {
-			logger.error("ERROR : MantenimientoDaoImpl infoCorrelativo " + e.getMessage() + "---" + e.getClass());
-		}
 		return info;
 	}
 
@@ -2022,7 +1816,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	public boolean actualizarCorrelativo(Correlativo formCorrelativo) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 				"UPDATE "+Constantes.tablaCorrelativos+" SET \n"+
 			    " NVALOR_ACTUAL = :P_NVALOR_ACTUAL \n"+
@@ -2032,10 +1826,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			parametros.addValue("P_NCORRELATIVOPK", formCorrelativo.getNCORRELATIVOPK());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			respuesta = false;
-			logger.error("ERROR : MantenimientoDaoImpl actualizarCorrelativo " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		return respuesta;
 	}	
 

@@ -5,7 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;  
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.tramite.app.Datos.RecursoDao;
 import com.tramite.app.Entidades.Cargo;
 import com.tramite.app.Entidades.EstadoDocumento;
@@ -32,6 +35,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	private MantenimientoServicio mantenimientoServicio;
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbTipoDocumentoPersona() {
 		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
 		int[] listaTipoDocumentoPersona = Constantes.listaTipoDocumentoPersona;
@@ -53,6 +57,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbTipoDocuemnto() {
 		List<TipoDocumentos> listarTipoDocuemntoCarga = new ArrayList<TipoDocumentos>();
 		List<Seleccion> cbListarTipoDocuemnto = new ArrayList<Seleccion>();
@@ -70,6 +75,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbTupa() {
 		List<Tupac> listarTupaCarga = new ArrayList<Tupac>();
 		List<Seleccion> cbListarTipoDocuemnto = new ArrayList<Seleccion>();
@@ -87,16 +93,19 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public String numeroExpediente(Long idoficina) {
 		return recursoDao.numeroExpediente(idoficina);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Usuarios infoUsuario(String vcorreo) {
 		return recursoDao.infoUsuario(vcorreo);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbOficinasAtender(Long idoficiActual) {
 		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
 		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
@@ -115,6 +124,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbAccionesAtender() {
 		List<EstadoDocumento> listaEstadoDocumento = new ArrayList<EstadoDocumento>();
 		List<Seleccion> listaEstadoDocumentoFinal = new ArrayList<Seleccion>();
@@ -137,16 +147,19 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Oficinas infoOficina(Long idoficina) {
 		return mantenimientoServicio.buscarOficina(idoficina);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) {
 		return recursoDao.infoEstadoDocumento(idEstadoDocumento);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbRequisitos(Long idTupac) {
 		List<Requisitos> listaRequisitos = new ArrayList<Requisitos>();
 		List<Seleccion> cbRequisito = new ArrayList<Seleccion>();
@@ -163,6 +176,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> listaEstadoDocumentos() {
 		List<Seleccion> listaFinal = new ArrayList<Seleccion>();
 		List<EstadoDocumento> lista = new ArrayList<EstadoDocumento>();
@@ -177,6 +191,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbOficinasReportes() {
 		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
 		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
@@ -193,6 +208,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbOCargos() {
 		List<Cargo> listarCargo = new ArrayList<Cargo>();
 		List<Seleccion> listaCargoFinal = new ArrayList<Seleccion>();
@@ -208,6 +224,7 @@ public class RecursoServiceImpl implements RecursoServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Seleccion> cbUsuariosOficina(Long idOficina) {
 		List<Persona> listarUsuariosOficina = new ArrayList<Persona>();
 		List<Seleccion> listarUsuariosOficinaFinal = new ArrayList<Seleccion>();

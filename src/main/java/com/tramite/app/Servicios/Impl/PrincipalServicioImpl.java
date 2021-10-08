@@ -45,6 +45,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarPrePersona(PrePersona prePersona) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
@@ -80,7 +81,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		boolean respuesta = false;
@@ -97,26 +98,31 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Persona busquedaSolicitante(Expediente expediente) { 
 		return principalDao.busquedaSolicitante(expediente);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public boolean guardarExpedienteSimple(Expediente expediente) {
 		return principalDao.guardarExpedienteSimple(expediente);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public Long guardarPreTupac(Expediente expediente) { 
 		return principalDao.guardarPreTupac(expediente);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public Expediente preTupacExpediente(Long idprexpediente) { 
 		return principalDao.preTupacExpediente(idprexpediente);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarPreRequisito(PreRequisitoTupa preRequisitoTupa) { 
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		boolean respuesta = principalDao.guardarPreRequisito(preRequisitoTupa);
@@ -131,11 +137,13 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<PreRequisitoTupa> listaPreRequisitos(Long idprexpediente) { 
 		return principalDao.listaPreRequisitos(idprexpediente);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public  List<Seleccion> listasTupacRequisitos() { 
 		List<Seleccion> listafinal = new ArrayList<Seleccion>();
 		List<Tupac> lista = principalDao.listasTupacRequisitos();
@@ -149,27 +157,32 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) { 
 		return principalDao.infoPreRequisitoTupa(preRequisitoTupa);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente) {
 		principalDao.guardarDetalleArchivosExpedienteTupa(formExpediente);
 		
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
 		principalDao.eliminarArchivoRequerimeinto(idprexpediente, idrequisito);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<RequisitosTupac> listaRequerimientosTupac(Long idtupac) {  
 		return mantenimientoServicio.listarRequisitosTupacPorIdTupac(idtupac);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
 		PersonaJuridica personaJuridica = new PersonaJuridica();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
@@ -189,6 +202,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PrePersona buscarPrepersona(PrePersona prePersona) { 
 		return principalDao.buscarPrepersona(prePersona);
 	}

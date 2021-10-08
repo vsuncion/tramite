@@ -5,15 +5,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.jdbc.core.BeanPropertyRowMapper; 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository; 
 
 import com.tramite.app.Datos.PrincipalDao;
 import com.tramite.app.Entidades.Expediente;
@@ -39,7 +37,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		StringBuffer sql = new StringBuffer();
 		Persona infoPersona = new Persona();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
-		try {
+		
 
 			switch (tipoPersona) {
 			case Constantes.tipoPersonaNatural:
@@ -65,10 +63,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			case Constantes.tipoPersonaJuridica:
 				break;
 			}
-
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl buscarPersona " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return infoPersona;
 	}
 
@@ -76,7 +71,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public boolean guardarPrePersona(PrePersona prePersona) {
 		String sql = "";
 		boolean respuesta = false;
-		try {
+		
           sql=
         	" INSERT INTO "+Constantes.tablaPrePersona+" ( \n" +
             "   NTIPO_PERSONA,       \n"+
@@ -121,10 +116,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
           namedParameterJdbcTemplate.update(sql, parametros, keyHolder,new String[] {"NIDPREPERSONAPK"}); 
           logger.info("++"+keyHolder.getKey().longValue()); 
           respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl guardarPrePersona " + e.getMessage() + "---" + e.getClass());
-			respuesta= false;
-		}
+	 
 		return respuesta;
 	}
 
@@ -144,7 +136,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		String sqlInserccionPersonaJuridica = "";
 		StringBuffer sqlActualizarEstadoPrepersona= new StringBuffer();
 		Long idPersona = 0L;
-		try {
+		
 			sqlConsultar.append(
 			   " SELECT "+
 			   "    NTIPO_PERSONA, \n"+
@@ -252,11 +244,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			 parametrosactprepersona.addValue("P_VCODIGOACTIVACION", codigoActivacion);
 			 namedParameterJdbcTemplate.update(sqlActualizarEstadoPrepersona.toString(), parametrosactprepersona);
 			respuesta = true;
-			
-		} catch (Exception e) { 
-			logger.error("ERROR : PrincipalDaoImpl confirmacionCodigoActivacion " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+		 
 		return respuesta;
 	}
 
@@ -264,7 +252,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public Persona busquedaSolicitante(Expediente expediente) {
 		StringBuffer sql  = new StringBuffer();
 		Persona persona = new Persona(); 
-		try {
+		
 			sql.append(
 			    "SELECT  \n"+
 	    		" T2.NIDPERSONAPK, \n"+
@@ -298,22 +286,18 @@ public class PrincipalDaoImpl implements PrincipalDao {
 				persona = null;
 			}
 			
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl busquedaSolicitante " + e.getMessage() + "---" + e.getClass());
-			persona = null;
-		}
+ 
 		return persona;
 	}
 
-	@Override
-	@Transactional
+	@Override 
 	public boolean guardarExpedienteSimple(Expediente expediente) {
 		String sql ="";
 		Long idExpediente =0L;
 		StringBuffer sql3 = new StringBuffer();
 		StringBuffer sql4 = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 		   sql=
 			 "INSERT INTO "+Constantes.tablaExpediente+" ( \n"+
 		     "   VCODIGO_EXPEDIENTE,  \n"+
@@ -425,10 +409,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	   			}
 		
 		respuesta =true;
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl guardarExpedienteSimple " + e.getMessage() + "---" + e.getClass());
-			respuesta =false;
-		}
+		 
 		return respuesta;
 	}
 
@@ -436,7 +417,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public Long guardarPreTupac(Expediente expediente) {
 		StringBuffer sql = new StringBuffer();
 		Long idpretupacexpediente = 0L;
-		try {
+		
 			sql.append(
 			  "INSERT INTO "+Constantes.tablaPrExpediente+" ( \n"+
 			  "   TIPOPERSONAFK,      \n"+
@@ -478,10 +459,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
             KeyHolder  keyHolder = new GeneratedKeyHolder();
 			namedParameterJdbcTemplate.update(sql.toString(), parametros,keyHolder,new String[] {"IDPREEXPEDIENTEPK"});
 			idpretupacexpediente = keyHolder.getKey().longValue();
-			
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl guardarPreTupac " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return idpretupacexpediente;
 	}
 
@@ -489,7 +467,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public Expediente preTupacExpediente(Long idprexpediente) {
 		StringBuffer sql = new StringBuffer();
 		Expediente infoExpediente = new Expediente();
-		try {
+		
 			sql.append(
 				"SELECT \n"+
 				"   T1.IDPREEXPEDIENTEPK, \n"+
@@ -517,10 +495,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_IDPREEXPEDIENTEPK", idprexpediente);
 			infoExpediente=namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Expediente.class));
-			
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl preTupacExpediente " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return infoExpediente;
 	}
 
@@ -528,7 +503,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public boolean guardarPreRequisito(PreRequisitoTupa preRequisitoTupa) {
 		StringBuffer sql = new StringBuffer();
 		boolean respuesta = false;
-		try {
+		
 			sql.append(
 			 "INSERT INTO "+Constantes.tablaPreRequisitosTupac+" ( \n"+
 			 "   IDPREEXPEDIENTEFK,  \n"+
@@ -553,10 +528,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_VEXTENSION", preRequisitoTupa.getVEXTENSION());
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
 			respuesta = true;
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl guardarPreRequisito " + e.getMessage() + "---" + e.getClass());
-			respuesta = false;
-		}
+		 
 		return respuesta;
 	}
 
@@ -565,7 +537,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 		List<PreRequisitoTupa>  lista = new ArrayList<PreRequisitoTupa>();
 		StringBuffer sql = new StringBuffer();
 				
-		try {
+		
 			sql.append(
 			" SELECT \n"+ 
 			"  T1.IDPREREQUISITOPK, \n"+
@@ -577,9 +549,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_IDPREEXPEDIENTEFK", idprexpediente);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl listaPreRequisitos " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return lista;
 	}
 
@@ -587,7 +557,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public List<Tupac> listasTupacRequisitos() {
 		StringBuffer sql = new StringBuffer();
 		List<Tupac> lista = new ArrayList<Tupac>();
-		try { 
+		 
 			sql.append(
 			" SELECT \n"+
 			"  DISTINCT T2.TUPACPK, \n"+
@@ -598,9 +568,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Tupac.class));
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl listasTupacRequisitos " + e.getMessage() + "---" + e.getClass());
-		}
+ 
 		return lista;
 	}
 
@@ -608,7 +576,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) {
 		StringBuffer sql = new StringBuffer();
 		PreRequisitoTupa info = new PreRequisitoTupa();
-		try {
+		
 			sql.append(
 			 "SELECT \n"+
 			 " IDPREREQUISITOPK, \n"+
@@ -622,10 +590,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_TUPACFK", preRequisitoTupa.getTUPACFK());
 			parametros.addValue("P_REQUISITOFK", preRequisitoTupa.getREQUISITOFK());
 			info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(PreRequisitoTupa.class));
-		
-		}catch(Exception e) {
-			logger.error("ERRORX : PrincipalDaoImpl infoPreRequisitoTupa " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return info;
 	}
 
@@ -633,7 +598,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente) {
 		/*
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append(
 			   "INSERT INTO "+Constantes.tablaArchivosTupa+" \n"+
 			   "(EXPEDIENTEFK,TUPAFK,REQUISITOFK,VNOMBRE_ARCHIVO,VUBICACION_ARCHIVO,VEXTENSION) \n"+
@@ -644,7 +609,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			parametros.addValue("P_IDPREEXPEDIENTEFK", formExpediente.getIDPREEXPEDIENTEPK());
 			parametros.addValue("P_NESTADO", Constantes.estadoActivado);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
-		} catch (Exception e) {
+		
 			// TODO: handle exception
 		}
 		*/
@@ -653,15 +618,13 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	@Override
 	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
 		StringBuffer sql = new StringBuffer();
-		try {
+		
 			sql.append("DELETE FROM "+Constantes.tablaPreRequisitosTupac+" WHERE IDPREEXPEDIENTEFK= :P_IDPREEXPEDIENTEFK AND IDPREREQUISITOPK= :P_IDPREREQUISITOPK");
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_IDPREEXPEDIENTEFK", idprexpediente);
 			parametros.addValue("P_IDPREREQUISITOPK", idrequisito);
 			namedParameterJdbcTemplate.update(sql.toString(), parametros);
-		} catch (Exception e) {
-			logger.error("ERRORX : PrincipalDaoImpl eliminarArchivoRequerimeinto " + e.getMessage() + "---" + e.getClass());
-		}
+		 
 		
 	}
 
@@ -669,7 +632,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public PersonaJuridica buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
 		StringBuffer sql = new StringBuffer();
 		PersonaJuridica personaJuridica = new PersonaJuridica();
-		try {
+		
 			sql.append(
 			    "SELECT  \n"+
 	    		"	NIDPERJURIDICAPK	,  \n"+
@@ -689,10 +652,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			MapSqlParameterSource parametro = new MapSqlParameterSource();
 			parametro.addValue("P_VRUC", prePersona.getVRUC());
 			personaJuridica = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametro, BeanPropertyRowMapper.newInstance(PersonaJuridica.class));
- 
-		} catch (Exception e) {
-			logger.error("ERRORX : PrincipalDaoImpl buscarPersonaJuridicaDuplicada " + e.getMessage() + "---" + e.getClass());
-		}
+  
 		return personaJuridica;
 	}
 
@@ -700,7 +660,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	public PrePersona buscarPrepersona(PrePersona prePersona) {
 		StringBuffer sql = new StringBuffer();
 		PrePersona infoPrePersona = new PrePersona();
-		try {
+		
 			sql.append(
 			   " SELECT "+
 			   "	NIDPREPERSONAPK, \n"+
@@ -722,10 +682,7 @@ public class PrincipalDaoImpl implements PrincipalDao {
 				parametrosConsulta.addValue("P_VCODIGOACTIVACION", prePersona.getVCODIGOACTIVACION());
 				parametrosConsulta.addValue("P_NESTADO", Constantes.estadoDesactivado);
 				infoPrePersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametrosConsulta,BeanPropertyRowMapper.newInstance(PrePersona.class));
-		 
-		} catch (Exception e) {
-			logger.error("ERROR : PrincipalDaoImpl buscarPrepersona " + e.getMessage() + "---" + e.getClass());
-		}
+	 
 		return infoPrePersona;
 	}
 
