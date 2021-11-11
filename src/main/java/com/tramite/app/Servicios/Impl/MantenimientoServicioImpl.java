@@ -2,8 +2,7 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,8 @@ import com.tramite.app.utilitarios.Fechas;
 @Service
 public class MantenimientoServicioImpl implements MantenimientoServicio {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(MantenimientoServicioImpl.class);
 
 	@Autowired
 	private MantenimientoDao mantenimientoDao;
@@ -57,7 +57,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		try {
 			informacion = mantenimientoDao.informacionMunicipalidad();
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.info("ERROR =" + this.getClass().getName()+".informacionMunicipalidad ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
 		
 		return informacion;
@@ -117,7 +117,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Oficinas buscarOficina(Long id) {
-		return mantenimientoDao.buscarOficinaId(id);
+		Oficinas oficinas = new Oficinas();
+	   try {
+		   oficinas = mantenimientoDao.buscarOficinaId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarOficina ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return oficinas;
 	}
 
 	@Override
@@ -257,7 +265,14 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public TipoDocumentos buscarTipoDocumentoId(Long id) {
-		return mantenimientoDao.buscarTipoDocumentoId(id);
+		TipoDocumentos tipoDocumentos = new TipoDocumentos();
+		try {
+			tipoDocumentos = mantenimientoDao.buscarTipoDocumentoId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return tipoDocumentos;
 	}
 
 	@Override
@@ -275,7 +290,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public TipoTramite buscarTipoTramiteId(Long id) {
-		return mantenimientoDao.buscarTipoTramiteId(id);
+		TipoTramite tipoTramite = new TipoTramite();
+		try {
+			tipoTramite = mantenimientoDao.buscarTipoTramiteId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return tipoTramite;
 	}
 
 	@Override
@@ -365,7 +388,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Profesiones buscarProfesionesId(Long id) {
-		return mantenimientoDao.buscarProfesionesId(id);
+		Profesiones profesiones = new Profesiones();
+		try {
+			profesiones =mantenimientoDao.buscarProfesionesId(id); 
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarProfesionesId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return profesiones;
 	}
 
 	@Override
@@ -437,7 +468,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			respuesta = mantenimientoDao.actualizarinformacionMunicipalidad(informacion);
 		} catch (Exception e) {
 			respuesta = false;
-			logger.info("======================= "+this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
+			logger.info("======================= "+"ERROR =" + this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
 		}
 
 		
@@ -468,7 +499,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Requisitos buscarRequisitosId(Long id) {
-		return mantenimientoDao.buscarRequisitosId(id);
+		Requisitos requisitos = new Requisitos();
+		try {
+			requisitos = mantenimientoDao.buscarRequisitosId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return requisitos;
 	}
 
 	@Override
@@ -546,7 +585,14 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Tupac buscarTupacPorId(Long id) {
-		return mantenimientoDao.buscarTupacPorId(id);
+		Tupac tupac = new Tupac();
+		try {
+			tupac = mantenimientoDao.buscarTupacPorId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarTupacPorId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return tupac;
 	}
 
 	@Override
@@ -780,7 +826,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Persona buscarTrabajadorPersonaPorId(Long id) {
-		return mantenimientoDao.buscarTrabajadorPersonaPorId(id);
+		Persona persona = new Persona();
+		try {
+			persona = mantenimientoDao.buscarTrabajadorPersonaPorId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return persona;
 	}
 
 	@Override
@@ -886,7 +940,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Usuarios buscarUsuarioPersonaPorId(Long id) {
-		return mantenimientoDao.buscarUsuarioPersonaPorId(id);
+		Usuarios usuarios = new Usuarios();
+		try {
+			usuarios = mantenimientoDao.buscarUsuarioPersonaPorId(id);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarUsuarioPersonaPorId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+
+		return usuarios;
 	}
 
 	@Override
@@ -1040,7 +1102,14 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Correlativo infoCorrelativo(Long idcorrelativo) { 
-		return mantenimientoDao.infoCorrelativo(idcorrelativo);
+		Correlativo correlativo = new Correlativo();
+		try {
+			correlativo = mantenimientoDao.infoCorrelativo(idcorrelativo);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".infoCorrelativo ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return correlativo;
 	}
 
 	@Override

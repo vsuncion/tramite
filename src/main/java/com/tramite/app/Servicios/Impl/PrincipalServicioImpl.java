@@ -3,8 +3,7 @@ package com.tramite.app.Servicios.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,7 +27,8 @@ import com.tramite.app.utilitarios.Constantes;
 @Service
 public class PrincipalServicioImpl implements PrincipalServicio {
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(PrincipalServicioImpl.class);
 	
 	@Autowired
 	private PrincipalDao  principalDao;
@@ -41,6 +41,8 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 
 	@Override
 	public Persona buscarPersona(int tipoPersona, String vnumero) { 
+		
+		
 		return principalDao.buscarPersona(tipoPersona, vnumero);
 	}
 
@@ -85,22 +87,37 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	public MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		boolean respuesta = false;
- 
-		respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
-		if(respuesta==true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-		}else {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+		
+		try {
+			respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
+			if(respuesta==true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			}else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+			
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".confirmacionCodigoActivacion ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
+ 
 		return mostrarmensaje;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Persona busquedaSolicitante(Expediente expediente) { 
-		return principalDao.busquedaSolicitante(expediente);
+		Persona persona = new Persona();
+		try {
+			persona = principalDao.busquedaSolicitante(expediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".busquedaSolicitante ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return persona;
 	}
 
 	@Override
@@ -118,7 +135,15 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public Expediente preTupacExpediente(Long idprexpediente) { 
-		return principalDao.preTupacExpediente(idprexpediente);
+		Expediente expediente = new Expediente();
+		try {
+			expediente = principalDao.preTupacExpediente(idprexpediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".preTupacExpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return expediente;
 	}
 
 	@Override
@@ -158,8 +183,16 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) { 
-		return principalDao.infoPreRequisitoTupa(preRequisitoTupa);
+	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) {
+		PreRequisitoTupa preRequisitoTupac = new PreRequisitoTupa();
+		try {
+			preRequisitoTupac = principalDao.infoPreRequisitoTupa(preRequisitoTupa);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return preRequisitoTupac;
 	}
 
 	@Override
@@ -187,16 +220,21 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		PersonaJuridica personaJuridica = new PersonaJuridica();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
 		
-		
-		personaJuridica = principalDao.buscarPersonaJuridicaDuplicada(prePersona);
-		
-		if(personaJuridica.getVRUC()!=null) {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje("EL NUMERO DE RUC :"+prePersona.getVRUC()+" SE ENCUENTRA DUPLICADO");
+		try {
+			personaJuridica = principalDao.buscarPersonaJuridicaDuplicada(prePersona);
 			
-		}else {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);  
+			if(personaJuridica.getVRUC()!=null) {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje("EL NUMERO DE RUC :"+prePersona.getVRUC()+" SE ENCUENTRA DUPLICADO");
+				
+			}else {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);  
+			}
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".buscarPersonaJuridicaDuplicada ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
+		
 		
 		return mostrarmensaje;
 	}
@@ -204,7 +242,15 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public PrePersona buscarPrepersona(PrePersona prePersona) { 
-		return principalDao.buscarPrepersona(prePersona);
+		PrePersona prePersonax = new PrePersona();
+		try {
+			prePersonax = principalDao.buscarPrepersona(prePersona);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".buscarPrepersona ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return prePersonax;
 	}
 
 	 

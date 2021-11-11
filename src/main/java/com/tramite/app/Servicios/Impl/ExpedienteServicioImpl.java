@@ -2,9 +2,7 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,8 +19,7 @@ import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.Entidades.ReporteExpediente;
 import com.tramite.app.Entidades.Usuarios;
-import com.tramite.app.Servicios.ExpedienteServicio;
-import com.tramite.app.excepciones.ResultadoException;
+import com.tramite.app.Servicios.ExpedienteServicio; 
 import com.tramite.app.utilitarios.Constantes;
 
 @Service
@@ -34,7 +31,8 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Autowired
 	private BCryptPasswordEncoder encriptar;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(ExpedienteServicioImpl.class);
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -67,6 +65,7 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			logger.error("ERROR ="  + this.getClass().getName()+".recibirExpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
 		
 		
@@ -77,13 +76,27 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpediente(Long idexpediente) { 
-		return expedienteDao.infoExpediente(idexpediente);
+		Expediente expediente = new Expediente();
+		try {
+			expediente = expedienteDao.infoExpediente(idexpediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return expediente;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MovimientoExpediente infoMovimiento(Long idexpediente, Long idmovimiento) {
-		return expedienteDao.infoMovimiento(idexpediente, idmovimiento);
+		MovimientoExpediente movimientoExpediente = new MovimientoExpediente();
+		try {
+			movimientoExpediente = expedienteDao.infoMovimiento(idexpediente, idmovimiento);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimiento ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return movimientoExpediente;
 	}
 
 	@Override
@@ -116,7 +129,7 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 			return mostrarmensaje;
 			
 		} catch (Exception e) { 
-			logger.info("======================= "+this.getClass().getName()+" ===> responderExpediente ================"+e.getMessage());
+			logger.info("======================= "+"ERROR =" + this.getClass().getName()+" ===> responderExpediente ================"+e.getMessage());
 			throw new Exception(e.getMessage()); 
 		}
 		
@@ -128,7 +141,14 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Transactional(readOnly = true)
 	public ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina,
 			String nombrearchivo) { 
-		return expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+		ArchivoMovimiento archivoMovimiento = new ArchivoMovimiento();
+		try {
+			archivoMovimiento = expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimientoArchivoRespuesta ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return archivoMovimiento;
 	}
 
 	@Override
@@ -140,7 +160,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) { 
-		return expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
+		Expediente expediente = new Expediente();
+		try {
+			expediente = expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteCodigo ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return expediente;
 	}
 
 	@Override
@@ -151,13 +179,28 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 	@Override
 	public Expediente infoExpedienteId(Long idExpediente) { 
-		return expedienteDao.infoExpedienteId(idExpediente);
+		Expediente expediente = new Expediente();
+		try {
+			expediente = expedienteDao.infoExpedienteId(idExpediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+
+		return expediente;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) { 
-		return expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+		MovimientoExpediente movimientoExpediente = new MovimientoExpediente();
+		try {
+			movimientoExpediente = expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimientoIdexpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		return movimientoExpediente;
 	}
 
 	@Override
@@ -169,7 +212,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public ArchivoTupac infoArchivoTupa(Long idexpediente, Long idarchivorequisito) { 
-		return expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+		ArchivoTupac archivoTupac  = new ArchivoTupac();
+		try {
+			archivoTupac=expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoArchivoTupa ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return archivoTupac;
 	}
 
 	@Override
@@ -213,7 +264,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) { 
-		return expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+		Expediente expediente = new Expediente();
+		try {
+			expediente=expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteCodigoInterno ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		}
+		
+		return expediente;
 	}
 
 	@Override

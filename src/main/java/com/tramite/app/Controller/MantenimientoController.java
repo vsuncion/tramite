@@ -6,8 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
@@ -54,7 +53,7 @@ public class MantenimientoController {
 	@Value("${urlTramite}")
 	private String urlTramite;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(MantenimientoController.class);
  
 	// ========================== CRUD TRABAJADOR ===================================
 	
@@ -661,6 +660,7 @@ public class MantenimientoController {
 			pagina.addObject("profesiones",formProfesion); 
 			pagina.setViewName("admin/profesiones/nueva");
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
 		
@@ -670,6 +670,7 @@ public class MantenimientoController {
 		pagina.setViewName("admin/profesiones/nueva");
 		pagina.addObject("profesiones",formProfesion);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	

@@ -2,8 +2,7 @@ package com.tramite.app.Datos.Impl;
 
 import java.util.ArrayList; 
 import java.util.List; 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +33,8 @@ import com.tramite.app.utilitarios.Fechas;
 @Repository
 public class MantenimientoDaoImpl implements MantenimientoDao {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(MantenimientoDaoImpl.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -1748,8 +1748,8 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 	@Override
 	public Persona infoPersona(Persona persona) {
 		StringBuffer sql = new StringBuffer();
-		Persona infoPersona = new Persona();
-		
+		List<Persona> listaInfoPersona = new ArrayList<Persona>();  
+		 Persona  infoPersona =  new Persona();
 			sql.append(
 				"SELECT              \n"+
 				" T2.VNOMBRE,        \n"+
@@ -1759,9 +1759,13 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				"FROM "+Constantes.tablaTrabajadores+" T1  \n"+
 				" INNER JOIN "+Constantes.tablaPersona+" T2 ON T1.NIDPERSONAFK=T2.NIDPERSONAPK \n"+
 				"WHERE T2.VNUMERODOC= :P_VNUMERODOC");
+			
 			MapSqlParameterSource parametros = new MapSqlParameterSource();
 			parametros.addValue("P_VNUMERODOC", persona.getVNUMERODOC());
-			infoPersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
+			listaInfoPersona = namedParameterJdbcTemplate.query(sql.toString(), parametros, BeanPropertyRowMapper.newInstance(Persona.class));
+			if(listaInfoPersona.size()>0) {
+				infoPersona = listaInfoPersona.get(0);
+			}
  
 		return infoPersona;
 	}
