@@ -526,7 +526,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) {
 		StringBuffer sql = new StringBuffer();
 		Expediente info = new Expediente();
-	
+	    List<Expediente> lista ;
+		
 			sql.append(
 				"SELECT  \n"+
 				"    T1.NIDEXPEDIENTEPK, \n"+
@@ -557,7 +558,10 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 parametros.addValue("P_ANIO", anio);
 			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
 			 parametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO); 
-		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+			 if(lista.size()>0) {
+				 info = lista.get(0); 
+			 }
 	 
 		return info;
 	}
