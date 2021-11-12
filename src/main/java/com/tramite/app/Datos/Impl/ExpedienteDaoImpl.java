@@ -383,7 +383,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			sql5.append(
 			" UPDATE "+Constantes.tablaExpediente+
 			"  SET \n"+
-			"  NESTADODOCUMENTOFKx= :P_NESTADODOCUMENTOFK, \n"+
+			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
 			"  NOFICINAFK= :P_NOFICINAFK \n"+
 			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
 			MapSqlParameterSource parametros5 = new MapSqlParameterSource();
