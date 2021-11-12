@@ -356,6 +356,7 @@ public class MantenimientoController {
 		
 		mostrarmensaje = mantenimientoServicio.guardarFeriado(formFeriado);
 		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("formFeriado", formFeriado);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.setViewName("admin/feriado/nuevo");
