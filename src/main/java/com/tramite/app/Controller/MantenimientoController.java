@@ -865,6 +865,7 @@ public class MantenimientoController {
 			pagina.addObject("cbOficinas", listaSeleccion);
 			pagina.addObject("cbTipoDias", listaTipoDias);
 			pagina.addObject("cbEstados", listaEstadosRegistro);
+			pagina.addObject("urltramite",urlTramite);
 			pagina.setViewName("admin/tupac/actualizarTupac");
 			return pagina;
 			
@@ -1442,7 +1443,7 @@ public class MantenimientoController {
 		mostrarmensaje = mantenimientoServicio.actualizarTipoTramite(tipoTramite);
 		
 		pagina.setViewName("admin/tipotramite/actualizar");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listartipotramite");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("tipoTramite", tipoTramite);  
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
