@@ -1597,6 +1597,7 @@ public class MantenimientoController {
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("usuarios",formUsuarioPersona);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/usuario/actualizar");
 		return pagina;
 	}

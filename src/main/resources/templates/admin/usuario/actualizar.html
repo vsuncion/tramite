@@ -128,7 +128,10 @@
 	
 	<script th:inline="javascript">
 		$(document).ready(function() {
-			verificarMantenimiento(/*[[${mostrarmensaje}]]*/);  
+			//verificarMantenimiento(/*[[${mostrarmensaje}]]*/);  
+			var origen = /*[[${urltramite}]]*/
+			var url = origen +'/admin/mantenimiento/listarUsuario'; 
+			verificarMantenimientoRedireccinar(/*[[${mostrarmensaje}]]*/,url);
 		});
 	</script>
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
