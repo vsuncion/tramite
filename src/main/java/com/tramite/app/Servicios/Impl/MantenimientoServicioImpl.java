@@ -468,6 +468,8 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			respuesta = mantenimientoDao.actualizarinformacionMunicipalidad(informacion);
 		} catch (Exception e) {
 			respuesta = false;
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(e.getMessage());
 			logger.info("======================= "+"ERROR =" + this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
 		}
 
@@ -842,17 +844,25 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta guardarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
+		
+		try {
+			respuesta = mantenimientoDao.guardarTrabajadorPersona(persona);
+			
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		respuesta = mantenimientoDao.guardarTrabajadorPersona(persona);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarUsuarioPersonaPorId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		  mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+		  mostrarmensaje.setMensaje(e.getMessage());
 		}
-
+ 
 		return mostrarmensaje;
 
 	}

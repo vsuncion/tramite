@@ -1482,6 +1482,7 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 "  LEFT JOIN USUARIO_PERFIL T4 ON T3.NIDUSUARIOPK=T4.NUSUARIOFK \n"+
 				 "  LEFT JOIN OFICINA T5 ON T3.NOFICINAFK=T5.NIDOFICINAPK \n"+
 				 "  LEFT JOIN PERFIL T6 ON T4.NPERFILFK=T6.NIDPERFILPK ");
+				//logger.info(sql.toString()+"==="+usuarios.getCAJABUSQUEDA());
 				MapSqlParameterSource parametros = new MapSqlParameterSource();
 				 if(usuarios.getCAJABUSQUEDA()!=null && usuarios.getCAJABUSQUEDA().trim().length()>0) {
 		        	 if(usuarios.getNCBTIPOCRITERIO()==0) {

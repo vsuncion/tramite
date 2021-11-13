@@ -121,7 +121,7 @@ public class MantenimientoController {
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("cbCargo", cbCargo);
 		pagina.setViewName("admin/trabajador/nuevo");
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -162,11 +162,10 @@ public class MantenimientoController {
 		}else {
 			mostrarmensaje = mantenimientoServicio.guardarTrabajadorPersona(formPersona); 
 		}
-	 
-		        
-  
+ 
 		pagina.setViewName("admin/trabajador/nuevo");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listarTranbajador");
+		pagina.addObject("urltramite",urlTramite);
+		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("persona",formPersona);
 		pagina.addObject("cbOficinas", cbOficinas);
 		pagina.addObject("cbProfesiones", cbProfesiones);
@@ -821,7 +820,7 @@ public class MantenimientoController {
 			mostrarmensaje = mantenimientoServicio.guardarTupac(formTupac);
 			
 			pagina.setViewName("admin/tupac/nuevoTupac");
-			//pagina.setViewName("redirect:/admin/mantenimiento/listarTupac");
+			pagina.addObject("urltramite",urlTramite);
 			pagina.addObject("tupac",formTupac); 
 			pagina.addObject("cbOficinas", listaSeleccion);
 			pagina.addObject("cbTipoDias", listaTipoDias);
@@ -961,6 +960,7 @@ public class MantenimientoController {
 			listaRequisitosTupac = mantenimientoServicio.listarRequisitosTupacPorIdTupac(infoTupac.getTUPACPK());
 	 
 			ModelAndView pagina = new ModelAndView();
+			pagina.addObject("urltramite",urlTramite);
 			pagina.addObject("requisitosTupac",formRequisitosTupac);
 			pagina.addObject("infoTupac",infoTupac);
 			pagina.addObject("cbRequisitos",cbRequisitos);
@@ -968,6 +968,7 @@ public class MantenimientoController {
 			pagina.addObject("listaRequisitosTupac",listaRequisitosTupac);
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
 			pagina.setViewName("admin/tupac/asignarReqTupac");
+			
 			return pagina;
 			
 		}
@@ -1076,7 +1077,7 @@ public class MantenimientoController {
 		}
 		
 		mostrarmensaje = mantenimientoServicio.guardarRequisitos(requisitos);
-		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/tupac/nuevoRequisito");
 		pagina.addObject("requisitosTupac",requisitos); 
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
@@ -1396,7 +1397,7 @@ public class MantenimientoController {
 		
 		mostrarmensaje = mantenimientoServicio.guardarTipoTramite(formTipoTramite); 
 		pagina.setViewName("admin/tipotramite/nueva");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listartipotramite");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("tipoTramite", formTipoTramite); 
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		return pagina;
@@ -1542,7 +1543,7 @@ public class MantenimientoController {
 		mostrarmensaje = mantenimientoServicio.guardarUsuarioPersona(formUsuarioPersona);
 		//infoPersona = mantenimientoServicio.buscarTrabajadorPersonaPorId(formUsuarioPersona.getNTRABAJADORFK());
 		
-		//pagina.setViewName("redirect:/admin/mantenimiento/listarUsuario");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/usuario/nuevo");
 		pagina.addObject("usuarios",formUsuarioPersona);
 		pagina.addObject("cbOficinas", cbOficinas);
