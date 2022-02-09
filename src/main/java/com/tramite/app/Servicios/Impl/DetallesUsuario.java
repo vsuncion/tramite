@@ -31,8 +31,8 @@ public class DetallesUsuario implements UserDetailsService {
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Usuarios usuario = new Usuarios();
-		List<GrantedAuthority> perfiles = new ArrayList<GrantedAuthority>();
-		List<UsuarioPerfil> listaPerfiles = new ArrayList<UsuarioPerfil>();
+		List<GrantedAuthority> perfiles = new ArrayList<>();
+		List<UsuarioPerfil> listaPerfiles = new ArrayList<>();
 		
 		try {
 			

@@ -33,13 +33,14 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public Persona buscarPersona(int tipoPersona, String vnumero) {
+	public Persona buscarPersona(PrePersona prePersona) {
 		StringBuffer sql = new StringBuffer();
-		Persona infoPersona = new Persona();
+		StringBuffer sql2 = new StringBuffer();
+		List<Persona> listaPersona = new ArrayList<>();
+		Persona  infoPersona = new Persona();
 		MapSqlParameterSource parametros = new MapSqlParameterSource();
-		
 
-			switch (tipoPersona) {
+			switch (prePersona.getNTIPO_PERSONA()) {
 			case Constantes.tipoPersonaNatural:
 
 				sql.append(
@@ -54,14 +55,36 @@ public class PrincipalDaoImpl implements PrincipalDao {
 			    	"	VTELEFONO,    \n" +
 				    "	NIDPERSONAPK  \n" + 
 			    	" FROM " + Constantes.tablaPersona+" \n"+
-			    	" WHERE VNUMERODOC = :P_VNUMERODOC");
-				parametros.addValue("P_VNUMERODOC", vnumero);
-				infoPersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,
+			    	" WHERE VNUMERODOC = :P_VNUMERODOC OR VCORREO= :P_VCORREO");
+				parametros.addValue("P_VNUMERODOC", prePersona.getVNUMERODOC());
+				parametros.addValue("P_VCORREO", prePersona.getVCORREO());
+				listaPersona = namedParameterJdbcTemplate.query(sql.toString(), parametros,
 						BeanPropertyRowMapper.newInstance(Persona.class));
 				break;
 
 			case Constantes.tipoPersonaJuridica:
+				sql2.append(
+						"SELECT           \n" +
+								"   VNOMBRE,	  \n" +
+								"   VAPEPATERNO,  \n" +
+								"	VAPEMATERNO,  \n" +
+								"	NTIPODOCFK,   \n" +
+								"	VNUMERODOC,   \n" +
+								"	VDIRECCION,   \n" +
+								"	VCORREO,      \n"	+
+								"	VTELEFONO,    \n" +
+								"	NIDPERSONAPK  \n" +
+								" FROM " + Constantes.tablaPersona+" \n"+
+								" WHERE VNUMERODOC = :P_VNUMERODOC OR VCORREO= :P_VCORREO");
+				parametros.addValue("P_VNUMERODOC", prePersona.getVNUMERODOC());
+				parametros.addValue("P_VCORREO", prePersona.getVCORREO());
+				listaPersona = namedParameterJdbcTemplate.query(sql2.toString(), parametros,
+						BeanPropertyRowMapper.newInstance(Persona.class));
 				break;
+			}
+
+			if(listaPersona.size()>0){
+				infoPersona = listaPersona.get(0);
 			}
  
 		return infoPersona;
@@ -651,14 +674,20 @@ public class PrincipalDaoImpl implements PrincipalDao {
 	    		"WHERE VRUC= :P_VRUC");
 			MapSqlParameterSource parametro = new MapSqlParameterSource();
 			parametro.addValue("P_VRUC", prePersona.getVRUC());
-			personaJuridica = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametro, BeanPropertyRowMapper.newInstance(PersonaJuridica.class));
-  
+			List<PersonaJuridica>listaPersonaJuridica = namedParameterJdbcTemplate.query(sql.toString(), parametro, BeanPropertyRowMapper.newInstance(PersonaJuridica.class));
+
+			if(listaPersonaJuridica.size()>0){
+				personaJuridica = listaPersonaJuridica.get(0);
+			 }
+
+
 		return personaJuridica;
 	}
 
 	@Override
 	public PrePersona buscarPrepersona(PrePersona prePersona) {
 		StringBuffer sql = new StringBuffer();
+		List<PrePersona> listaPrepersoan= new ArrayList<>();
 		PrePersona infoPrePersona = new PrePersona();
 		
 			sql.append(
@@ -681,8 +710,43 @@ public class PrincipalDaoImpl implements PrincipalDao {
 				MapSqlParameterSource parametrosConsulta = new MapSqlParameterSource();
 				parametrosConsulta.addValue("P_VCODIGOACTIVACION", prePersona.getVCODIGOACTIVACION());
 				parametrosConsulta.addValue("P_NESTADO", Constantes.estadoDesactivado);
-				infoPrePersona = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametrosConsulta,BeanPropertyRowMapper.newInstance(PrePersona.class));
-	 
+		       listaPrepersoan = namedParameterJdbcTemplate.query(sql.toString(), parametrosConsulta,BeanPropertyRowMapper.newInstance(PrePersona.class));
+	           if(listaPrepersoan.size()>0){
+				   infoPrePersona = listaPrepersoan.get(0);
+			   }
+		return infoPrePersona;
+	}
+
+	@Override
+	public PrePersona buscarPrepersonaDuplicada(PrePersona prePersona) {
+		StringBuffer sql = new StringBuffer();
+		List<PrePersona> listaPrepersoan= new ArrayList<>();
+		PrePersona infoPrePersona = new PrePersona();
+
+		sql.append(
+				" SELECT "+
+						"	NIDPREPERSONAPK, \n"+
+						"    NTIPO_PERSONA, \n"+
+						"    VRUC, \n"+
+						"    VRAZON_SOCIAL, \n"+
+						"    VNOMBRE, \n"+
+						"    VAPEPATERNO, \n"+
+						"    VAPEMATERNO, \n"+
+						"    NTIPODOCFK, \n"+
+						"    VNUMERODOC, \n"+
+						"    VDIRECCION, \n"+
+						"    VCORREO, \n"+
+						"    VTELEFONO, \n"+
+						"    NESTADO, \n"+
+						"    VCODIGOACTIVACION FROM "+Constantes.tablaPrePersona+" \n"+
+						" WHERE  VNUMERODOC= :P_VNUMERODOC OR UPPER(VCORREO)= :P_VCORREO");
+		MapSqlParameterSource parametrosConsulta = new MapSqlParameterSource();
+		parametrosConsulta.addValue("P_VNUMERODOC", prePersona.getVNUMERODOC());
+		parametrosConsulta.addValue("P_VCORREO", prePersona.getVCORREO().toUpperCase());
+		listaPrepersoan = namedParameterJdbcTemplate.query(sql.toString(), parametrosConsulta,BeanPropertyRowMapper.newInstance(PrePersona.class));
+		if(listaPrepersoan.size()>0){
+			infoPrePersona = listaPrepersoan.get(0);
+		}
 		return infoPrePersona;
 	}
 

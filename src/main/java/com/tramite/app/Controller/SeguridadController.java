@@ -22,16 +22,11 @@ public class SeguridadController {
 		if(error!=null) {
 			model.addAttribute("error","Error en el login: Usuario o Clave incorrecta");
 		}
-		
 		return "admin/login";
 	}
-	
-	
+
 	@GetMapping(value = "/accesodenagado")
 	public String accesoDenegado() {
 		return "/admin/accesodenagado";
 	}
-	
-	
-
 }

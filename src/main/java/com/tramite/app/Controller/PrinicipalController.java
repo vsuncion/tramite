@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.tramite.app.Entidades.*;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -19,15 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import com.tramite.app.Entidades.Archivos;
-import com.tramite.app.Entidades.Expediente;
-import com.tramite.app.Entidades.HojaRuta;
-import com.tramite.app.Entidades.MensajeRespuesta;
-import com.tramite.app.Entidades.Persona; 
-import com.tramite.app.Entidades.PrePersona;
-import com.tramite.app.Entidades.PreRequisitoTupa;
-import com.tramite.app.Entidades.RequisitosTupac;
-import com.tramite.app.Entidades.Seleccion; 
 import com.tramite.app.Servicios.ArchivoUtilitarioServicio;
 import com.tramite.app.Servicios.ExpedienteServicio;
 import com.tramite.app.Servicios.MantenimientoServicio;
@@ -82,15 +75,19 @@ public class PrinicipalController {
 	public ModelAndView buscarExpediente(HttpServletRequest request, HttpServletResponse res,@ModelAttribute HojaRuta formHojaRuta) {
 		logger.info("======================= INFO ================");
 		ModelAndView pagina = new ModelAndView();
-		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>();  
+		List<HojaRuta> listaHoja = new ArrayList<>();
 		Expediente infoExpediente = new Expediente();
 		String mensajeRespuesta =Constantes.MENSAJE_BUSCAR_EXPEDIENTE;
 		
 		infoExpediente = expedienteServicio.infoExpedienteCodigo(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
-		if(infoExpediente.getVCODIGO_EXPEDIENTE()!=null) {
+		if(infoExpediente!=null) {
 			listaHoja = expedienteServicio.infoHojaRuta(formHojaRuta.getANIO(), formHojaRuta.getVCODIGOEXPEDIENTE());
 			mensajeRespuesta="";
-		} 
+		} else{
+			 int jj = 2020;
+			 infoExpediente.setNANIO(jj);
+			infoExpediente.setVCODIGO_EXPEDIENTE("xcxcxcxcxc");
+		}
 		
 		pagina.addObject("mensajerespuesta",mensajeRespuesta);
 		pagina.addObject("infoExpediente",infoExpediente);
@@ -111,7 +108,7 @@ public class PrinicipalController {
 	public ModelAndView nuevaPersonaNatural(HttpServletRequest request, HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona();
-		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<>();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 
 		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
@@ -147,23 +144,36 @@ public class PrinicipalController {
 			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		//List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
-		Persona personaDupliciedad = new Persona();
-		
 
-		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaNatural);
-		
-		//VERIFICAMOS SI LA PERSONA YA EXISTE
-		personaDupliciedad = principalServicio.buscarPersona(prePersona.getNTIPO_PERSONA(), prePersona.getVNUMERODOC());
-			
-		if(personaDupliciedad.getVNUMERODOC()==null) {
-			mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
-		}else {
-			mostrarmensaje.setCodigo(0);
-			mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PERSONA.replace("$VNUMERO$", personaDupliciedad.getVNUMERODOC()));
+
+		//PREGUNTAMOS SI YA FUE ACTIVADO
+		PrePersona prePersonaDuplicada = principalServicio.buscarPrepersonaDuplicada(prePersona);
+
+		if(prePersonaDuplicada.getVNUMERODOC()==null) {
+
+			//VERIFICAMOS SI LA PERSONA YA EXISTE
+			Persona personaDuplicada = principalServicio.buscarPersona(prePersona);
+
+			if(personaDuplicada.getVNUMERODOC()==null) {
+				mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
+			}else {
+				mostrarmensaje.setCodigo(0);
+				mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PERSONA.replace("$VNUMERO$", personaDuplicada.getVNUMERODOC()+" O CORREO "+personaDuplicada.getVCORREO()));
+			}
+
+
+		}else{
+			if(prePersonaDuplicada.getNESTADO()==1){
+				mostrarmensaje.setCodigo(0);
+				mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PREPERSONA);
+			}else{
+				mostrarmensaje.setCodigo(0);
+				mostrarmensaje.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PREPERSONA_PENDIENTE.replace("$VNUMERO$", prePersonaDuplicada.getVNUMERODOC()+" O CORREO "+prePersona.getVCORREO()+" ESTA PENDIENTE DE ACTIVACION, REVISE SU CORREO"));
+			}
+
 		}
-		
+
 		//cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
 
 		pagina.setViewName("admin/persona/mensajeinformacion");
@@ -178,30 +188,53 @@ public class PrinicipalController {
 	public ModelAndView guardarPrepersonaJuridica(@ModelAttribute PrePersona prePersona, HttpServletRequest request,
 			HttpServletResponse res) {
 		ModelAndView pagina = new ModelAndView();
-		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>(); 
+		MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
 
-		// VERIFICAMOS SI LA PERSONA YA FUE REGISTRADA PREVIAMENTE
+		//ASIGNAMOS PERSONA JURIDICA
 		prePersona.setNTIPO_PERSONA(Constantes.tipoPersonaJuridica);
-		
-		mostrarmensaje = principalServicio.buscarPersonaJuridicaDuplicada(prePersona);
-		
-		if(mostrarmensaje.getCodigo()==0) {
-			mostrarmensaje = principalServicio.guardarPrePersona(prePersona);
-		} 
-		
-		cbTipoDocumentoRegistro = mantenimientoServicio.cbTipoDocumentoRegistro();
+
+		//PREGUNTAMOS SI EL CORREO O  DNI YA FUERON REGISTRADOR
+		PrePersona prePersonaDuplicada = principalServicio.buscarPrepersonaDuplicada(prePersona);
+
+		if(prePersonaDuplicada.getVNUMERODOC()!=null) {
+			// PERSONA DUPLICADA
+			mensajeRespuesta.setCodigo(1);
+			mensajeRespuesta.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PREPERSONA);
+
+		}else{
+
+			PersonaJuridica prePersonaBuscar = principalServicio.buscarPersonaJuridicaDuplicada(prePersona);
+			if(prePersonaBuscar.getVRUC()!=null){
+				// PERSONA DUPLICADA
+				mensajeRespuesta.setCodigo(Constantes.transaccionIncorrecta);
+				mensajeRespuesta.setMensaje("EL NUMERO DE RUC :"+prePersonaBuscar.getVRUC()+" SE ENCUENTRA DUPLICADO");
+			}else{
+				//VERIFICAMOS SI LA PERSONA YA EXISTE
+				Persona personaDuplicada = principalServicio.buscarPersona(prePersona);
+				if(personaDuplicada.getVNUMERODOC()!=null){
+					mensajeRespuesta.setCodigo(Constantes.transaccionIncorrecta);
+					mensajeRespuesta.setMensaje(Constantes.MENSAJE_DUPLICIDAD_PERSONA.replace("$VNUMERO$", prePersona.getVNUMERODOC()+" O POR CORREO "+prePersona.getVCORREO() ));
+				}else{
+					// GUARDAMOS PERSONA JURIDICA
+					mensajeRespuesta = principalServicio.guardarPrePersona(prePersona);
+				}
+
+			}
+		}
+
+
+		List<Seleccion> cbTipoDocumentoRegistro =  mantenimientoServicio.cbTipoDocumentoRegistro();
 
 		pagina.setViewName("admin/persona/juridica/nuevo");
 		pagina.addObject("prePersona", prePersona);
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
-		pagina.addObject("mostrarmensaje", mostrarmensaje);
+		pagina.addObject("mostrarmensaje", mensajeRespuesta);
 		return pagina;
 	}
 
 	@GetMapping(value = { "/confirmacionRegistro" })
 	public ModelAndView confirmacionRegistro(HttpServletRequest request, HttpServletResponse res,
-			@RequestParam String codigo) {
+			@RequestParam String codigo) throws Exception {
 		ModelAndView pagina = new ModelAndView();
 		PrePersona prePersona = new PrePersona(); 
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();

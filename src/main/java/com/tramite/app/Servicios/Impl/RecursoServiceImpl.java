@@ -95,22 +95,34 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public String numeroExpediente(Long idoficina) {
-		return recursoDao.numeroExpediente(idoficina);
+		String numeroExpedientes = "";
+		try {
+			numeroExpedientes = recursoDao.numeroExpediente(idoficina);
+		} catch (Exception e) {
+			logger.error("error numeroExpediente "+e.getMessage());
+		}
+		return  numeroExpedientes;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Usuarios infoUsuario(String vcorreo) {
-		return recursoDao.infoUsuario(vcorreo);
+		Usuarios buscarUsuarios = null;
+		try {
+			buscarUsuarios = recursoDao.infoUsuario(vcorreo);
+		} catch (Exception e) {
+			logger.error("error infoUsuario "+e.getMessage());
+		}
+		return  buscarUsuarios;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbOficinasAtender(Long idoficiActual) {
-		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
-		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
 
-		listaOfinas = mantenimientoServicio.listarOficinas();
+		List<Seleccion> listaOfinasFinal = new ArrayList<>();
+		List<Oficinas> listaOfinas = mantenimientoServicio.listarOficinas();
+
 		for (Oficinas i : listaOfinas) {
 			logger.info("==== " + i.getNIDOFICINAPK());
 			if (idoficiActual != i.getNIDOFICINAPK()) {
@@ -126,10 +138,10 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbAccionesAtender() {
-		List<EstadoDocumento> listaEstadoDocumento = new ArrayList<EstadoDocumento>();
-		List<Seleccion> listaEstadoDocumentoFinal = new ArrayList<Seleccion>();
 
-		listaEstadoDocumento = mantenimientoServicio.listarEstadoDocumento();
+		List<Seleccion> listaEstadoDocumentoFinal = new ArrayList<>();
+		List<EstadoDocumento>  listaEstadoDocumento = mantenimientoServicio.listarEstadoDocumento();
+
 		for (EstadoDocumento i : listaEstadoDocumento) {
 
 			if (!Constantes.LETRAS_ESTADO_DOCUMENTO_PENDIENTE.equals(i.getVNOMBRE())) {
@@ -149,21 +161,32 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Oficinas infoOficina(Long idoficina) {
-		return mantenimientoServicio.buscarOficina(idoficina);
+		Oficinas buscarOficinas = null;
+		try {
+			buscarOficinas = mantenimientoServicio.buscarOficina(idoficina);
+		} catch (Exception e) {
+			logger.info("error infoOficina= "+e.getMessage());
+		}
+		return buscarOficinas;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public EstadoDocumento infoEstadoDocumento(Long idEstadoDocumento) {
-		return recursoDao.infoEstadoDocumento(idEstadoDocumento);
+		EstadoDocumento busquedaEstadoDocumento = null;
+		try {
+			busquedaEstadoDocumento = recursoDao.infoEstadoDocumento(idEstadoDocumento);
+		} catch (Exception e) {
+			logger.info("error infoEstadoDocumento= "+e.getMessage());
+		}
+		return busquedaEstadoDocumento;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbRequisitos(Long idTupac) {
-		List<Requisitos> listaRequisitos = new ArrayList<Requisitos>();
-		List<Seleccion> cbRequisito = new ArrayList<Seleccion>();
-		listaRequisitos = recursoDao.cbRequisitos(idTupac);
+		List<Seleccion> cbRequisito = new ArrayList<>();
+		List<Requisitos> listaRequisitos = recursoDao.cbRequisitos(idTupac);
 
 		for (Requisitos i : listaRequisitos) {
 			Seleccion item = new Seleccion();
@@ -178,9 +201,8 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> listaEstadoDocumentos() {
-		List<Seleccion> listaFinal = new ArrayList<Seleccion>();
-		List<EstadoDocumento> lista = new ArrayList<EstadoDocumento>();
-		lista = recursoDao.listaEstadoDocumentos();
+		List<Seleccion> listaFinal = new ArrayList<>();
+		List<EstadoDocumento>  lista = recursoDao.listaEstadoDocumentos();
 		for (EstadoDocumento i : lista) {
 			Seleccion item = new Seleccion();
 			item.setCodigo(i.getIDESTADOCUMENTOPK());
@@ -192,11 +214,10 @@ public class RecursoServiceImpl implements RecursoServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Seleccion> cbOficinasReportes() {
-		List<Oficinas> listaOfinas = new ArrayList<Oficinas>();
-		List<Seleccion> listaOfinasFinal = new ArrayList<Seleccion>();
+	public List<Seleccion> cbOficinasReportes() { ;
+		List<Seleccion> listaOfinasFinal = new ArrayList<>();
+		List<Oficinas> listaOfinas = mantenimientoServicio.listarOficinas();
 
-		listaOfinas = mantenimientoServicio.listarOficinas();
 		for (Oficinas i : listaOfinas) {
 			    logger.info("==== " + i.getNIDOFICINAPK()); 
 				Seleccion item = new Seleccion();
@@ -210,10 +231,9 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbOCargos() {
-		List<Cargo> listarCargo = new ArrayList<Cargo>();
-		List<Seleccion> listaCargoFinal = new ArrayList<Seleccion>();
-		
-		listarCargo = recursoDao.cbCargos();
+		List<Seleccion> listaCargoFinal = new ArrayList<>();
+
+		List<Cargo> listarCargo = recursoDao.cbCargos();
 		for (Cargo i : listarCargo) {
 			Seleccion item = new Seleccion();
 			item.setCodigo(i.getNCARGOPK());
@@ -226,18 +246,16 @@ public class RecursoServiceImpl implements RecursoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbUsuariosOficina(Long idOficina) {
-		List<Persona> listarUsuariosOficina = new ArrayList<Persona>();
-		List<Seleccion> listarUsuariosOficinaFinal = new ArrayList<Seleccion>();
-		
-		listarUsuariosOficina = recursoDao.listaUsuariosOficina(idOficina);
+		List<Seleccion> listarUsuariosOficinaFinal = new ArrayList<>();
+		List<Persona> listarUsuariosOficina = recursoDao.listaUsuariosOficina(idOficina);
+
 		for (Persona i : listarUsuariosOficina) {
 			Seleccion item = new Seleccion();
 			item.setCodigo(i.getNUSUREGISTRA());
 			item.setEtiqueta(i.getNOMBRE_COMPLETO());
 			listarUsuariosOficinaFinal.add(item);
 		}
-		
-		
+
 		return listarUsuariosOficinaFinal;
 	}
 

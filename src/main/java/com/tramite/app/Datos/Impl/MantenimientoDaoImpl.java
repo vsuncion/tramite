@@ -1476,12 +1476,12 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 				 "     T3.NIDUSUARIOPK, \n"+
 				 "     t4.NIDUSUAPERFILPK AS NIDUSUAPERFILFK, \n"+
 				 "     T1.NIDTRABAJADORPK AS NTRABAJADORFK \n"+
-				 " FROM  TRABAJADOR T1  \n"+
-				 "  INNER JOIN PERSONA T2 ON T1.NIDPERSONAFK=T2.NIDPERSONAPK \n"+
-				 "  LEFT JOIN  USUARIO T3 ON T1.NIDTRABAJADORPK=T3.NTRABAJADORFK \n"+
-				 "  LEFT JOIN USUARIO_PERFIL T4 ON T3.NIDUSUARIOPK=T4.NUSUARIOFK \n"+
-				 "  LEFT JOIN OFICINA T5 ON T3.NOFICINAFK=T5.NIDOFICINAPK \n"+
-				 "  LEFT JOIN PERFIL T6 ON T4.NPERFILFK=T6.NIDPERFILPK ");
+				 " FROM "+Constantes.tablaTrabajadores+" T1  \n"+
+				 "  INNER JOIN "+Constantes.tablaPersona+" T2 ON T1.NIDPERSONAFK=T2.NIDPERSONAPK \n"+
+				 "  LEFT JOIN  "+Constantes.tablaUsuario+" T3 ON T1.NIDTRABAJADORPK=T3.NTRABAJADORFK \n"+
+				 "  LEFT JOIN "+Constantes.tablaUsuarioPerfil+" T4 ON T3.NIDUSUARIOPK=T4.NUSUARIOFK \n"+
+				 "  LEFT JOIN "+Constantes.tablaOficinas+" T5 ON T3.NOFICINAFK=T5.NIDOFICINAPK \n"+
+				 "  LEFT JOIN "+Constantes.tablaPerfil+" T6 ON T4.NPERFILFK=T6.NIDPERFILPK ");
 				MapSqlParameterSource parametros = new MapSqlParameterSource();
 				 if(usuarios.getCAJABUSQUEDA()!=null && usuarios.getCAJABUSQUEDA().trim().length()>0) {
 		        	 if(usuarios.getNCBTIPOCRITERIO()==0) {
@@ -1499,7 +1499,10 @@ public class MantenimientoDaoImpl implements MantenimientoDao {
 			         }else if(usuarios.getNCBTIPOCRITERIO()==3) {
 			        	 sql.append(" WHERE T2.VNUMERODOC = :P_VNUMERODOC");
 			        	 parametros.addValue("P_VNUMERODOC", usuarios.getCAJABUSQUEDA());
-			         } 
+			         } else if(usuarios.getNCBTIPOCRITERIO()==4) {
+						 sql.append(" WHERE T5.VNOMBRE LIKE :P_VNOMBRE_OFICINA");
+						 parametros.addValue("P_VNOMBRE_OFICINA", "%"+usuarios.getCAJABUSQUEDA()+"%");
+					 }
 	        	 }
 				
 				 lsUsuarioPersona=namedParameterJdbcTemplate.query(sql.toString(),parametros,BeanPropertyRowMapper.newInstance(Usuarios.class));

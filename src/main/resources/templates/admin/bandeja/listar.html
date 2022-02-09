@@ -44,7 +44,7 @@
 						<div class="card-body">
 						<table class="table table-hover" id="listaBandeja">
 							<thead>
-								<tr style="text-align: center;" class="cabecera_letras_grilla">
+								<tr class="text-center">
 									<th scope="col">ITEM</th>
 									<th scope="col">EXPEDIENTE</th>
 									<th scope="col">FECHA OFICINA</th>
@@ -64,10 +64,10 @@
 								</tr>
 							</thead>
 							<tbody>
-							
-							   <tr th:each="i : ${listaBandeja}"   class="cuerpo_letras_grilla"  th:style="'background-color:'+ ${i.VCOLOR}+ ';'">
-							    
-							    <!-- <td  th:style="${i.NCOLOR == 3 ? 'background-color: red;' : 'background-color: yellow;'}" ><span th:text="${i.NITEM}"></span></td> --> 
+
+							<!--<tr th:each="i : ${listaBandeja}"   class="cuerpo_letras_grilla"  th:style="'background-color:'+ ${i.VCOLOR}+ ';'">-->
+							<tr th:each="i : ${listaBandeja}" class="cuerpo_letras_grilla"  th:style="'background-color:'+${i.VCOLOR}+';'">
+                              <!-- <td  th:style="${i.NCOLOR == 3 ? 'background-color: red;' : 'background-color: yellow;'}" ><span th:text="${i.NITEM}"></span></td> -->
 							     <td><span th:text="${i.NITEM}"></span></td>
 							     <td><span  th:text="${i.VCODIGO_EXPEDIENTE}"></span></td>
 							     <td><span  th:text="${i.VFECHA_OFICINA}"></span></td>

@@ -76,7 +76,7 @@ public class ExpedienteController {
 	public ModelAndView listarBandeja(HttpServletRequest request, HttpServletResponse res,
 			@RequestParam Long idestado) {
 		ModelAndView pagina = new ModelAndView();
-		List<Bandeja> listaBandeja = new ArrayList<Bandeja>();
+		List<Bandeja> listaBandeja = new ArrayList<>();
 		Bandeja formBandeja = new Bandeja();
 		Authentication autch = SecurityContextHolder.getContext().getAuthentication();
 		Usuarios usuario = new Usuarios();

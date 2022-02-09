@@ -1454,11 +1454,9 @@ public class MantenimientoController {
 	@GetMapping(value = {"/listarUsuario"})
 	public ModelAndView listarUsuarios(HttpServletRequest request,HttpServletResponse res) {
 		Usuarios formUsuarioPersona = new Usuarios();
-		List<Seleccion> cbCriterioBusqueda = new ArrayList<Seleccion>();
-		List<Usuarios> listarUsuarioPersona = new ArrayList<Usuarios>();
-		
-		cbCriterioBusqueda= mantenimientoServicio.cbCriteriosBusquedaTrabajador();
-		listarUsuarioPersona = mantenimientoServicio.listarUsuarioPersona();
+
+		List<Seleccion> cbCriterioBusqueda = cbCriterioBusqueda= mantenimientoServicio.cbCriteriosBusquedaTrabajador();
+		List<Usuarios> listarUsuarioPersona = mantenimientoServicio.listarUsuarioPersona();
 		
 		ModelAndView pagina = new ModelAndView();
 		pagina.addObject("usuarios",formUsuarioPersona);

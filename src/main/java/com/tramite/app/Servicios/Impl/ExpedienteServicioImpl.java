@@ -39,11 +39,12 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Bandeja> listarBandeja(Long oficina, Long estadodocumento) { 
-		List<Bandeja> lista = new ArrayList<Bandeja>();
+		List<Bandeja> lista = new ArrayList<>();
 		try {
 			lista =expedienteDao.listarBandeja(oficina, estadodocumento);
 		} catch (Exception e) {
 			// TODO: handle exception
+			logger.info("NO SE ENCONTRARON REGISTROS");
 		}
 		return lista;
 	}
@@ -66,24 +67,34 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-		
-		
-
 		return mostrarmensaje;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Expediente infoExpediente(Long idexpediente) { 
-		return expedienteDao.infoExpediente(idexpediente);
+	public Expediente infoExpediente(Long idexpediente) {
+		Expediente buscarInfoExpediente = new Expediente();
+		try {
+			buscarInfoExpediente = expedienteDao.infoExpediente(idexpediente);
+		} catch (Exception e) {
+			logger.info("NO SE ENCONTRO RESULTADOS infoExpediente");
+		}
+		return buscarInfoExpediente;
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional(readOnly = true)
 	public MovimientoExpediente infoMovimiento(Long idexpediente, Long idmovimiento) {
-		return expedienteDao.infoMovimiento(idexpediente, idmovimiento);
+		MovimientoExpediente buscarMovimientoExpediente = new MovimientoExpediente();
+		try {
+			buscarMovimientoExpediente = expedienteDao.infoMovimiento(idexpediente, idmovimiento);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return buscarMovimientoExpediente;
 	}
 
 	@Override
@@ -106,41 +117,51 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 			
 			if (respuesta == true) {
 				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+				mostrarmensaje.setMensaje(Constantes.transaccionDerivacionCorrectaTexto);
 
 			} else {
 				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
 				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
 			}
 
-			return mostrarmensaje;
 			
 		} catch (Exception e) { 
 			logger.info("======================= "+this.getClass().getName()+" ===> responderExpediente ================"+e.getMessage());
-			throw new Exception(e.getMessage()); 
+			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-		
-		
-		
+		return mostrarmensaje;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina,
-			String nombrearchivo) { 
-		return expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+			String nombrearchivo) {
+		ArchivoMovimiento buscarArchivoMovimiento = new ArchivoMovimiento();
+		try {
+			buscarArchivoMovimiento = expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+		} catch (Exception e) {
+			logger.info("ERROR infoMovimientoArchivoRespuesta ="+e.getMessage());
+		}
+		return buscarArchivoMovimiento;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<HojaRuta> infoHojaRuta(String anio, String codigoExpediente) { 
+	public List<HojaRuta> infoHojaRuta(String anio, String codigoExpediente) {
 		return expedienteDao.infoHojaRuta(anio, codigoExpediente);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) { 
-		return expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
+	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) {
+		Expediente buscarExpediente= new Expediente();
+		try {
+			buscarExpediente=expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
+		} catch (Exception e) {
+			// buscarExpediente=buscarExpediente;
+		}
+		return buscarExpediente;
 	}
 
 	@Override
@@ -150,14 +171,27 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	}
 
 	@Override
-	public Expediente infoExpedienteId(Long idExpediente) { 
-		return expedienteDao.infoExpedienteId(idExpediente);
+	@Transactional(readOnly = true)
+	public Expediente infoExpedienteId(Long idExpediente) {
+		Expediente buscarExpediente = new Expediente();
+		try {
+			buscarExpediente= expedienteDao.infoExpedienteId(idExpediente);
+		} catch (Exception e) {
+			logger.info("error infoExpedienteId"+e.getMessage());
+		}
+		return buscarExpediente;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) { 
-		return expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) {
+		MovimientoExpediente buscarMovimientoExpediente = new MovimientoExpediente();
+		try {
+			buscarMovimientoExpediente = expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+		} catch (Exception e) {
+			logger.info("error infoMovimientoIdexpediente ="+e.getMessage());
+		}
+		return buscarMovimientoExpediente;
 	}
 
 	@Override
@@ -168,14 +202,26 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public ArchivoTupac infoArchivoTupa(Long idexpediente, Long idarchivorequisito) { 
-		return expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+	public ArchivoTupac infoArchivoTupa(Long idexpediente, Long idarchivorequisito) {
+		ArchivoTupac buscarArchivoTupac = new ArchivoTupac();
+		try {
+			buscarArchivoTupac = expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+		} catch (Exception e) {
+			logger.info("erro infoArchivoTupa="+e.getMessage());
+		}
+		return buscarArchivoTupac;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public boolean guardarExpedienteSimpleInterno(Expediente expediente) { 
-		return expedienteDao.guardarExpedienteSimpleInterno(expediente);
+	public boolean guardarExpedienteSimpleInterno(Expediente expediente) {
+		boolean respuesta = false;
+		try {
+			respuesta =expedienteDao.guardarExpedienteSimpleInterno(expediente);
+		} catch (Exception e) {
+			respuesta = false;
+		}
+		return respuesta;
 	}
 
 	@Override
@@ -212,8 +258,14 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) { 
-		return expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) {
+		Expediente buscarExpediente = new Expediente();
+		try {
+			buscarExpediente = expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+		} catch (Exception e) {
+			logger.info("error infoExpedienteCodigoInterno"+e.getMessage());
+		}
+		return buscarExpediente;
 	}
 
 	@Override
@@ -222,6 +274,5 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 		return expedienteDao.listarExpedientesInternoUsuario(formexpediente);
 	}
 
-	 
 
 }

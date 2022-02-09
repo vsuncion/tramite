@@ -56,7 +56,7 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 " 	 T1.NIDEXPEDIENTEFK, \n"+
 			 " 	 T2.VCODIGO_EXPEDIENTE, \n"+
 			 " 	 T2.NIDEXPEDIENTEPK, \n"+
-			 " 	 T2.VCOLOR \n"+ 
+			 " 	 CASE "+estadodocumento+" WHEN 1 THEN T2.VCOLOR  WHEN 2 THEN T2.VCOLOR ELSE  '#FFFFFF' END VCOLOR \n"+
 			 " FROM "+Constantes.tablaMovimiento+"              T1 \n"+
 			 " 	 INNER JOIN "+Constantes.tablaExpediente+"      T2 ON T1.NIDEXPEDIENTEFK=T2.NIDEXPEDIENTEPK \n"+
 			 " 	 INNER JOIN "+Constantes.tablaPersona+"         T3 ON T2.PERSONAFK=T3.NIDPERSONAPK \n"+
@@ -377,13 +377,11 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 				namedParameterJdbcTemplate.update(sql4.toString(), parametros4);
 	    	   
 	       }
-	       
-	       
-			
+
 			sql5.append(
 			" UPDATE "+Constantes.tablaExpediente+
 			"  SET \n"+
-			"  NESTADODOCUMENTOFKx= :P_NESTADODOCUMENTOFK, \n"+
+			"  NESTADODOCUMENTOFK= :P_NESTADODOCUMENTOFK, \n"+
 			"  NOFICINAFK= :P_NOFICINAFK \n"+
 			" WHERE NIDEXPEDIENTEPK= :P_NIDEXPEDIENTEPK");
 			MapSqlParameterSource parametros5 = new MapSqlParameterSource();

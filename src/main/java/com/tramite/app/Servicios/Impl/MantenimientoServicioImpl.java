@@ -45,9 +45,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Trabajadores> listarTrabajadores() {
-		List<Trabajadores> lista = new ArrayList<Trabajadores>();
-		lista = mantenimientoDao.listarTrabajadores();
-		return lista;
+		return  mantenimientoDao.listarTrabajadores();
 	}
 
 	@Override
@@ -75,19 +73,24 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarOficina(oficina);
+		try {
+			respuesta = mantenimientoDao.guardarOficina(oficina);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
 
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -99,10 +102,9 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> listarOficinasCombo() {
-		List<Oficinas> listarOficinas = new ArrayList<Oficinas>();
-		List<Seleccion> listaSeleccion = new ArrayList<Seleccion>();
+		List<Seleccion> listaSeleccion = new ArrayList<>();
 
-		listarOficinas = mantenimientoDao.listarOficinas();
+		List<Oficinas>  listarOficinas = mantenimientoDao.listarOficinas();
 
 		for (Oficinas itemOficinas : listarOficinas) {
 			Seleccion seleccion = new Seleccion();
@@ -117,7 +119,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Oficinas buscarOficina(Long id) {
-		return mantenimientoDao.buscarOficinaId(id);
+		Oficinas buscarOficinas = new Oficinas();
+		try {
+			buscarOficinas = mantenimientoDao.buscarOficinaId(id);
+		} catch (Exception e) {
+			logger.info("error buscarOficina ="+e.getMessage());
+		}
+		return buscarOficinas;
 	}
 
 	@Override
@@ -126,19 +134,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.actualizarOficina(oficina);
+		try {
+			respuesta = mantenimientoDao.actualizarOficina(oficina);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
 
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -146,19 +157,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarOficina(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.eliminarOficina(id);
+		try {
+			respuesta = mantenimientoDao.eliminarOficina(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
 
-		} else {
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -193,19 +207,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta guardarTipoDocumentos(TipoDocumentos tipoDocumentos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.guardarTipoDocumentos(tipoDocumentos);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarTipoDocumentos(tipoDocumentos);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -220,18 +237,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.actualizarTipoDocumento(tipoDocumentos);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarTipoDocumento(tipoDocumentos);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -239,25 +259,34 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarTipoDocumento(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.eliminarTipoDocumento(id);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarTipoDocumento(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public TipoDocumentos buscarTipoDocumentoId(Long id) {
-		return mantenimientoDao.buscarTipoDocumentoId(id);
+		TipoDocumentos busquedaTipoDocumentos = new TipoDocumentos();
+		try {
+			busquedaTipoDocumentos = mantenimientoDao.buscarTipoDocumentoId(id);
+		} catch (Exception e) {
+			logger.info("error buscarTipoDocumentoId="+e.getMessage());
+		}
+		return busquedaTipoDocumentos;
 	}
 
 	@Override
@@ -275,7 +304,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public TipoTramite buscarTipoTramiteId(Long id) {
-		return mantenimientoDao.buscarTipoTramiteId(id);
+		TipoTramite buscarTipoTramite = new TipoTramite();
+		try {
+			buscarTipoTramite = mantenimientoDao.buscarTipoTramiteId(id);
+		} catch (Exception e) {
+			logger.info("error buscarTipoTramiteId = "+e.getMessage());
+		}
+		return buscarTipoTramite;
 	}
 
 	@Override
@@ -284,14 +319,20 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.eliminarTipoTramite(id);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarTipoTramite(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
 
 		return mostrarmensaje;
@@ -304,18 +345,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.actualizarTipoTramite(tipoTramite);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarTipoTramite(tipoTramite);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -324,18 +368,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarTipoTramite(tipoTramite);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarTipoTramite(tipoTramite);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -365,7 +412,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Profesiones buscarProfesionesId(Long id) {
-		return mantenimientoDao.buscarProfesionesId(id);
+		Profesiones buscarProfesiones = new Profesiones();
+		try {
+			buscarProfesiones = mantenimientoDao.buscarProfesionesId(id);
+		} catch (Exception e) {
+			logger.info("error buscarProfesionesId = "+e.getMessage());
+		}
+		return buscarProfesiones;
 	}
 
 	@Override
@@ -374,18 +427,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarProfesiones(profesiones);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarProfesiones(profesiones);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -394,18 +450,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.actualizarProfesiones(profesiones);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarProfesiones(profesiones);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -413,19 +473,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarProfesiones(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.eliminarProfesiones(id);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarProfesiones(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -435,19 +498,19 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		try {
 			respuesta = mantenimientoDao.actualizarinformacionMunicipalidad(informacion);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
 		} catch (Exception e) {
 			respuesta = false;
-			logger.info("======================= "+this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
-		}
-
-		
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
+			logger.info("======================= "+this.getClass().getName()+" ===> actualizarinformacionMunicipalidad ================"+e.getMessage());
 		}
 
 		return mostrarmensaje;
@@ -468,7 +531,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Requisitos buscarRequisitosId(Long id) {
-		return mantenimientoDao.buscarRequisitosId(id);
+		Requisitos buscarRequisitos = new Requisitos();
+		try {
+			buscarRequisitos = mantenimientoDao.buscarRequisitosId(id);
+		} catch (Exception e) {
+			logger.info("error buscarRequisitosId =  "+e.getMessage());
+		}
+		return buscarRequisitos;
 	}
 
 	@Override
@@ -477,18 +546,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarRequisitos(requisitos);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarRequisitos(requisitos);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -496,19 +568,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta actualizarRequisitos(Requisitos requisitos) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.actualizarRequisitos(requisitos);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarRequisitos(requisitos);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -517,18 +592,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.eliminarRequisitos(id);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarRequisitos(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -546,7 +624,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Tupac buscarTupacPorId(Long id) {
-		return mantenimientoDao.buscarTupacPorId(id);
+		Tupac buscarTupac = new Tupac();
+		try {
+			buscarTupac = mantenimientoDao.buscarTupacPorId(id);
+		} catch (Exception e) {
+			logger.info("error buscarTupacPorId = "+e.getMessage());
+		}
+		return buscarTupac;
 	}
 
 	@Override
@@ -555,18 +639,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarTupac(tupac);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarTupac(tupac);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -575,18 +662,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.actualizarTupac(tupac);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarTupac(tupac);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -595,18 +685,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.eliminarTupac(id);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarTupac(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -644,26 +737,28 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		// mensajeRespuesta.setVACCION(Constantes.accionSI);
+		try {
+			verificacionRequisitosTupac = mantenimientoDao.buscarPorTupacRequisitos(requisitosTupac.getTUPACFK(),
+					requisitosTupac.getREQUISITOSFK());
+			if (verificacionRequisitosTupac.getNREQTUPACPK() == null) {
+				respuesta = mantenimientoDao.guardarRequisitosTupac(requisitosTupac);
+				if (respuesta == true) {
+					mensajeRespuesta.setCodigo(Constantes.transaccionCorrecta);
+					mensajeRespuesta.setMensaje(Constantes.transaccionCorrectaTexto);
+				} else {
+					mensajeRespuesta.setCodigo(Constantes.transaccionIncorrecta);
+					mensajeRespuesta.setMensaje(Constantes.transaccionIncorrectaTexto);
+				}
 
-		verificacionRequisitosTupac = mantenimientoDao.buscarPorTupacRequisitos(requisitosTupac.getTUPACFK(),
-				requisitosTupac.getREQUISITOSFK());
-
-		if (verificacionRequisitosTupac.getNREQTUPACPK() == null) {
-			respuesta = mantenimientoDao.guardarRequisitosTupac(requisitosTupac);
-			if (respuesta == true) {
-				mensajeRespuesta.setCodigo(Constantes.transaccionCorrecta);
-				mensajeRespuesta.setMensaje(Constantes.transaccionCorrectaTexto);
 			} else {
 				mensajeRespuesta.setCodigo(Constantes.transaccionIncorrecta);
-				mensajeRespuesta.setMensaje(Constantes.transaccionIncorrectaTexto);
+				mensajeRespuesta.setMensaje(Constantes.mensajeRegistroDuplicado.replace("$NOMBRE$", verificacionRequisitosTupac.getVNOMBRE()));
 			}
 
-		} else {
+		} catch (Exception e) {
 			mensajeRespuesta.setCodigo(Constantes.transaccionIncorrecta);
-			mensajeRespuesta.setMensaje(Constantes.mensajeRegistroDuplicado.replace("$NOMBRE$", verificacionRequisitosTupac.getVNOMBRE()));
+			mensajeRespuesta.setMensaje(e.getMessage());
 		}
-
 		return mensajeRespuesta;
 	}
 
@@ -692,19 +787,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta activarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.activarRequisitosTupac(id);
+		try {
+			respuesta = mantenimientoDao.activarRequisitosTupac(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -712,28 +809,28 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarRequisitosTupac(Long id) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
+		try {
+			respuesta = mantenimientoDao.eliminarRequisitosTupac(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		respuesta = mantenimientoDao.eliminarRequisitosTupac(id);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbProfesiones() {
-		List<Profesiones> listaProfesiones = new ArrayList<Profesiones>();
-		List<Seleccion> cbProfesion = new ArrayList<Seleccion>();
-
-		listaProfesiones = mantenimientoDao.listarProfesiones();
+		List<Seleccion> cbProfesion = new ArrayList<>();
+		List<Profesiones> listaProfesiones = mantenimientoDao.listarProfesiones();
 		for (Profesiones i : listaProfesiones) {
 			Seleccion seleccion = new Seleccion();
 			seleccion.setCodigo(i.getNIDPROFESIONPK());
@@ -780,7 +877,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Persona buscarTrabajadorPersonaPorId(Long id) {
-		return mantenimientoDao.buscarTrabajadorPersonaPorId(id);
+		Persona buscarPersona = new Persona();
+		try {
+			buscarPersona = mantenimientoDao.buscarTrabajadorPersonaPorId(id);
+		} catch (Exception e) {
+			logger.info("error buscarTrabajadorPersonaPorId = "+e.getMessage());
+		}
+		return buscarPersona;
 	}
 
 	@Override
@@ -788,19 +891,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta guardarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
+		try {
+			respuesta = mantenimientoDao.guardarTrabajadorPersona(persona);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		respuesta = mantenimientoDao.guardarTrabajadorPersona(persona);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -808,19 +913,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta actualizarTrabajadorPersona(Persona persona) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
-		respuesta = mantenimientoDao.actualizarTrabajadorPersona(persona);
 
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarTrabajadorPersona(persona);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -829,24 +937,27 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.eliminarTrabajadorPersona(id);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarTrabajadorPersona(id);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> cbCriteriosBusquedaTrabajador() {
-		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<Seleccion>();
+		List<Seleccion> cbTipoDocumentoRegistro = new ArrayList<>();
 		String[] listaTipoDocumentoRegistro = Constantes.listaBusquedaTrabajador;
 		for (int i = 0; i < listaTipoDocumentoRegistro.length; i++) {
 			Seleccion seleccion = new Seleccion();
@@ -863,6 +974,9 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			} else if (i == 3) {
 				seleccion.setCodigo(Long.valueOf(i));
 				seleccion.setEtiqueta(Constantes.listaBusquedaTrabajadorDNI);
+			}else if (i == 4) {
+				seleccion.setCodigo(Long.valueOf(i));
+				seleccion.setEtiqueta(Constantes.listaBusquedaTrabajadorOFICINA);
 			}
 
 			cbTipoDocumentoRegistro.add(seleccion);
@@ -886,7 +1000,13 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Usuarios buscarUsuarioPersonaPorId(Long id) {
-		return mantenimientoDao.buscarUsuarioPersonaPorId(id);
+		Usuarios buscarUsuarios = new Usuarios();
+		try {
+			buscarUsuarios = mantenimientoDao.buscarUsuarioPersonaPorId(id);
+		} catch (Exception e) {
+			logger.info("error buscarUsuarioPersonaPorId ="+e.getMessage());
+		}
+		return buscarUsuarios;
 	}
 
 	@Override
@@ -897,18 +1017,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-		respuesta = mantenimientoDao.guardarUsuarioPersona(usuarios);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarUsuarioPersona(usuarios);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -922,27 +1045,26 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			usuarios.setVCLAVE(encriptar.encode(usuarios.getVCLAVE()));
 		}
 
-		respuesta = mantenimientoDao.actualizarUsuarioPersona(usuarios);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-
-		} else {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.actualizarUsuarioPersona(usuarios);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Seleccion> listarPerfiles() {
-		List<Perfiles> listarPerfiles = new ArrayList<Perfiles>();
-		List<Seleccion> cbPerfiles = new ArrayList<Seleccion>();
-
-		listarPerfiles = mantenimientoDao.listarPerfiles();
+		List<Seleccion> cbPerfiles = new ArrayList<>();
+		List<Perfiles> listarPerfiles = mantenimientoDao.listarPerfiles();
 
 		for (Perfiles i : listarPerfiles) {
 			Seleccion seleccion = new Seleccion();
@@ -959,18 +1081,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarUsuarioPersona(Long idUsuario, Long idUsuarioPerfil) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		respuesta = mantenimientoDao.eliminarUsuarioPersona(idUsuario, idUsuarioPerfil);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.eliminarUsuarioPersona(idUsuario, idUsuarioPerfil);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -978,20 +1103,22 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta guardarFeriado(Feriados feriados) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-
 		feriados.setDFERIADO(Fechas.convertStringToDate(feriados.getVFERIADO()));
-		respuesta = mantenimientoDao.guardarFeriado(feriados);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+		try {
+			respuesta = mantenimientoDao.guardarFeriado(feriados);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
-
 	}
 
 	@Override
@@ -999,16 +1126,21 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	public MensajeRespuesta eliminarFeriado(Long idFeriado) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		respuesta = mantenimientoDao.eliminarFeriado(idFeriado);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+		try {
+			respuesta = mantenimientoDao.eliminarFeriado(idFeriado);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje;
 
 	}
@@ -1027,8 +1159,14 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Persona infoPersona(Persona persona) { 
-		return mantenimientoDao.infoPersona(persona);
+	public Persona infoPersona(Persona persona) {
+		Persona buscarPersona = new Persona();
+		try {
+			buscarPersona = mantenimientoDao.infoPersona(persona);
+		} catch (Exception e) {
+			logger.info("error infoPersona ="+e.getMessage());
+		}
+		return buscarPersona;
 	}
 
 	@Override
@@ -1039,24 +1177,36 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Correlativo infoCorrelativo(Long idcorrelativo) { 
-		return mantenimientoDao.infoCorrelativo(idcorrelativo);
+	public Correlativo infoCorrelativo(Long idcorrelativo) {
+		Correlativo buscarCorrelativo = new Correlativo();
+		try {
+			buscarCorrelativo = mantenimientoDao.infoCorrelativo(idcorrelativo);
+		} catch (Exception e) {
+			logger.info("error infoCorrelativo ="+e.getMessage());
+		}
+		return buscarCorrelativo;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta actualizarCorrelativo(Correlativo formCorrelativo) {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		boolean respuesta = mantenimientoDao.actualizarCorrelativo(formCorrelativo);
-		if (respuesta == true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
 
-		} else {
+		boolean respuesta = false;
+		try {
+			respuesta = mantenimientoDao.actualizarCorrelativo(formCorrelativo);
+			if (respuesta == true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+
+			} else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
-
 		return mostrarmensaje; 
 	}
 

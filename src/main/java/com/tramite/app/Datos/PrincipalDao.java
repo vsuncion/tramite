@@ -11,7 +11,7 @@ import com.tramite.app.Entidades.Tupac;
 
 public interface PrincipalDao {
 	
-	Persona buscarPersona(int tipoPersona,String vnumero);
+	Persona buscarPersona(PrePersona prePersona);
 	boolean guardarPrePersona(PrePersona prePersona);
 	boolean activarRegistroPrePersona(String codigoActivacion);
 	boolean confirmacionCodigoActivacion(String codigoActivacion);
@@ -27,4 +27,5 @@ public interface PrincipalDao {
 	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
 	PersonaJuridica  buscarPersonaJuridicaDuplicada(PrePersona prePersona); 
 	PrePersona buscarPrepersona(PrePersona prePersona);
+	PrePersona buscarPrepersonaDuplicada(PrePersona prePersona);
 }

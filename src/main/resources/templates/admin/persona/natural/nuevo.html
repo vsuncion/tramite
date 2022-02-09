@@ -20,7 +20,7 @@
 			<!-- CONTENIDO EDITABLE INICIO-->
 			<div class="rows">
 
-				<form id="persona" name="persona" th:object="${prePersona}"
+				<form th:id="persona" th:name="persona" th:object="${prePersona}"
 					th:action="@{/guardarPrepersonaNatural}" method="post">
 					
 					 
@@ -118,8 +118,8 @@
 							<div class="row">
 
 								<div class="col-sm-12 text-center">
-									<button type="submit" id="btnGrabarTipoTramite"
-										name="btnGrabarTipoTramite" class="btn btn-outline-primary" th:disabled="${estadobotton}"  >
+									<button type="submit" th:id="btnGrabarTipoTramite"
+										th:name="btnGrabarTipoTramite" class="btn btn-outline-primary" th:disabled="${estadobotton}">
 										<i class="far fa-save"></i> GRABAR
 									</button>
 									 
@@ -141,15 +141,16 @@
 	</div>
 
 	<div th:replace="loyout/plantilla :: html_scrip"></div>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+
 	<script th:inline="javascript">
 		$(document).ready(function() {
 			verificarMantenimiento(/*[[${mostrarmensaje}]]*/);
 		});
-		
-	
+
 	</script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<script th:src="@{/js/sweetAlert.js}" type="text/javascript"></script>
+
 
 </body>
 </html>

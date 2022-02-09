@@ -3,17 +3,11 @@ package com.tramite.app.Servicios;
 
 import java.util.List;
 
-import com.tramite.app.Entidades.Expediente;
-import com.tramite.app.Entidades.MensajeRespuesta;
-import com.tramite.app.Entidades.Persona;
-import com.tramite.app.Entidades.PrePersona;
-import com.tramite.app.Entidades.PreRequisitoTupa;
-import com.tramite.app.Entidades.RequisitosTupac;
-import com.tramite.app.Entidades.Seleccion;  
+import com.tramite.app.Entidades.*;
 
 public interface PrincipalServicio {
 	
-	Persona buscarPersona(int tipoPersona,String vnumero);
+	Persona buscarPersona(PrePersona prePersona);
 	MensajeRespuesta guardarPrePersona(PrePersona prePersona);
 	MensajeRespuesta activarRegistroPrePersona(String codigoActivacion);
 	MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion); 
@@ -28,6 +22,7 @@ public interface PrincipalServicio {
 	void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente);
 	void eliminarArchivoRequerimeinto(Long idprexpediente,Long idrequisito);
 	List<RequisitosTupac> listaRequerimientosTupac(Long idtupac);
-	MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona);  
+	PersonaJuridica buscarPersonaJuridicaDuplicada(PrePersona prePersona);
 	PrePersona buscarPrepersona(PrePersona prePersona);
+	PrePersona buscarPrepersonaDuplicada(PrePersona prePersona);
 }

@@ -3,6 +3,7 @@ package com.tramite.app.Servicios.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tramite.app.excepciones.ResultadoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,8 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	private MantenimientoServicio  mantenimientoServicio;
 
 	@Override
-	public Persona buscarPersona(int tipoPersona, String vnumero) { 
-		return principalDao.buscarPersona(tipoPersona, vnumero);
+	public Persona buscarPersona(PrePersona prePersona) {
+		return principalDao.buscarPersona(prePersona);
 	}
 
 	@Override
@@ -49,28 +50,31 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	public MensajeRespuesta guardarPrePersona(PrePersona prePersona) {
 		boolean respuesta = false;
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
-		
-		// VERICAMOS QUE LA PERSONA NO SE REPITA
-		
-		
-		
+
 		//GENERAMOS LOS CORRELATIVOS 
 		prePersona.setVCODIGOACTIVACION(AutoGenerados.getCorrelativoArchivo());
-		
-		respuesta = principalDao.guardarPrePersona(prePersona);
-		
-		if(respuesta==true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto+", Se le envio un correo para confirmar a "+prePersona.getVCORREO()+", por favor confirme el correo");
-			
-			//ENVIAMOS CORREO
-			String  cuerpo = "";
-			 cuerpo=fijaServicio.cuerpoCorreo(prePersona.getVNOMBRE()+" "+prePersona.getVAPEMATERNO()+" "+prePersona.getVAPEMATERNO(), prePersona.getVCODIGOACTIVACION());
-			 fijaServicio.enviarCorreo(prePersona.getVCORREO(), cuerpo);
-		}else {
+
+		try {
+			respuesta = principalDao.guardarPrePersona(prePersona);
+			if(respuesta==true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto+", Se le envio un correo para confirmar a "+prePersona.getVCORREO()+", por favor confirme el correo");
+
+				//ENVIAMOS CORREO
+				String  cuerpo = "";
+				cuerpo=fijaServicio.cuerpoCorreo(prePersona.getVNOMBRE()+" "+prePersona.getVAPEMATERNO()+" "+prePersona.getVAPEMATERNO(), prePersona.getVCODIGOACTIVACION());
+				fijaServicio.enviarCorreo(prePersona.getVCORREO(), cuerpo);
+			}else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
+
+
 		return mostrarmensaje;
 	}
 
@@ -83,55 +87,95 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta confirmacionCodigoActivacion(String codigoActivacion) {
-		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
- 
-		respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
-		if(respuesta==true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-		}else {
+
+
+		try {
+			respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
+			if(respuesta==true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			}else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
 		return mostrarmensaje;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Persona busquedaSolicitante(Expediente expediente) { 
-		return principalDao.busquedaSolicitante(expediente);
+	public Persona busquedaSolicitante(Expediente expediente) {
+		Persona buscarPersona = null;
+		try {
+			buscarPersona = principalDao.busquedaSolicitante(expediente);
+		} catch (Exception e) {
+			logger.info("error busquedaSolicitante = "+e.getMessage());
+		}
+		return buscarPersona;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public boolean guardarExpedienteSimple(Expediente expediente) {
-		return principalDao.guardarExpedienteSimple(expediente);
+
+		try {
+			return principalDao.guardarExpedienteSimple(expediente);
+		} catch (Exception e) {
+			logger.info("ERROR :"+e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public Long guardarPreTupac(Expediente expediente) { 
-		return principalDao.guardarPreTupac(expediente);
+	public Long guardarPreTupac(Expediente expediente) {
+		Long idRespuesta = 0L;
+		try {
+			idRespuesta= principalDao.guardarPreTupac(expediente);
+		} catch (Exception e) {
+			logger.info("ERROR :"+e.getMessage());
+			idRespuesta=0L;
+		}
+		return idRespuesta;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public Expediente preTupacExpediente(Long idprexpediente) { 
-		return principalDao.preTupacExpediente(idprexpediente);
+	public Expediente preTupacExpediente(Long idprexpediente)
+	{
+		Expediente expediente = new Expediente();
+		try {
+			expediente =principalDao.preTupacExpediente(idprexpediente);
+		} catch (Exception e) {
+			logger.info("ERROR :"+e.getMessage());
+			e.printStackTrace();
+		}
+		return  expediente;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public MensajeRespuesta guardarPreRequisito(PreRequisitoTupa preRequisitoTupa) { 
-		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
-		boolean respuesta = principalDao.guardarPreRequisito(preRequisitoTupa);
-		if(respuesta==true) {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
-		}else {
+		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
+
+		boolean respuesta = false;
+		try {
+			respuesta = principalDao.guardarPreRequisito(preRequisitoTupa);
+			if(respuesta==true) {
+				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
+			}else {
+				mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			}
+		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
+			mostrarmensaje.setMensaje(e.getMessage());
 		}
 		return mostrarmensaje; 
 	}
@@ -158,21 +202,37 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) { 
-		return principalDao.infoPreRequisitoTupa(preRequisitoTupa);
+	public PreRequisitoTupa infoPreRequisitoTupa(PreRequisitoTupa preRequisitoTupa) {
+		PreRequisitoTupa buscarPreRequisitoTupa = new PreRequisitoTupa();
+		try {
+			buscarPreRequisitoTupa = principalDao.infoPreRequisitoTupa(preRequisitoTupa);
+		} catch (Exception e) {
+			logger.info("error infoPreRequisitoTupa = "+e.getMessage());
+		}
+		return buscarPreRequisitoTupa;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public void guardarDetalleArchivosExpedienteTupa(Expediente formExpediente) {
-		principalDao.guardarDetalleArchivosExpedienteTupa(formExpediente);
-		
+
+		try {
+			principalDao.guardarDetalleArchivosExpedienteTupa(formExpediente);
+		} catch (Exception e) {
+			logger.info("error guardarDetalleArchivosExpedienteTupa = "+e.getMessage());
+		}
+
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void eliminarArchivoRequerimeinto(Long idprexpediente, Long idrequisito) {
-		principalDao.eliminarArchivoRequerimeinto(idprexpediente, idrequisito);
+
+		try {
+			principalDao.eliminarArchivoRequerimeinto(idprexpediente, idrequisito);
+		} catch (Exception e) {
+			logger.info("ERROR :"+e.getMessage());
+		}
 	}
 
 	@Override
@@ -183,30 +243,38 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 
 	@Override
 	@Transactional(readOnly = true)
-	public MensajeRespuesta buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
-		PersonaJuridica personaJuridica = new PersonaJuridica();
-		MensajeRespuesta mostrarmensaje = new MensajeRespuesta(); 
-		
-		
-		personaJuridica = principalDao.buscarPersonaJuridicaDuplicada(prePersona);
-		
-		if(personaJuridica.getVRUC()!=null) {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje("EL NUMERO DE RUC :"+prePersona.getVRUC()+" SE ENCUENTRA DUPLICADO");
-			
-		}else {
-			mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);  
+	public PersonaJuridica buscarPersonaJuridicaDuplicada(PrePersona prePersona) {
+
+		PersonaJuridica personaJuridica = null;
+		try {
+			personaJuridica = principalDao.buscarPersonaJuridicaDuplicada(prePersona);
+		} catch (Exception e) {
+			logger.info("error buscarPersonaJuridicaDuplicada ="+e.getMessage());
 		}
-		
-		return mostrarmensaje;
+		return personaJuridica;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public PrePersona buscarPrepersona(PrePersona prePersona) { 
-		return principalDao.buscarPrepersona(prePersona);
+	public PrePersona buscarPrepersona(PrePersona prePersona) {
+		PrePersona buscarPrePersona = null;
+		try {
+			buscarPrePersona = principalDao.buscarPrepersona(prePersona);
+		} catch (Exception e) {
+			logger.info("error buscarPrepersona ="+e.getMessage());
+		}
+		return buscarPrePersona;
 	}
 
-	 
+	@Override
+	public PrePersona buscarPrepersonaDuplicada(PrePersona prePersona) {
+		PrePersona buscarPrePersona = new PrePersona();
+		try {
+			buscarPrePersona = principalDao.buscarPrepersonaDuplicada(prePersona);
+		} catch (Exception e) {
+			logger.info("error buscarPrepersonaDuplicada"+e.getMessage());
+		}
+		return buscarPrePersona;
+	}
 
 }

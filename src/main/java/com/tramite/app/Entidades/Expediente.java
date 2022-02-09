@@ -79,6 +79,7 @@ public class Expediente implements Serializable {
 	public Expediente() {
 	}
 
+
 	public String getESTADODOCUMENTO() {
 		return ESTADODOCUMENTO;
 	}
