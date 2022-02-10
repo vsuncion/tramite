@@ -5,8 +5,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.tramite.app.Entidades.Expediente;
 import com.tramite.app.Entidades.HojaRuta;
@@ -14,7 +13,8 @@ import com.tramite.app.Entidades.ReporteExpediente;
 
 @Service
 public class GenerarExcel {
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(GenerarExcel.class);
 
 	public XSSFSheet reporteHojaRuta(XSSFWorkbook libro, Expediente infoExpediente, List<HojaRuta> listaHojaRuta) {
 

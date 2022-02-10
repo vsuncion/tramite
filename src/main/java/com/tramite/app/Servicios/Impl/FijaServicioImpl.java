@@ -3,8 +3,7 @@ package com.tramite.app.Servicios.Impl;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,7 +16,8 @@ import com.tramite.app.Servicios.FijaServicio;
 @Service
 public class FijaServicioImpl implements FijaServicio {
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(FijaServicioImpl.class);
 	
 	@Autowired
 	private JavaMailSender javaMailSender;

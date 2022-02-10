@@ -2,8 +2,7 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List; 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,7 +25,8 @@ import com.tramite.app.utilitarios.Constantes;
 @Service
 public class RecursoServiceImpl implements RecursoServicio {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(RecursoServiceImpl.class);
 
 	@Autowired
 	private RecursoDao recursoDao;

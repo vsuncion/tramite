@@ -3,8 +3,7 @@ package com.tramite.app.Datos.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper; 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -19,8 +18,9 @@ import com.tramite.app.utilitarios.Constantes;
 @Repository
 public class SeguridadDaoImpl implements SeguridadDao {
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
-
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(SeguridadDaoImpl.class);
+	
 	/*
 	@Autowired
 	private JdbcTemplate jdbcTemplate;*/

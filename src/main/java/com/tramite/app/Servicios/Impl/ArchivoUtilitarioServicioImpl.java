@@ -5,8 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +23,8 @@ public class ArchivoUtilitarioServicioImpl implements ArchivoUtilitarioServicio 
 	@Value("${rutaArchivo}")
 	private String rutaRaiz;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
-
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(ArchivoUtilitarioServicioImpl.class);
 
 	@Override
 	@Transactional(readOnly = true)

@@ -2,8 +2,7 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,8 @@ import com.tramite.app.utilitarios.Fechas;
 @Service
 public class MantenimientoServicioImpl implements MantenimientoServicio {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(MantenimientoServicioImpl.class);
 
 	@Autowired
 	private MantenimientoDao mantenimientoDao;
@@ -55,7 +55,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		try {
 			informacion = mantenimientoDao.informacionMunicipalidad();
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.info("ERROR =" + this.getClass().getName()+".informacionMunicipalidad ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
 		
 		return informacion;
@@ -119,13 +119,16 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Oficinas buscarOficina(Long id) {
-		Oficinas buscarOficinas = new Oficinas();
-		try {
-			buscarOficinas = mantenimientoDao.buscarOficinaId(id);
+
+		Oficinas oficinas = new Oficinas();
+	   try {
+		   oficinas = mantenimientoDao.buscarOficinaId(id);
 		} catch (Exception e) {
-			logger.info("error buscarOficina ="+e.getMessage());
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarOficina ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarOficinas;
+		
+		return oficinas;
 	}
 
 	@Override
@@ -280,13 +283,14 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public TipoDocumentos buscarTipoDocumentoId(Long id) {
-		TipoDocumentos busquedaTipoDocumentos = new TipoDocumentos();
+		TipoDocumentos tipoDocumentos = new TipoDocumentos();
 		try {
-			busquedaTipoDocumentos = mantenimientoDao.buscarTipoDocumentoId(id);
+			tipoDocumentos = mantenimientoDao.buscarTipoDocumentoId(id);
 		} catch (Exception e) {
-			logger.info("error buscarTipoDocumentoId="+e.getMessage());
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return busquedaTipoDocumentos;
+		return tipoDocumentos;
 	}
 
 	@Override
@@ -304,13 +308,15 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public TipoTramite buscarTipoTramiteId(Long id) {
-		TipoTramite buscarTipoTramite = new TipoTramite();
+		TipoTramite tipoTramite = new TipoTramite();
 		try {
-			buscarTipoTramite = mantenimientoDao.buscarTipoTramiteId(id);
+			tipoTramite = mantenimientoDao.buscarTipoTramiteId(id);
 		} catch (Exception e) {
-			logger.info("error buscarTipoTramiteId = "+e.getMessage());
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+". ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarTipoTramite;
+		
+		return tipoTramite;
 	}
 
 	@Override
@@ -419,6 +425,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			logger.info("error buscarProfesionesId = "+e.getMessage());
 		}
 		return buscarProfesiones;
+
 	}
 
 	@Override
@@ -884,6 +891,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			logger.info("error buscarTrabajadorPersonaPorId = "+e.getMessage());
 		}
 		return buscarPersona;
+
 	}
 
 	@Override
@@ -893,6 +901,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 		boolean respuesta = false;
 		try {
 			respuesta = mantenimientoDao.guardarTrabajadorPersona(persona);
+
 			if (respuesta == true) {
 				mostrarmensaje.setCodigo(Constantes.transaccionCorrecta);
 				mostrarmensaje.setMensaje(Constantes.transaccionCorrectaTexto);
@@ -902,8 +911,10 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 				mostrarmensaje.setMensaje(Constantes.transaccionIncorrectaTexto);
 			}
 		} catch (Exception e) {
-			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
-			mostrarmensaje.setMensaje(e.getMessage());
+		// TODO: handle exception
+		logger.info("ERROR =" + this.getClass().getName()+".buscarUsuarioPersonaPorId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
+		  mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
+		  mostrarmensaje.setMensaje(e.getMessage());
 		}
 		return mostrarmensaje;
 	}
@@ -1007,6 +1018,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			logger.info("error buscarUsuarioPersonaPorId ="+e.getMessage());
 		}
 		return buscarUsuarios;
+
 	}
 
 	@Override
@@ -1185,6 +1197,7 @@ public class MantenimientoServicioImpl implements MantenimientoServicio {
 			logger.info("error infoCorrelativo ="+e.getMessage());
 		}
 		return buscarCorrelativo;
+
 	}
 
 	@Override

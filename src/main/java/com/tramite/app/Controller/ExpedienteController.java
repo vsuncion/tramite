@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,7 +52,7 @@ import com.tramite.app.utilitarios.GenerarExcel;
 @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_SEGUIMIENTO_TRAMITE','ROLE_ATENCION_PUBLICO','ROLE_REPORTES')")
 public class ExpedienteController {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(ExpedienteController.class);
 
 	@Autowired
 	private RecursoServicio recursoServicio;

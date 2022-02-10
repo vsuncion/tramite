@@ -2,10 +2,8 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.tramite.app.excepciones.ResultadoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,7 +27,8 @@ import com.tramite.app.utilitarios.Constantes;
 @Service
 public class PrincipalServicioImpl implements PrincipalServicio {
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(PrincipalServicioImpl.class);
 	
 	@Autowired
 	private PrincipalDao  principalDao;
@@ -90,7 +89,6 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		MensajeRespuesta mostrarmensaje = new MensajeRespuesta();
 		boolean respuesta = false;
 
-
 		try {
 			respuesta = principalDao.confirmacionCodigoActivacion(codigoActivacion);
 			if(respuesta==true) {
@@ -103,7 +101,9 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
 			mostrarmensaje.setMensaje(e.getMessage());
+
 		}
+ 
 		return mostrarmensaje;
 	}
 
@@ -117,6 +117,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 			logger.info("error busquedaSolicitante = "+e.getMessage());
 		}
 		return buscarPersona;
+
 	}
 
 	@Override
@@ -210,6 +211,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 			logger.info("error infoPreRequisitoTupa = "+e.getMessage());
 		}
 		return buscarPreRequisitoTupa;
+
 	}
 
 	@Override
@@ -252,6 +254,7 @@ public class PrincipalServicioImpl implements PrincipalServicio {
 			logger.info("error buscarPersonaJuridicaDuplicada ="+e.getMessage());
 		}
 		return personaJuridica;
+
 	}
 
 	@Override

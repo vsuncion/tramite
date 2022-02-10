@@ -3,8 +3,7 @@ package com.tramite.app.Datos.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,7 +27,8 @@ import com.tramite.app.utilitarios.Fechas;
 @Repository
 public class ExpedienteDaoImpl implements ExpedienteDao {
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(ExpedienteDaoImpl.class);
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -524,7 +524,8 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) {
 		StringBuffer sql = new StringBuffer();
 		Expediente info = new Expediente();
-	
+	    List<Expediente> lista ;
+		
 			sql.append(
 				"SELECT  \n"+
 				"    T1.NIDEXPEDIENTEPK, \n"+
@@ -555,7 +556,10 @@ public class ExpedienteDaoImpl implements ExpedienteDao {
 			 parametros.addValue("P_ANIO", anio);
 			 parametros.addValue("P_VCODIGO_EXPEDIENTE", codigoExpediente); 
 			 parametros.addValue("P_NORIGEN", Constantes.ORIGEN_TIPO_EXTERNO); 
-		      info = namedParameterJdbcTemplate.queryForObject(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+			 lista = namedParameterJdbcTemplate.query(sql.toString(), parametros,BeanPropertyRowMapper.newInstance(Expediente.class));
+			 if(lista.size()>0) {
+				 info = lista.get(0); 
+			 }
 	 
 		return info;
 	}

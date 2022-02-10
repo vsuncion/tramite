@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.tramite.app.Entidades.*;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,10 +51,11 @@ public class PrinicipalController {
 	@Autowired
 	private GenerarExcel  generarExcel;
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(PrinicipalController.class);
 
 	@GetMapping(value = { "/", "index" })
-	public ModelAndView hola(HttpServletRequest request, HttpServletResponse res) {
+	public ModelAndView index(HttpServletRequest request, HttpServletResponse res) {
 		logger.info("======================= INFO ================");
 		ModelAndView pagina = new ModelAndView();
 		List<HojaRuta> listaHoja = new ArrayList<HojaRuta>(); 

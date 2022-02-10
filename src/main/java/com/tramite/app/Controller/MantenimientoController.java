@@ -6,8 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
@@ -54,7 +53,7 @@ public class MantenimientoController {
 	@Value("${urlTramite}")
 	private String urlTramite;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(MantenimientoController.class);
  
 	// ========================== CRUD TRABAJADOR ===================================
 	
@@ -122,7 +121,7 @@ public class MantenimientoController {
 		pagina.addObject("cbTipoDocumentoRegistro", cbTipoDocumentoRegistro);
 		pagina.addObject("cbCargo", cbCargo);
 		pagina.setViewName("admin/trabajador/nuevo");
-		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -163,11 +162,10 @@ public class MantenimientoController {
 		}else {
 			mostrarmensaje = mantenimientoServicio.guardarTrabajadorPersona(formPersona); 
 		}
-	 
-		        
-  
+ 
 		pagina.setViewName("admin/trabajador/nuevo");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listarTranbajador");
+		pagina.addObject("urltramite",urlTramite);
+		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.addObject("persona",formPersona);
 		pagina.addObject("cbOficinas", cbOficinas);
 		pagina.addObject("cbProfesiones", cbProfesiones);
@@ -357,6 +355,7 @@ public class MantenimientoController {
 		
 		mostrarmensaje = mantenimientoServicio.guardarFeriado(formFeriado);
 		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("formFeriado", formFeriado);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		pagina.setViewName("admin/feriado/nuevo");
@@ -661,6 +660,7 @@ public class MantenimientoController {
 			pagina.addObject("profesiones",formProfesion); 
 			pagina.setViewName("admin/profesiones/nueva");
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
+			pagina.addObject("urltramite",urlTramite);
 			return pagina;
 		}
 		
@@ -670,6 +670,7 @@ public class MantenimientoController {
 		pagina.setViewName("admin/profesiones/nueva");
 		pagina.addObject("profesiones",formProfesion);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		return pagina;
 	}
 	
@@ -819,7 +820,7 @@ public class MantenimientoController {
 			mostrarmensaje = mantenimientoServicio.guardarTupac(formTupac);
 			
 			pagina.setViewName("admin/tupac/nuevoTupac");
-			//pagina.setViewName("redirect:/admin/mantenimiento/listarTupac");
+			pagina.addObject("urltramite",urlTramite);
 			pagina.addObject("tupac",formTupac); 
 			pagina.addObject("cbOficinas", listaSeleccion);
 			pagina.addObject("cbTipoDias", listaTipoDias);
@@ -864,6 +865,7 @@ public class MantenimientoController {
 			pagina.addObject("cbOficinas", listaSeleccion);
 			pagina.addObject("cbTipoDias", listaTipoDias);
 			pagina.addObject("cbEstados", listaEstadosRegistro);
+			pagina.addObject("urltramite",urlTramite);
 			pagina.setViewName("admin/tupac/actualizarTupac");
 			return pagina;
 			
@@ -959,6 +961,7 @@ public class MantenimientoController {
 			listaRequisitosTupac = mantenimientoServicio.listarRequisitosTupacPorIdTupac(infoTupac.getTUPACPK());
 	 
 			ModelAndView pagina = new ModelAndView();
+			pagina.addObject("urltramite",urlTramite);
 			pagina.addObject("requisitosTupac",formRequisitosTupac);
 			pagina.addObject("infoTupac",infoTupac);
 			pagina.addObject("cbRequisitos",cbRequisitos);
@@ -966,6 +969,7 @@ public class MantenimientoController {
 			pagina.addObject("listaRequisitosTupac",listaRequisitosTupac);
 			pagina.addObject("mostrarmensaje",mostrarmensaje);
 			pagina.setViewName("admin/tupac/asignarReqTupac");
+			
 			return pagina;
 			
 		}
@@ -1074,7 +1078,7 @@ public class MantenimientoController {
 		}
 		
 		mostrarmensaje = mantenimientoServicio.guardarRequisitos(requisitos);
-		
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/tupac/nuevoRequisito");
 		pagina.addObject("requisitosTupac",requisitos); 
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
@@ -1394,7 +1398,7 @@ public class MantenimientoController {
 		
 		mostrarmensaje = mantenimientoServicio.guardarTipoTramite(formTipoTramite); 
 		pagina.setViewName("admin/tipotramite/nueva");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listartipotramite");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("tipoTramite", formTipoTramite); 
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
 		return pagina;
@@ -1439,7 +1443,7 @@ public class MantenimientoController {
 		mostrarmensaje = mantenimientoServicio.actualizarTipoTramite(tipoTramite);
 		
 		pagina.setViewName("admin/tipotramite/actualizar");
-		//pagina.setViewName("redirect:/admin/mantenimiento/listartipotramite");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.addObject("tipoTramite", tipoTramite);  
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
@@ -1538,7 +1542,7 @@ public class MantenimientoController {
 		mostrarmensaje = mantenimientoServicio.guardarUsuarioPersona(formUsuarioPersona);
 		//infoPersona = mantenimientoServicio.buscarTrabajadorPersonaPorId(formUsuarioPersona.getNTRABAJADORFK());
 		
-		//pagina.setViewName("redirect:/admin/mantenimiento/listarUsuario");
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/usuario/nuevo");
 		pagina.addObject("usuarios",formUsuarioPersona);
 		pagina.addObject("cbOficinas", cbOficinas);
@@ -1591,6 +1595,7 @@ public class MantenimientoController {
 		pagina.addObject("cbEstados", listaEstadosRegistro);
 		pagina.addObject("usuarios",formUsuarioPersona);
 		pagina.addObject("mostrarmensaje",mostrarmensaje);
+		pagina.addObject("urltramite",urlTramite);
 		pagina.setViewName("admin/usuario/actualizar");
 		return pagina;
 	}

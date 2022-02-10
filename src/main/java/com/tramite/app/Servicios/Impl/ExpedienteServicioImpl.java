@@ -2,9 +2,7 @@ package com.tramite.app.Servicios.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,8 +19,7 @@ import com.tramite.app.Entidades.MensajeRespuesta;
 import com.tramite.app.Entidades.MovimientoExpediente;
 import com.tramite.app.Entidades.ReporteExpediente;
 import com.tramite.app.Entidades.Usuarios;
-import com.tramite.app.Servicios.ExpedienteServicio;
-import com.tramite.app.excepciones.ResultadoException;
+import com.tramite.app.Servicios.ExpedienteServicio; 
 import com.tramite.app.utilitarios.Constantes;
 
 @Service
@@ -34,7 +31,8 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Autowired
 	private BCryptPasswordEncoder encriptar;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	//Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger logger = Logger.getLogger(ExpedienteServicioImpl.class);
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -69,6 +67,7 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 		} catch (Exception e) {
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
 			mostrarmensaje.setMensaje(e.getMessage());
+
 		}
 		return mostrarmensaje;
 	}
@@ -76,25 +75,27 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpediente(Long idexpediente) {
-		Expediente buscarInfoExpediente = new Expediente();
+		Expediente expediente = new Expediente();
 		try {
-			buscarInfoExpediente = expedienteDao.infoExpediente(idexpediente);
+			expediente = expedienteDao.infoExpediente(idexpediente);
 		} catch (Exception e) {
-			logger.info("NO SE ENCONTRO RESULTADOS infoExpediente");
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarInfoExpediente;
+		return expediente;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public MovimientoExpediente infoMovimiento(Long idexpediente, Long idmovimiento) {
-		MovimientoExpediente buscarMovimientoExpediente = new MovimientoExpediente();
+		MovimientoExpediente movimientoExpediente = new MovimientoExpediente();
 		try {
-			buscarMovimientoExpediente = expedienteDao.infoMovimiento(idexpediente, idmovimiento);
+			movimientoExpediente = expedienteDao.infoMovimiento(idexpediente, idmovimiento);
 		} catch (Exception e) {
-			e.printStackTrace();
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimiento ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarMovimientoExpediente;
+		return movimientoExpediente;
 	}
 
 	@Override
@@ -125,10 +126,11 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 			}
 
 			
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			logger.info("======================= "+this.getClass().getName()+" ===> responderExpediente ================"+e.getMessage());
 			mostrarmensaje.setCodigo(Constantes.transaccionIncorrecta);
 			mostrarmensaje.setMensaje(e.getMessage());
+
 		}
 		return mostrarmensaje;
 	}
@@ -136,14 +138,16 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public ArchivoMovimiento infoMovimientoArchivoRespuesta(Long idexpediente, Long idoficina,
-			String nombrearchivo) {
-		ArchivoMovimiento buscarArchivoMovimiento = new ArchivoMovimiento();
+
+			String nombrearchivo) { 
+		ArchivoMovimiento archivoMovimiento = new ArchivoMovimiento();
 		try {
-			buscarArchivoMovimiento = expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
+			archivoMovimiento = expedienteDao.infoMovimientoArchivoRespuesta(idexpediente, idoficina, nombrearchivo);
 		} catch (Exception e) {
-			logger.info("ERROR infoMovimientoArchivoRespuesta ="+e.getMessage());
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimientoArchivoRespuesta ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarArchivoMovimiento;
+		return archivoMovimiento;
 	}
 
 	@Override
@@ -155,13 +159,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpedienteCodigo(String anio, String codigoExpediente) {
-		Expediente buscarExpediente= new Expediente();
+		Expediente expediente = new Expediente();
 		try {
-			buscarExpediente=expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
+			expediente = expedienteDao.infoExpedienteCodigo(anio, codigoExpediente);
 		} catch (Exception e) {
-			// buscarExpediente=buscarExpediente;
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteCodigo ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarExpediente;
+		
+		return expediente;
 	}
 
 	@Override
@@ -173,25 +179,28 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpedienteId(Long idExpediente) {
-		Expediente buscarExpediente = new Expediente();
+		Expediente expediente = new Expediente();
 		try {
-			buscarExpediente= expedienteDao.infoExpedienteId(idExpediente);
+			expediente = expedienteDao.infoExpedienteId(idExpediente);
 		} catch (Exception e) {
-			logger.info("error infoExpedienteId"+e.getMessage());
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteId ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarExpediente;
+
+		return expediente;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public MovimientoExpediente infoMovimientoIdexpediente(Long idMovimiento) {
-		MovimientoExpediente buscarMovimientoExpediente = new MovimientoExpediente();
+		MovimientoExpediente movimientoExpediente = new MovimientoExpediente();
 		try {
-			buscarMovimientoExpediente = expedienteDao.infoMovimientoIdexpediente(idMovimiento);
+			movimientoExpediente = expedienteDao.infoMovimientoIdexpediente(idMovimiento);
 		} catch (Exception e) {
-			logger.info("error infoMovimientoIdexpediente ="+e.getMessage());
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoMovimientoIdexpediente ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarMovimientoExpediente;
+		return movimientoExpediente;
 	}
 
 	@Override
@@ -203,13 +212,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public ArchivoTupac infoArchivoTupa(Long idexpediente, Long idarchivorequisito) {
-		ArchivoTupac buscarArchivoTupac = new ArchivoTupac();
+		ArchivoTupac archivoTupac  = new ArchivoTupac();
 		try {
-			buscarArchivoTupac = expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
+			archivoTupac=expedienteDao.infoArchivoTupa(idexpediente,idarchivorequisito);
 		} catch (Exception e) {
-			logger.info("erro infoArchivoTupa="+e.getMessage());
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoArchivoTupa ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarArchivoTupac;
+		
+		return archivoTupac;
 	}
 
 	@Override
@@ -259,13 +270,15 @@ public class ExpedienteServicioImpl implements ExpedienteServicio {
 	@Override
 	@Transactional(readOnly = true)
 	public Expediente infoExpedienteCodigoInterno(String anio, String codigoExpediente) {
-		Expediente buscarExpediente = new Expediente();
+		Expediente expediente = new Expediente();
 		try {
-			buscarExpediente = expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
+			expediente=expedienteDao.infoExpedienteCodigoInterno(anio, codigoExpediente);
 		} catch (Exception e) {
-			logger.info("error infoExpedienteCodigoInterno"+e.getMessage());
+		// TODO: handle exception
+		logger.error("ERROR =" + this.getClass().getName()+".infoExpedienteCodigoInterno ==Causa==" + e.getCause()+" =Mensage="+e.getMessage());
 		}
-		return buscarExpediente;
+		
+		return expediente;
 	}
 
 	@Override
